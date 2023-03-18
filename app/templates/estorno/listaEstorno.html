@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block head %}
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/pagination/dataEstorn.js') }}"></script>
+{% endblock %}
+{% block conteudo %}
+    <!-- Exibe mensagem que foi enviado pelo Back -->
+    {% for message in get_flashed_messages() %}
+        {% if message %}
+        <script>
+            window.setTimeout(function() {
+                $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                    $(this).remove(); 
+                });
+            }, 6000);
+        </script>
+        <div class="alert alert-success d-flex align-items-center" role="alert">
+            <i class="fa-solid fa-circle-check" style="font-size: 1rem; padding-right: 1rem;"></i>
+            <div>
+                <h6>{{ message }}</h6>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+    <div class="conteiner-top">
+        <h3 class="titulo-pagina">Lista de Estornos</h3>
+        <div class="col-md-3">
+            <input type="text" class="form-control" placeholder="Pesquisar" id="searchField">
+        </div>
+    </div>
+    
+    <div class="page-container">
+        <div class="container">
+            <div id="lista-estorno"></div>
+        </div>
+    </div>
+    <!-- Modal para selecionar as baixas para devolução do título -->
+    {% if contexto %}
+        {% if contexto.aviso == 1 %}
+            <section class="modal-baixa">
+                <form action="" method="POST">
+                    <div id="card-baixa">
+                        <h2>Baixas do Título</h2>
+                        <hr>
+                        <div class="alert" style="display: none;" id="alert" role="alert">
+                        </div>
+                        <div class="scroll">
+                            <table class='table table-striped'>
+                                <thead>
+                                    <tr class='table-info'>
+                                        <th>Check</th>
+                                        <th>Ref.</th>
+                                        <th>Documento</th>
+                                        <th>Parcela</th>
+                                        <th>DT baixa</th>
+                                        <th>Tipo Baixa</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for baixa in contexto.baixas %}
+                                        <tr id="{{baixa.m_id}}">
+                                            <td><input type="checkbox" value="{{baixa.m_id}}" class="danger" name='checkbox'></td>
+                                            <td>{{baixa.m_docRef}}</td>
+                                            <td>{{baixa.m_numDoc}}</td>
+                                            <td>{{baixa.m_parcela}}</td>
+                                            <td>{{baixa.m_dataBaixa | data}}</td>
+                                            <td>{{baixa.m_tipoBaixa | tpBixa}}</td>
+                                            <td>{{baixa.m_valor | real}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="btns">
+                            <input type="button" class="btn btn-outline-success btn-sm" id="confirm" value="Confirmar">
+                            <a class="btn btn-outline-danger btn-sm" href="javascript:history.back()">Cancelar</a>
+                        </div>
+                    </div>
+                </form>
+                <script>
+                    $("#confirm").click(function(){
+                        var checkbox = $('input:checkbox[name^=checkbox]:checked');
+                        if(checkbox.length > 0){
+                            $("#confirm").prop('disabled', true);
+                            //array para armazenar os valores
+                            var listaIds = [];
+                            //função each para pegar os selecionados
+                            checkbox.each(function(){
+                                listaIds.push(parseInt($(this).val()));
+                            });
+
+                            $.ajax({
+                                url: '/deletar-baixa',
+                                type: 'POST',
+                                dataType: 'json',
+                                contentType: 'application/json',
+                                data:JSON.stringify({
+                                    list: listaIds,
+                                }),
+                                success: function(data){
+                                    if (data.success == true){
+                                        for (var i in data.ids){
+                                            $(`#${data.ids[i]}`).hide();
+                                        }
+                                        $("#alert").empty();
+                                        $("#alert").removeClass("alert-danger");
+                                        $("#alert").addClass("alert-success");
+                                        $("#alert").show();
+                                        $("#alert").append("<h6>Estorno efetuado com sucesso!</h6>");
+                                        setTimeout(function(){ 
+                                            $("#alert").toggle("slow");
+                                            window.location='/lista-estorno'
+                                        }, 3000);
+                                    }
+                                },
+                                error: function(data){
+                                    console.log(data)
+                                }
+                            
+                            });
+
+                        }else{
+                            window.scrollTo(0, 0);
+                            $("#alert").empty();
+                            $("#alert").removeClass("alert-success");
+                            $("#alert").addClass("alert-danger");
+                            $("#alert").show();
+                            $("#alert").append("<h6>Selecione uma baixa</h6>");
+                            setTimeout(function(){ 
+                                $("#alert").toggle("slow");
+                            }, 5000);
+                        }
+
+                    });
+                    
+                </script>
+            </section>
+        {% endif %}
+    {% endif %}
+
+    {% block script %}
+        <script>
+            var table = $('#lista-estorno').tableSortable({
+                data: dataEstorn,
+                columns: columnsEstorn,
+                searchField: '#searchField',
+                responsive: {
+                    600: {
+                        columns: {
+                            formCode: 'Form Code',
+                            formName: 'Form Name',
+                        },
+                    },
+                },
+                rowsPerPage: 10,
+                pagination: true,
+                tableWillMount: function() {
+                    console.log('table will mount')
+                },
+                tableDidMount: function() {
+                    console.log('table did mount')
+                },
+                tableWillUpdate: function() {console.log('table will update')},
+                tableDidUpdate: function() {console.log('table did update')},
+                tableWillUnmount: function() {console.log('table will unmount')},
+                tableDidUnmount: function() {console.log('table did unmount')},
+                onPaginationChange: function(nextPage, setPage) {
+                    setPage(nextPage);
+                }
+            });
+
+            $('#changeRows').on('change', function() {
+                table.updateRowsPerPage(parseInt($(this).val(), 10));
+            })
+
+            $('#rerender').click(function() {
+                table.refresh(true);
+            })
+
+            $('#distory').click(function() {
+                table.distroy();
+            })
+
+            $('#refresh').click(function() {
+                table.refresh();
+            })
+
+            $('#setPage2').click(function() {
+                table.setPage(1);
+            })
+        </script>
+    {% endblock %} 
+
+{% endblock %}

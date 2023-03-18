@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block conteudo %}
+    <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h6>Senhas não coincidem!</h6>
+        <button type="button" class="btn-close" onclick="fechaAlert()" aria-label="Close"></button>
+    </div>
+    <div class="container">
+        <h4 class="titulo-pagina">{{ contexto.titulo }}</h4><br>
+        <form id="rcorners2" class="container" onsubmit="return validarSenha('inputSenha', 'confSenha')" action="{{ contexto.action }}{% if contexto.usuario %}{{ contexto.usuario.s_codigo }}{% endif %}" method="POST" >
+            <div class="row">
+                <div class="col-6">
+                    <label for="">Nome Completo</label>
+                    <input type="text" class="form-control" style="text-transform: uppercase;" name="nomecmp" id="nomecmp" maxlength="40" size="40" tabindex="1" autocomplete="off" required value="{% if contexto.usuario %}{{ contexto.usuario.s_nome }}{% endif %}">
+                </div> 
+                <div class="col-6">
+                    <label for="">E-mail</label>
+                    <input type="email" class="form-control" style="text-transform: uppercase;" name="email" id="email" maxlength="50" size="50" tabindex="2" autocomplete="off" required value="{% if contexto.usuario %}{{ contexto.usuario.s_email }}{% endif %}">
+                </div>
+            </div>
+            <br>        
+            <div class="row">
+                <div class="col-3">
+                    <label for="">Usuário</label>
+                    <input type="text" class="form-control" style="text-transform: uppercase;" name="usuario" id="usuario" maxlength="12" size="10" tabindex="3" autocomplete="off" required value="{% if contexto.usuario %}{{ contexto.usuario.s_usuario }}{% endif %}">
+                </div>
+                <div class="col-3">
+                    <label for="">Senha</label>
+                    <input type="password" class="form-control" style="text-transform: uppercase;" name="inputSenha" id="inputSenha" maxlength="10" size="10" tabindex="4" autocomplete="off" required value="{% if contexto.usuario %}{{ contexto.usuario.s_senha}}{% endif %}">
+                </div>    
+                <div class="col-3">
+                    <label for="">Conf. Senha</label>
+                    <input type="password" class="form-control" style="text-transform: uppercase;" name="confSenha" id="confSenha" maxlength="10" size="10" tabindex="5" autocomplete="off" required value="{% if contexto.usuario %}{{ contexto.usuario.s_senha}}{% endif %}">
+                </div>
+                <div class="col-2">
+                    <label for="">Admin?</label>
+                    <select class="form-select form-select-sm border-radius-input" type="text" tabindex="6" name="useradmin" id="useradmin" style="max-width:100%;">
+                        <option value="1" {% if contexto.usuario %} {% if contexto.usuario.s_admin %} selected {% endif %} {% endif %}>Sim</option>
+                        <option value="0" {% if contexto.usuario %} {% if not contexto.usuario.s_admin %} selected {% endif %} {% endif %}>Nao</option>
+                    </select>
+                </div>                         
+            </div>
+            <br>
+            <br><br>
+            <div class="btn-position">
+                <input type="submit" class="btn btn-outline-success" id="btnGravar" value="{{ contexto.botao }}">
+                <a href="/lista-usuarios" class="btn btn-outline-danger" type="button" name="btnCancelar" id="btnCancelar" tabindex="9">Cancelar</a>
+            </div>
+        </form>   
+    </div>
+{% endblock %}

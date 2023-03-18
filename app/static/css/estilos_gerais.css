@@ -1,0 +1,327 @@
+html {
+    background-color: #d7ebff;
+}
+
+.corpo-documento {
+    margin: 0px;
+    font-size: 12px;
+    color: #4d5051;
+    background-color: #d7ebff;
+}
+
+.topo-pagina {
+    background-image: url(../img/bgd3.jpg);
+    background-repeat: no-repeat;
+    background-position: center top;
+    width: 100%;
+    float: left;
+}
+
+.base-pagina {
+    background-repeat: repeat-x;
+    background-position: left bottom;
+    width: 100%;
+    float: left;
+}
+
+.pagina {
+    margin: 0px auto;
+    width: 1000px;
+}
+
+.main, .header {
+    width: 1000px;
+    float: left;
+}
+
+.header-topo {
+    background-repeat: no-repeat;
+    background-position: left center;
+    width: 990px;
+    height: 160px;
+    float: left;
+    display: flex;
+    text-align: center;
+}
+
+.header-topo h1 {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 48px;
+    font-weight: bold;
+    color: #ff8000;
+    margin-left: 120px;
+    text-shadow: #444444 3px 3px 3px;
+}
+
+.header-topo h2 {
+    font-family: Arial,Helvetica,sans-serif;
+    font-weight: bold;
+    color: #ffffff;
+    margin-left: 120px;
+    font-style: normal;
+}
+
+.header-base {
+    background-color: lightblue;
+    width: 1000px;
+    height: 35px;
+    float: left;
+}
+
+.header-base p {
+    font-family: Verdana;
+    font-weight: bold;
+    color: #0000ff;
+    margin-left: 30px;
+    font-style: normal;
+}
+
+.barra-menu {
+    background-color: #77cee3;
+    width: 100%;
+    height: 74px;
+    float: left;
+    z-index: 1;
+    position: relative;
+}
+
+.fixar {
+    position: fixed;
+    width: 62.5rem;
+    height: 69px;
+    margin-top: 0px !important;
+    justify-content: center;
+    align-items: center;
+    background-color: #77cee3;
+    z-index: 1;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    color: #444444;
+}
+
+.dropbutton {
+    background-color: rgba(0,0,0,0);
+    color: white;
+    padding: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px; 
+    border-left: 2px solid #77cee3;
+    border-right: 2px solid #77cee3;
+    border-top: 2px solid #77cee3;
+    -webkit-transition: 0.5s ease-in;
+    -moz-transition: 0.5s ease-in;
+    -o-transition: 0.5s ease-in;
+    transition: 0.5s ease-in;
+}
+
+.conteudo-corpo {
+    padding: 20px 10px;
+    background-color: #ffffff;
+    width: 1000px;
+    float: left;
+}
+
+.coluna-esquerda {
+    background-color: #f5deb3;
+    width: 250px;
+    float: left;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.coluna-esquerda p {
+    margin-left: 10px;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+
+.coluna-direita {
+    background-color: #f5deb3;
+    width: 290px;
+    float: right;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.coluna-direita p {
+    margin-left: 10px;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+
+.linha1-coluna-direita {
+    width: 290px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
+
+.separacao-linhas {
+    border-top-style: double;
+    width: 280px;
+    margin-left: 5px;
+    float: left;
+}
+
+.linha2-coluna-direita {
+    width: 290px;
+    margin-left: 5px;
+    float: left;
+}
+
+.rodape-pagina {
+    padding: 24px 24px 0px;
+    line-height: 69px;
+    width: 952px;
+    height: 70px;
+    float: left;
+}
+
+.rodape-pagina p {
+    font-family: "Times New Roman",Times,serif;
+    font-size: 12px;
+    color: black;
+    float: center;
+    text-align: center;
+}
+
+.dropdown:hover .dropbutton {
+    color: #000000;
+    font-weight: bold;
+    display: inline-block;
+    font-size: 17px;
+    /* vertical-align: middle; */
+    background-color: #77cde380;
+    /* opacity: 0.5; */
+    /* border: 2px solid #ffffff; */
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #ffffff;
+    border-top: 2px solid #ffffff;
+    /* box-shadow: inset 0 0 0 4px #e1e1e1, 0 0 1px rgba(0, 0, 0, 0); */
+    -webkit-transition: 0.3s ease-in;
+    -moz-transition: 0.3s ease-in;
+    -o-transition: 0.3s ease-in;
+    transition: 0.3s ease-in;
+}
+
+.formulario {
+    font-family: Helvetica,Arial,sans-serif;
+    line-height: 1.5;
+}
+
+.titulo-formulario {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #77cee3;
+    text-align: center;
+}
+
+.formulario input:focus {
+    background-color: lightblue;
+}
+
+.formulario select {
+    padding: 4px 4px;
+    border: none;
+    border-radius: 4px;
+    background-color: #f1f1f1;
+}
+
+.coluna-central {
+    width: 100%;
+    margin-left: 5px;
+    margin-right: 5px;
+    float: left;
+    font-size: 15.5px;
+}
+
+.dropdown-opcoes {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    background-color: #77cee3;
+    min-width: 110px;
+    box-shadow: 15px 15px 10px;
+    transition: all 0.5s;
+    max-height: 0;
+}
+
+
+.dropdown:hover .dropdown-opcoes{
+    max-height: 300px;
+}
+
+.dropdown:hover .dropdown-opcoes a{
+    display: block;
+}
+
+.dropdown-opcoes a {
+    color: white;
+    padding: 12px 16px;
+    display: none;
+    text-decoration: none;
+    font-weight: bold;
+    -webkit-transition: 0.5s ease-in;
+    -moz-transition: 0.5s ease-in;
+    -o-transition: 0.5s ease-in;
+    transition: 0.5s ease-in;
+}
+
+.dropdown-opcoes a:hover {
+    background-color: #ffffff;
+    font-size: 14.4px;
+    padding: 15px 16px;
+}
+
+.coluna-esquerda-adm {
+    width: 10px;
+    float: left;
+}
+
+.coluna-central-adm {
+    width: 650px;
+    margin-left: 5px;
+    margin-right: 5px;
+    float: left;
+}
+
+.texto-h1{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
+#texto-h2{
+    color: white;
+}
+
+td th{
+    font-size: 13px;
+}
+
+.space-input{
+    margin-left: 10px;
+}
+
+label{
+    font-size: 15px;
+}
+
+#header a{
+    color: #444444;
+}
+
+#header button{
+    color: #444444;
+}

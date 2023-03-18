@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% block conteudo %}
+    <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+    </div>
+    <h4 class="titulo-pagina">Baixar Título</h4><br>
+    <div class="container-form">
+        <form id="rcorners2" class="container" style="width: 130%;" onsubmit="return validaValorBaixa()" action="/insert-baixa" method="POST">
+            <h5 id="titulo1">Dados do Título</h5>
+            <div class="container" id="cont1">
+                <div class="row">
+                    <div class="col-2">
+                        <label for="">N. do Documento</label>
+                        <input type="text" class="form-control" style="text-transform: uppercase;" name="numDoc" id="numDoc" maxlength="40" size="40" 
+                        tabindex="" autocomplete="off" required value="{{contexto.titulo.t_numDoc}}" readonly>
+                    </div>
+                    <div class="col-3">
+                        <label for="">Valor Parcela</label>
+                        <input type="number" class="form-control" style="text-transform: uppercase;" name="valorParcela" id="valorParcela" maxlength="10" size="10" 
+                        tabindex="" step="0.01" autocomplete="off" required value="{{contexto.titulo.t_valor | float}}" readonly>
+                    </div>
+                    <div class="col-2">
+                        <label for="">Parcela</label>
+                        <input type="text" class="form-control" style="text-transform: uppercase;" name="parcela" id="parcela" maxlength="40" size="40" 
+                        tabindex="" autocomplete="off" required value="{{contexto.titulo.t_numParcela}}" readonly>
+                    </div>
+                    <div class="col-2">
+                        <label for="">Documento Ref.</label>
+                        <input type="text" class="form-control" style="text-transform: uppercase;" name="docRef" id="docRef" maxlength="40" size="40" 
+                        tabindex="" autocomplete="off" required value="{{contexto.segCliVend[0].s_abrev}}{{contexto.titulo.t_docRef}}" readonly>
+                    </div>
+                    <div class="col-3">
+                        <label for="">Data do Lançamaneto</label>
+                        <input type="date" class="form-control" style="text-transform: uppercase;" name="dataLanc" id="dataLanc" maxlength="50" size="50" 
+                        tabindex="" autocomplete="off" required value="{{contexto.titulo.t_dataLanc | strftime}}" readonly>
+                    </div>
+                </div>
+                <br>        
+                <div class="row">
+                    <div class="col-6">
+                        <label for="">Cliente</label>
+                        <input type="text" class="form-control" style="text-transform: uppercase;" name="cliente" id="cliente" maxlength="10" size="10" 
+                        tabindex="" autocomplete="off" required value="{{contexto.titulo.t_idCliente}} - {{contexto.segCliVend[0].c_razaosocial}}" readonly>
+                    </div>
+                    <div class="col-6">
+                        <label for="">Vendedor</label>
+                        <input type="text" class="form-control" style="text-transform: uppercase;" name="vendedor" id="vendedor" maxlength="10" size="10" 
+                        tabindex="" autocomplete="off" required value="{{contexto.titulo.t_idVendedor}} - {{contexto.segCliVend[0].v_nome}}" readonly>
+                    </div>                     
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-2">
+                        <label for="">Filial</label>
+                        <input type="text" class="form-control" style="text-transform: uppercase;" name="filial" id="filial" maxlength="10" size="10" 
+                        tabindex="" autocomplete="off" required value="{{contexto.titulo.t_filialOri}}" readonly>
+                    </div> 
+                    <div class="col-2">
+                        <label for="">Comissão</label>
+                        <input type="number" class="form-control" style="text-transform: uppercase;" name="comissao" id="comissao" maxlength="40" size="40" 
+                        tabindex="" step="0.01" autocomplete="off" required value="{{contexto.titulo.t_comissao}}" readonly>
+                    </div> 
+                    <div class="col-2">
+                        <label for="">Saldo</label>
+                        <input type="number" class="form-control" style="text-transform: uppercase;" name="valorSaldo" id="valorSaldo" maxlength="40" size="40" 
+                        tabindex="" step="0.01" autocomplete="off" required value="{{contexto.titulo.t_saldo | float}}" readonly>
+                    </div>
+                    <div class="col-2">
+                        <label for="">Saldo atualizado</label>
+                        <input type="number" class="form-control" style="text-transform: uppercase;" name="saldoAtual" id="saldoAtual" maxlength="40" size="40" 
+                        tabindex="" step="0.01" autocomplete="off" required value="" readonly>
+                    </div>
+                    <div class="col-2">
+                        <input type="text" class="form-control" style="text-transform: uppercase; display: none;" name="segmento" id="segmento" value="{{contexto.segCliVend[0].s_id}}">
+                        <!-- Adiociona um input zerado quando o cliente não tem crédito -->
+                        {% if contexto.credito == 0 %}
+                            <input type="text" class="form-control" style="display: none" name="valorCredito" id="valorCredito" autocomplete="off" value="">
+                        {% endif %}
+                    </div> 
+                </div> 
+            </div>
+            <h5 id="titulo2">Dados da Baixa</h5>
+            <div class="container" id="cont2">
+                <!-- Caso o cliente tenha crédito adciona botão para selecionar o crédito -->
+                {% if contexto.credito > 0 %}
+                    <div class="row justify-content-md-center">
+                        <div class="col-7" id="credito">
+                            <div class="texto-check">
+                                <label>Deseja utilizar o crédito de Devolução do Cliente ?</label>
+                                <input type="text" class="form-control" style="display: none" name="valorCredito" id="valorCredito" autocomplete="off" value="">
+                            </div>
+                            <div class="check">
+                                <input type="button" value="Sim" onclick="exibeModal()">
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                  
+                <div class="row justify-content-md-center">
+                    <div class="col-4">
+                        <label for="">Data da Baixa</label>
+                        <input type="date" class="form-control" style="text-transform: uppercase;" name="dataBaixa" id="dataBaixa" maxlength="50" size="50" 
+                        tabindex="1" autocomplete="off" required value="{{contexto.titulo.t_dataVenc | strftime}}" autofocus>
+                    </div>
+                    <div class="col-4">
+                        <label for="">Valor Baixa</label>
+                        <input type="number" class="form-control" style="text-transform: uppercase;" name="valorBaixa" id="valorBaixa" maxlength="10" size="10" 
+                        tabindex="2" step="0.01" autocomplete="off" required value="{{contexto.titulo.t_saldo | float}}" onblur="calculaSlado()">
+                    </div>
+                    <div class="row justify-content-md-center">
+                        <div class="col-2">
+                            <label for="">Juros</label>
+                            <input type="number" class="form-control" style="text-transform: uppercase;" name="juros" id="juros" maxlength="40" size="40" 
+                            tabindex="3" step="0.01" autocomplete="off" value="">
+                        </div>
+                        <div class="col-2">
+                            <label for="">Desconto</label>
+                            <input type="number" class="form-control" style="text-transform: uppercase;" name="desconto" id="desconto" maxlength="40" size="40" 
+                            tabindex="4" step="0.01" autocomplete="off" value="">
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center">
+                        <div class="col-5">
+                            <label for="exampleFormControlTextarea1">Obs.</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" name="obs" rows="3" cols="50" maxlength="100" tabindex="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            <div class="btn-position">
+                <input type="submit" class="btn btn-outline-success" id="btnGravar" value="Baixar" tabindex="5">
+                <a href="javascript:history.back()" class="btn btn-outline-danger" type="button" name="btnCancelar" id="btnCancelar" tabindex="6">Cancelar</a>
+            </div>
+        </form>
+    </div>
+    <!-- Modal para selecionar o crédito do cliente -->
+    <section class="modal-view-dev" id="modal-dev">
+        <div id="card-devolucao">
+            <h2>Devoluções do Cliente</h2>
+            <hr>
+            <div class="alert" style="display: none;" id="alert-dev" role="alert">
+            </div>
+            <div class="scroll" id="scroll-dev"> 
+            </div>
+            <div id="btns">
+                <input type="button" class="btn btn-outline-success btn-sm" id="confirm-dev" value="Confirmar">
+                <input type="button" class="btn btn-outline-danger btn-sm" value="Cancelar" onclick="fechaModal()">
+            </div>
+        </div>
+    </section>
+
+    {% block script %}
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#saldoAtual").val(($("#valorBaixa").val() - $("#valorSaldo").val()).toFixed(2));
+            });
+        </script>
+
+        <script type="text/javascript">
+            function calculaSlado(){
+                document.getElementById("saldoAtual").value = (document.getElementById("valorSaldo").value - document.getElementById("valorBaixa").value).toFixed(2);
+            }
+        </script>
+
+        <script>
+            function exibeModal(){
+                var section = document.getElementById("modal-dev");
+                var fundo = document.getElementById("corpo-documento");
+                fundo.style.overflow = "hidden";
+                var idCli = $("#cliente").val().split(" ");
+
+                $.ajax({
+                    url: '/lista-devolucao-cliente',
+                    type: 'POST',
+                    async: false,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data:JSON.stringify({
+                        idCli: idCli[0],
+                    }),
+                    success: function(resp){
+                        $("#scroll-dev").empty();
+                        var iniTabela = (`<table class='table table-striped'>` +
+                                        `<thead>` +
+                                            `<tr class='table-info'>` +
+                                                `<th>Check</th>` +
+                                                `<th>Ref.</th>` +
+                                                `<th style="text-align: right;">Saldo</th>` +
+                                            `</tr>` +
+                                        `</thead>` +
+                                        `<tbody id="body-list">`);
+
+                        $("#scroll-dev").append(iniTabela);
+                        for (x in resp){
+                            var linha = (`<tr>` +
+                                            `<td><input class="form-check-input" type="radio" value="${resp[x].saldo} - ${resp[x].id}" name="radio" id="radio">` +
+                                            `<td>${resp[x].ref}</td>` +
+                                            `<td style="text-align: right;">${resp[x].saldo}</td>` +
+                                        `</tr>`);
+                            $("#body-list").append(linha);
+                        }
+                        var fimTable = (`</tbody>` +
+                                    `</table>`);
+
+                        $("#scroll-dev").append(fimTable);
+                    }
+                });
+
+                section.style.display = "flex";
+            }
+        </script>
+
+        <script>
+            function fechaModal(){
+                var section = document.getElementById("modal-dev");
+                section.style.display = "none";
+                var fundo = document.getElementById("corpo-documento");
+                fundo.style.overflow = "auto";
+            }
+        </script>
+
+        <script>
+            $("#confirm-dev").click(function(){
+                var radio = $('input:radio[name^=radio]:checked');
+                if(radio.length > 0){
+                    $("#credito").empty();
+                    var valorRadio = radio.val().split(" ");
+                    var texto = (`<div class="texto-check">` +
+                                    `<label>Valor Crédito selecionado: ${valorRadio[0] + " " + valorRadio[1]}</label>` +
+                                    `<input type="text" class="form-control" style="display: none" name="valorCredito" id="valorCredito" autocomplete="off" value="${valorRadio[1].replace("R$", "")}">` +
+                                    `<input type="text" class="form-control" style="display: none" name="idDevolucao" id="idDevolucao" autocomplete="off" value="${valorRadio[3]}">` +
+                                `</div>` + 
+                                `<div class="check">` +
+                                    `<input type="button" value="Alterar" onclick="exibeModal()">` +
+                                `</div>`);
+                    
+                    $("#credito").append(texto);
+
+                    var section = document.getElementById("modal-dev");
+                    section.style.display = "none";  
+                    var fundo = document.getElementById("corpo-documento");
+                    fundo.style.overflow = "auto";              
+                    
+                }else{
+                    window.scrollTo(0, 0);
+                    $("#alert-dev").empty();
+                    $("#alert-dev").removeClass("alert-success");
+                    $("#alert-dev").addClass("alert-danger");
+                    $("#alert-dev").show();
+                    $("#alert-dev").append("<h6>Selecione uma devolução</h6>");
+                    setTimeout(function(){ 
+                        $("#alert-dev").toggle("slow");
+                    }, 5000);
+                }
+            });
+        </script>
+    {% endblock %} 
+
+{% endblock %}

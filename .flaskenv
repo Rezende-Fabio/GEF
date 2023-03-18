@@ -1,0 +1,4 @@
+DEBUG=True
+FLASK_ENV=development
+FLASK_APP=GefIII.py
+TEMPLATES_AUTO_RELOAD=True

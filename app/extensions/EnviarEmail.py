@@ -4,12 +4,12 @@ from email.message import EmailMessage
 class EnviaEmail:
     def enviarEmail(destinatario, senha):#Função para enviar E-mail
         try:
-            endercoEmail = 'automacao@alpinatextil.net' #E-mail que vai conectar no servidor
-            senhaEmail = 'AAaa11@' #Senha do e-mail
+            endercoEmail = '' #E-mail que vai conectar no servidor
+            senhaEmail = '' #Senha do e-mail
             
             msg = EmailMessage()
             msg['Subject'] = "Alteração de senha no GEF" #Assunto do E-mail
-            msg["From"] = "GEF@alpinatextil.net" #Correspondente que vai aparcer no e-mail
+            msg["From"] = "" #Correspondente que vai aparcer no e-mail
             msg["To"] = destinatario #Pra quem vai enviar
             msg.set_type("text/html")
             msg.set_content("Alteração de senha no GEF") 
@@ -27,7 +27,7 @@ class EnviaEmail:
         
             msg.add_alternative(htmlMsg, subtype="html")
             
-            with smtplib.SMTP_SSL('webmail.alpinatextil.net', 465) as smtp: #Abre o servidor executa as funções abaixo e fecha a conexão
+            with smtplib.SMTP_SSL('', ) as smtp: #Abre o servidor executa as funções abaixo e fecha a conexão
                 smtp.login(endercoEmail, senhaEmail) #Faz login no Servidor
                 smtp.send_message(msg) #Envia o E-mail
             
@@ -36,5 +36,3 @@ class EnviaEmail:
         except:
             return False    
             
-if __name__ == "__main__":
-    EnviaEmail.enviarEmail("fabio.cpd@alpinatextil.net", "123000")

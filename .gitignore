@@ -1,0 +1,8 @@
+__pycache__
+.vscode
+Documentação
+settings.toml
+.flaskenv
+GefIII.db
+plugin
+venv

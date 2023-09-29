@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta content="text/html"; charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom_impressao.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugin/bootstrap/css/bootstrap.min.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/jquery/jquery.mask.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/popper/popper.min.js') }}"></script>  
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/jquery/jquery-ui.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/funcoes.js') }}"></script>
+
+    <title>Impressão Comissão</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar" id="navbar">
+            <div class="header-comi">
+                <div class="header-img">
+                    <img class="img" src="{{ url_for('static', filename='img/logo2.png') }}" alt="User Icon"/>
+                </div>
+                <div class="header-titulo">
+                    <h5>GEF III</h5>
+                    <h6><strong><u>Demonstrativo de Comissões</u></strong></h6>
+                    <h7>Lançamentos do periodo: {{ contexto.datas[0] | data}} a {{ contexto.datas[1] | data}}</h7>
+                </div>
+                <div class="header-hora">
+                    <div id="data-hora"></div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div>
+            <div class="header-vend">
+                <h5>Vendedor: {{ contexto.vendedor }}</h5>
+            </div>
+            <table class='table' id="table">
+                <thead>
+                    <tr>
+                        <th style="width: 12%;">Ref.</th>
+                        <th style="width: 10%;">No. Doc.</th>
+                        <th>Cliente</th>
+                        <th>Tp. Baixa</th>
+                        <th>Data Baixa</th>
+                        <th style="width: 10%; text-align: right;">Base</th>
+                        <th style="width: 10%; text-align: right;">% Comis.</th>
+                        <th style="width: 10%; text-align: right;">Valor</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">

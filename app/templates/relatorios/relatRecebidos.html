@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+{% block conteudo %}
+    <!-- Exibe mensagem que foi enviado pelo Back -->
+    {% for message in get_flashed_messages() %}
+        {% if message %}
+            <script>
+                window.setTimeout(function() {
+                    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                        $(this).remove(); 
+                    });
+                }, 6000);
+            </script>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div>
+                    <h6>{{ message }}</h6>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+    <h4 class="titulo-pagina">Parâmetros para o Relatório de Títulos Recebidos</h4><br>
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#parCli" type="button" role="tab" aria-controls="parCli" aria-selected="true">Cliente</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#parVend" type="button" role="tab" aria-controls="parVend" aria-selected="false">Vendedor</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#parSeg" type="button" role="tab" aria-controls="parSeg" aria-selected="false">Segmento</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#parPe" type="button" role="tab" aria-controls="parPe" aria-selected="false">Periodo</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#parPerMes" type="button" role="tab" aria-controls="parPerMes" aria-selected="false">Periodo Mês Lançamento</button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="parCli" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+            <br>
+            <div class="container"> 
+                <form id="rcorners2" class="container" action="/impressao-recebidos" method="POST" >
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <label for="">Cliente</label>
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="cliente" id="cliente" maxlength="40" size="40" tabindex="1" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="data-observ">
+                            <label>* Data de baixa do título</label>
+                        </div>
+                        <div class="col-1" id="dt" style="align-items: center;">
+                            <h6>De</h6>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" style="text-transform: uppercase;" name="dataDe" id="dataDe" maxlength="50" size="50" 
+                            tabindex="3" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-1" id="dt" style="align-items: center;">
+                            <h6>Até</h6>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" style="text-transform: uppercase;" name="dataAte" id="dataAte" maxlength="50" size="50" 
+                            tabindex="3" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <br><br><br>
+                    <div class="btn-position">
+                        <input class="btn btn-outline-primary btn-sm" type="submit" value="Gerar" formtarget="_blank">
+                    </div>
+                </form>   
+            </div>
+        </div>
+        <div class="tab-pane fade" id="parVend" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+            <br>
+            <div class="container"> 
+                <form id="rcorners2" class="container" action="/impressao-recebidos" method="POST" >
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <label for="">Vendedor</label>
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="vendedor" id="vendedor" maxlength="40" size="40" tabindex="1" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="data-observ">
+                            <label>* Data de baixa do título</label>
+                        </div>
+                        <div class="col-1" id="dt" style="align-items: center;">
+                            <h6>De</h6>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" style="text-transform: uppercase;" name="dataDe" id="dataDe" maxlength="50" size="50" 
+                            tabindex="3" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-1" id="dt" style="align-items: center;">
+                            <h6>Até</h6>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" style="text-transform: uppercase;" name="dataAte" id="dataAte" maxlength="50" size="50" 
+                            tabindex="3" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <br><br><br>
+                    <div class="btn-position">
+                        <input class="btn btn-outline-primary btn-sm" type="submit" value="Gerar" formtarget="_blank">
+                    </div>
+                </form>   
+            </div>
+        </div>
+        <div class="tab-pane fade" id="parSeg" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+            <br>
+            <div class="container"> 
+                <form id="rcorners2" class="container" action="/impressao-recebidos" method="POST">
+                    <div class="row mb-4">
+                        <div class="col-3">
+                            <label for="">Segmento</label>
+                            <select class="form-select form-select-sm border-radius-input" type="text" tabindex="8" name="segmento" id="segmento" style="max-width:100%;" onchange="parcelamento(this)" required>
+                                <option value="0">Todos</option>
+                                <!-- Loop para adicionar dinamicamente os segmentos cadastrados -->
+                                {% for segmento in contexto.segmentos %}
+                                    <option value="{{segmento.s_id}}">{{segmento.s_abrev}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="data-observ">
+                            <label>* Data de baixa do título</label>
+                        </div>
+                        <div class="col-1" id="dt" style="align-items: center;">
+                            <h6>De</h6>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" style="text-transform: uppercase;" name="dataDe" id="dataDe" maxlength="50" size="50" 
+                            tabindex="3" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-1" id="dt" style="align-items: center;">
+                            <h6>Até</h6>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" style="text-transform: uppercase;" name="dataAte" id="dataAte" maxlength="50" size="50" 
+                            tabindex="3" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <br><br><br>
+                    <div class="btn-position">
+                        <input class="btn btn-outline-primary btn-sm" type="submit" value="Gerar" formtarget="_blank">
+                    </div>
+                </form>   
+            </div>
+        </div>
+        <div class="tab-pane fade" id="parPe" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+            <br><br>
+            <div class="container"> 
+                <form id="rcorners2" class="container" action="/impressao-recebidos" method="POST">
+                    <div class="row mb-2">
+                        <div class="data-observ">
+                            <label>* Data de baixa do título</label>
+                        </div>
+                        <div class="col-1" id="dt" style="align-items: center;">
+                            <h6>De</h6>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" style="text-transform: uppercase;" name="dataDe" id="dataDe" maxlength="50" size="50" 
+                            tabindex="3" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-1" id="dt" style="align-items: center;">
+                            <h6>Até</h6>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" style="text-transform: uppercase;" name="dataAte" id="dataAte" maxlength="50" size="50" 
+                            tabindex="3" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <br><br><br>
+                    <div class="btn-position">
+                        <input class="btn btn-outline-primary btn-sm" type="submit" value="Gerar" formtarget="_blank">
+                    </div>
+                </form>   
+            </div>
+        </div>
+        <div class="tab-pane fade" id="parPerMes" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+            <br><br>
+            <div class="container"> 
+                <form id="rcorners2" class="container" action="/impressao-recebidos" method="POST">
+                    <div class="row mb-2">
+                        <div class="data-observ">
+                            <label>* Data de lançamento do título</label>
+                        </div>
+                        <div class="col-1" id="dt" style="align-items: center;">
+                            <h6>De</h6>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" style="text-transform: uppercase;" name="dataDeMes" id="dataDeMes" maxlength="50" size="50" 
+                            tabindex="3" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-1" id="dt" style="align-items: center;">
+                            <h6>Até</h6>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" style="text-transform: uppercase;" name="dataAteMes" id="dataAteMes" maxlength="50" size="50" 
+                            tabindex="3" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <br><br><br>
+                    <div class="btn-position">
+                        <input class="btn btn-outline-primary btn-sm" type="submit" value="Gerar" formtarget="_blank">
+                    </div>
+                </form>   
+            </div>
+        </div>
+      </div>
+
+      {% block script %}
+        <script>
+            $("#vendedor").keyup(function(){
+                var nomeVend = this.value
+                if (nomeVend.length >= 2){
+                    
+                    var nomes=[]
+                    function carregaNomes(){
+                        $.getJSON(`/vendedores/${nomeVend}`, function(data, status, xhr){
+                            for (var i = 0; i < data.length; i++){
+                                nomes.push(data[i].nome)
+                            }
+                        });
+                    }
+                    carregaNomes();
+
+                    $("#vendedor").autocomplete({
+                        source: nomes,
+                    });
+
+                    $(".ui-helper-hidden-accessible").css("display", "none")
+                }
+            })
+        </script>
+
+        <script>
+            $("#cliente").keyup(function(){
+                var nomeCli = this.value
+                if (nomeCli.length >= 2){
+
+                    var nomes=[]
+                    function carregaNomesCli(){
+                        $.getJSON(`/clientes/${nomeCli}`, function(data, status, xhr){
+                            for (var i = 0; i < data.length; i++){
+                                nomes.push(data[i].nome)
+                            }
+                        });
+                    }
+                    carregaNomesCli();
+
+                    $("#cliente").autocomplete({
+                        source: nomes,
+                    });
+
+                    $(".ui-helper-hidden-accessible").css("display", "none")
+                }
+            })
+        </script>
+    {% endblock %}
+{% endblock %}

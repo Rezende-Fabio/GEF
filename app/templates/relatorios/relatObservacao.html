@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block conteudo %}
+    <h4 class="titulo-pagina">Parâmetros para o Relatório de Observações</h4><br>
+    <div class="container">
+        <form id="rcorners2" class="container" action="/impressao-observacao" method="POST">
+            <div class="row mb-2">
+                <div class="data-observ">
+                    <label>* Data da baixa do título</label>
+                </div>
+                <div class="col-1" id="dt" style="align-items: center;">
+                    <h6>De</h6>
+                </div>
+                <div class="col-3">
+                    <input type="date" class="form-control" style="text-transform: uppercase;" name="dataDe" id="dataDe" maxlength="50" size="50" 
+                    tabindex="3" autocomplete="off" required>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-1" id="dt" style="align-items: center;">
+                    <h6>Até</h6>
+                </div>
+                <div class="col-3">
+                    <input type="date" class="form-control" style="text-transform: uppercase;" name="dataAte" id="dataAte" maxlength="50" size="50" 
+                    tabindex="3" autocomplete="off" required>
+                </div>
+            </div>
+            <br><br><br>
+            <div class="btn-position">
+                <input class="btn btn-outline-primary btn-sm" type="submit" value="Gerar" formtarget="_blank">
+            </div>
+        </form>   
+    </div>
+{% endblock %}

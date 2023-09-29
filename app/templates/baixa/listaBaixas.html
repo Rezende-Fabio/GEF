@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block head %}
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/pagination/dataBaixa.js') }}"></script>
+{% endblock %}
+{% block conteudo %}
+    <!-- Exibe mensagem que foi enviado pelo Back -->
+    {% for message in get_flashed_messages() %}
+        {% if message %}
+        <script>
+            window.setTimeout(function() {
+                $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                    $(this).remove(); 
+                });
+            }, 6000);
+        </script>
+        <div class="alert alert-success d-flex align-items-center" role="alert">
+            <i class="fa-solid fa-circle-check" style="font-size: 1rem; padding-right: 1rem;"></i>
+            <div>
+                <h6>{{ message }}</h6>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+    
+    <div class="conteiner-top">
+        <h3 class="titulo-pagina">Lista de Baixas</h3>
+        <div class="col-md-3">
+            <input type="text" class="form-control" placeholder="Pesquisar" id="searchField">
+        </div>
+    </div>
+    
+    <div class="page-container">
+        <div class="container">
+            <div id="lista-baixas"></div>
+        </div>
+    </div>
+    
+    {% block script %}
+        <script>
+            var table = $('#lista-baixas').tableSortable({
+                data: dataBiax,
+                columns: columnsBaix,
+                searchField: '#searchField',
+                responsive: {
+                    600: {
+                        columns: {
+                            formCode: 'Form Code',
+                            formName: 'Form Name',
+                        },
+                    },
+                },
+                rowsPerPage: 10,
+                pagination: true,
+                tableWillMount: function() {
+                    console.log('table will mount')
+                },
+                tableDidMount: function() {
+                    console.log('table did mount')
+                },
+                tableWillUpdate: function() {console.log('table will update')},
+                tableDidUpdate: function() {console.log('table did update')},
+                tableWillUnmount: function() {console.log('table will unmount')},
+                tableDidUnmount: function() {console.log('table did unmount')},
+                onPaginationChange: function(nextPage, setPage) {
+                    setPage(nextPage);
+                }
+            });
+
+            $('#changeRows').on('change', function() {
+                table.updateRowsPerPage(parseInt($(this).val(), 10));
+            })
+
+            $('#rerender').click(function() {
+                table.refresh(true);
+            })
+
+            $('#distory').click(function() {
+                table.distroy();
+            })
+
+            $('#refresh').click(function() {
+                table.refresh();
+            })
+
+            $('#setPage2').click(function() {
+                table.setPage(1);
+            })
+        </script>
+    {% endblock %} 
+
+{% endblock %}

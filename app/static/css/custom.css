@@ -1,0 +1,38 @@
+/*
+Inicio index
+*/
+.image-index{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-index img{
+  width: 35%;
+}
+
+#formAuthentication label{
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btn-acessar{
+  font-weight: bold !important;
+} 
+
+.btn-acessar:hover{
+  color: #ffffff !important;
+}
+/*
+Termino index
+*/
+
+/*
+Inicio base
+*/
+
+
+/*
+Termino base
+*/

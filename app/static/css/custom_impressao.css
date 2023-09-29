@@ -1,0 +1,151 @@
+#navbar{
+    background-color: #dddcda;
+    width: 100%;
+    align-items: center;
+}
+
+#table{
+  margin: 0.1rem 1.5rem 1.5rem, 0.1rem;
+  font-size:11.5px;
+  width: 100%;
+}
+
+.header-comi{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  width: 100%;
+}
+
+.header-img{
+  display: flex;
+  position: relative;
+  width: 5rem;
+  height: 5rem;
+  float: left;
+  padding: 5px;
+}
+
+.header-titulo{
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1rem;
+  width: 100%;
+  flex-direction: column;
+}
+
+.header-hora{
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px;
+  text-align: center;
+}
+
+.header-vend{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: initial;
+  padding: 0.8rem;
+}
+
+#tr-total{
+  border-top: 0.13rem solid #000;
+  background-color: #eee;
+}
+
+#td-total{
+  font-weight: bold;
+}
+
+#tr-total-geral{
+  border-top: 0.13rem solid #000;
+  border-bottom: #ffffff;
+  background-color: #eee;
+}
+
+#btns{
+  justify-content: space-between;
+  margin: 1rem;
+  align-items: center;
+  display: flex;
+}
+
+
+
+@media print {
+  @page{
+    size: A4 landscape;
+    margin: 0.2cm 0.1cm 0cm 0.1cm;
+    
+  }
+
+  #btns{
+    display: none;
+  }
+
+  #teste{
+    page-break-before: always;
+    page-break-inside: avoid;
+  }
+
+  #navbar{
+    background-color: #dddcda;
+    width: 100%;
+    align-items: center;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+
+  .header-comi{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .header-img{
+    display: flex;
+    position: relative;
+    width: 5rem;
+    height: 5rem;
+    float: left;
+    padding: 5px;
+  }
+
+  .header-titulo{
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    padding: 0.1rem;
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .header-hora{
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .header-vend{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: initial;
+    padding: 0.8rem;
+  }
+}
+

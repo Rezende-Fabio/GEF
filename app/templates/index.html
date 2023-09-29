@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>GEF III</title>
+
+    <meta name="description" content="" />
+
+    <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/boxicons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/demo.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-default.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/page-auth.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugin/fontawesome/css/all.min.css') }}">
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/config.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/helpers.js') }}"></script>
+
+</head>
+
+<!-- <body style="background-color: rgba(184, 22, 22, 0.521);"> -->
+<body>
+    <div class="container-xxl">
+        <div class="authentication-wrapper authentication-basic container-p-y">
+            <div class="authentication-inner">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="app-brand justify-content-center">
+                            <div class="image-index">
+                                <img src="{{ url_for('static', filename='img/logo2.png') }}" id="icon"
+                                    alt="User Icon" />
+                            </div>
+                        </div>
+                        {% for message in get_flashed_messages() %}
+                            {% if message %}
+                                <script>
+                                    window.setTimeout(function () {
+                                        $(".alert").fadeTo(900, 0).slideUp(900, function () {
+                                            $(this).remove();
+                                        });
+                                    }, 5000);
+                                </script>
+                                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                    <i class="fa-solid fa-circle-exclamation"
+                                        style="font-size: 1rem; padding-right: 0.5rem; padding-bottom: 0.2rem;"></i>
+                                    <h6>{{ message }}</h6>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <form id="formAuthentication" class="mb-3" action="{{ url_for('mainBlue.autenticar') }}"
+                            method="POST">
+                            <div class="mb-3">
+                                <label for="usuario" class="form-label">Usuário:</label>
+                                <input type="text" class="form-control" id="usuario" name="usuario"
+                                    placeholder="Informe seu usuário" required autofocus />
+                            </div>
+                            <div class="mb-3 form-password-toggle">
+                                <div class="d-flex justify-content-between">
+                                    <label class="form-label" for="senha">Senha:</label>
+                                </div>
+                                <div class="input-group input-group-merge">
+                                    <input type="password" id="senha" class="form-control" name="senha"
+                                        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                        aria-describedby="password" required />
+                                </div>
+                            </div>
+                            <label for="filial" class="form-label">Filial:</label>
+                            <select class="form-select mb-5" name="filial" id="filial"
+                                aria-label="Default select example">
+                                <option value="1">Morungaba</option>
+                                <option value="2">Votorantim</option>
+                            </select>
+                            <div class="mb-3">
+                                <button class="btn btn-primary d-grid w-100 btn-acessar" type="submit">Acessar</button>
+                            </div>
+                        </form>
+                        <p class="text-center">
+                            <a class="underlineHover" style="text-decoration: none;" data-bs-toggle="modal"
+                                data-bs-target="#backDropModal" href="{{ url_for('mainBlue.esqueciSenha') }}">Esqueceu a senha?</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="backDropModal" data-bs-backdrop="static" tabindex="-1">
+        <div class="modal-dialog">
+            <form class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="backDropModalTitle">Preencha seus dados</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="nameBackdrop" class="form-label">Usuário:</label>
+                            <input type="text" id="nameBackdrop" class="form-control" placeholder="Informe seu usuário" />
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col mb-0">
+                            <label for="emailBackdrop" class="form-label">Email</label>
+                            <input type="text" id="emailBackdrop" class="form-control" placeholder="xxxx@xxx.xx" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-outline-success">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/jquery/jquery.mask.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/popper/popper.js') }}"></script>
+</body>
+
+</html>

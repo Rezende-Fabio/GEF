@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, flash, session, jsonify, Blueprint
-from sqlalchemy import func
+from sqlalchemy import func, text
 from ..models.Tables import *
 from ..extensions.EnviarEmail import EnviaEmail
 import random
@@ -9,6 +9,7 @@ from ..extensions.logs import Logger
 import sys
 from ..extensions.veriaveis import *
 from ..configurations.DataBase import DB
+from ..controllers.ControllerLogin import ControllerLogin
 
 
 ###################################
@@ -38,11 +39,18 @@ def index():
     #Verificação dos ips que tem acesso ao sistema
     with open(f"{get_path_variaveis()}Ips.txt", "r+") as txt:
         ips = txt.read()
+
+    result = DB.session.execute(text("PRAGMA database_list;")).fetchall()
+    base = result[0][2]
+    if "GefIII_teste.db" in base:
+        session["base"] = "TESTE"
+    else:
+        session["base"] = "PRODUCAO"
     
     if request.remote_addr not in ips:
-        return render_template("alert.html")
+        return render_template("public/alert.html")
     else:
-        return render_template("index.html")
+        return render_template("public/index.html")
     
 
 #Rota para autenticação no sistema
@@ -56,52 +64,26 @@ def autenticar():
     #   request.form["senha"] = Senha que foi digitada no input da tela login.
     
     # RETORNOS:
-    #   return render_template("menu.html", contexto=contexto) = Redireciona para o menu do 
-    #     sistema pasando contexto com as veriáveis para utilizar no template;
+    #   return render_template("menu.html", context=context) = Redireciona para o menu do 
+    #     sistema pasando context com as veriáveis para utilizar no template;
     #   return redirect("/") = Redireciona para o index.
     ###################################################################################################
     
-    if request.method == "POST":
-        user = request.form["usuario"].upper()
-        pssd = request.form["senha"].upper() 
-        filial = int(request.form["filial"])
-        conexao = SysUsers #Conexão com a tabela de usuários
-        usuarios = conexao.query.filter_by(s_ativo=1) #Query trazendo apenas o usuários ativos
-        for usuario in usuarios:
-            if usuario.s_usuario == user and usuario.verificaSenha(pssd): #Chama função de verificação da senha com hash
-                session.permanent = True
-                session["usuario_logado"] = user #Variável do cookie que guarda o nome do usuário logado
-                session["user_admin"] = usuario.s_admin #Variável do cookie que guarda se o usuário é admin ou não
-                session["filial"] = filial #Variável do cookie que guarda a filial que o usuário escolheu
-                
-                usuario = usuario
-                
-                conexao = Gf3004 #Conexão com a tabela de títulos
-                conexao2 = Gf3003 #Conexão com a tabela de segmentos
-                #Query para mostar os ultimos 5 títulos cadastrados
-                titulos = DB.session.query(conexao.t_dataLanc, conexao.t_idCliente, conexao.t_idVendedor, conexao.t_numDoc, func.count(conexao.t_numParcela).label('parcelas'), conexao.t_docRef, conexao2.s_abrev).filter(conexao.t_ativo == 1, conexao.t_filial == session["filial"]).join(conexao2, conexao2.s_id == conexao.t_segmento).group_by(conexao.t_dataLanc, conexao.t_idCliente, conexao.t_idVendedor, conexao.t_numDoc, conexao2.s_abrev).order_by(conexao.t_numDoc.desc())
-                paginasTi = titulos.paginate(page=1, per_page=5)
-                
-                conexao3 = Gf3006 #Conexão com a tabela de movimento
-                #Query para mostar as ultimas 5 baixas cadastradas
-                baixas = DB.session.query(conexao3.m_docRef, conexao3.m_numDoc, conexao3.m_parcela, conexao3.m_idCliente, conexao3.m_dataBaixa, conexao3.m_valor, conexao3.m_tipoBaixa).filter(conexao3.m_ativo == 1, conexao3.m_filial == session["filial"]).order_by(conexao3.m_id.desc())
-                paginasBa = baixas.paginate(page=1, per_page=5)
-                
-                conexao4 = Gf3002
-                vendedores = conexao4.query.count()
-                
-                conexao5 = Gf3001
-                clientes = conexao5.query.count()
-                
-                qtdeTitulos = conexao.query.filter(conexao.t_ativo==1).count()
-                
-                contexto = {"paginasTi": paginasTi, "paginasBa": paginasBa, "qtdeClientes": clientes, "qtdeVendedores": vendedores, "qtdeTitulo": qtdeTitulos, "usuario": usuario} #Dicionário contendo as variáveis para utilizar no template
-                 
-                return redirect("/base")
+    controleLogin = ControllerLogin()
+    respControle = controleLogin.efetuarLogin(request.form)
+    if respControle == 1:
+        session.permanent = True
+        return redirect("/base")
+    elif respControle == 2:
+        flash("Usuário/Senha incorreto!")
+        return redirect("/index")
+    elif respControle == 3:
+        flash("Usuário deletado")
+        return redirect("/index")
+    else:
+        flash("Usuário não existe")
+        return redirect("/index")
             
-        else:
-            flash("Usuário/Senha incorreto!") #retorna mesnagem caso usuário ou senha entejam incorretos
-            return redirect("/")
 
 #Rota para fazer logout
 @mainBlue.route("/logout")
@@ -116,7 +98,7 @@ def logout():
     #   return redirect("/") = Redireciona para o index.
     ###################################################################################################
     
-    session["usuario_logado"] = False
+    session["usuario"] = False
     session["filial"] = False
     session["user_admin"] = False
     
@@ -132,13 +114,13 @@ def base():
     #   Não tem parametros.
     
     # RETORNOS:
-    #   return render_template("menu.html", contexto=contexto) = Redireciona para o menu do 
-    #     sistema pasando contexto com as veriáveis para utilizar no template;
+    #   return render_template("menu.html", context=context) = Redireciona para o menu do 
+    #     sistema pasando context com as veriáveis para utilizar no template;
     #   return redirect("/") = Redireciona para o index;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3004 #Conexão com a tabela de títulos
             conexao2 = Gf3003 #Conexão com a tabela de segmentos
             #Query para mostar os ultimos 5 títulos cadastrados
@@ -161,9 +143,9 @@ def base():
             #Query que trás a quantidade de títulos cadastrados no sistema
             qtdeTitulos = conexao.query.filter(conexao.t_ativo==1).count() 
             
-            contexto = {"paginasTi": paginasTi, "paginasBa": paginasBa, "qtdeClientes": clientes, "qtdeVendedores": vendedores, "qtdeTitulo": qtdeTitulos} #Dicionário contendo as variáveis para utilizar no template
+            context = {"paginasTi": paginasTi, "paginasBa": paginasBa, "qtdeClientes": clientes, "qtdeVendedores": vendedores, "qtdeTitulo": qtdeTitulos, "titulo": "Dashboard", "active": "dashboard"} #Dicionário contendo as variáveis para utilizar no template
             
-            return render_template("menu.html", contexto=contexto) #Retorna passando a lista das ultimos 5 títulos e baixas
+            return render_template("public/menu.html", context=context) #Retorna passando a lista das ultimos 5 títulos e baixas
         else:
             return redirect("/")
     
@@ -191,8 +173,8 @@ def esqueciSenha():
     #     não é possivel enviar o e-mail;
     #   return jsonify({"success": False}) = Retorna Json quando o usuário e o e-mail não existem 
     #     no banco;
-    #   return render_template("index.html", contexto=contexto) = Redireciona para o index do 
-    #     sistema pasando contexto com as veriáveis para utilizar no template.
+    #   return render_template("index.html", context=context) = Redireciona para o index do 
+    #     sistema pasando context com as veriáveis para utilizar no template.
     ###################################################################################################
     
     if request.method == "POST":
@@ -220,8 +202,8 @@ def esqueciSenha():
         else:
             return jsonify({"success": False})
     
-    contexto = {"aviso": 1} #Dicionário contendo as variáveis utilizadas no template 
-    return render_template("index.html", contexto=contexto) #Retorna passando aviso = 1 para mostral modal no template
+    context = {"aviso": 1} #Dicionário contendo as variáveis utilizadas no template 
+    return render_template("public/index.html", context=context) #Retorna passando aviso = 1 para mostral modal no template
         
 #Rota para a atualização da senha ao entrar no sistema
 @mainBlue.route("/cad-senha/<id>", methods=["GET", "POST"])
@@ -239,7 +221,7 @@ def cadastraNovaSenha(id):
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 conexao = SysUsers #Conexão com a tabela de usuário
                 usuario = conexao.query.get(id) #Query trazendo o usuário de acordo com o id passado
@@ -264,14 +246,14 @@ def trocaFilial():
     #   Não tem parametros.
     
     # RETORNOS:
-    #   render_template("menu.html", contexto=contexto) = Redireciona para o menu do sistema
-    #     passando o contexto contendo a variáveis para utilizar no template;
+    #   render_template("menu.html", context=context) = Redireciona para o menu do sistema
+    #     passando o context contendo a variáveis para utilizar no template;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3004 #Conexão com a tabela de títulos
             conexao2 = Gf3003 #Conexão com a tabela de segmentos
             #Query para mostrar os ultimos 5 títulos cadatrados
@@ -283,9 +265,9 @@ def trocaFilial():
             baixas = DB.session.query(conexao3.m_docRef, conexao3.m_numDoc, conexao3.m_parcela, conexao3.m_idCliente, conexao3.m_dataBaixa, conexao3.m_valor, conexao3.m_tipoBaixa).filter(conexao3.m_ativo == 1, conexao3.m_filial == session["filial"]).order_by(conexao3.m_id.desc())
             paginasBa = baixas.paginate(page=1, per_page=5)
             
-            contexto = {"aviso": 2, "paginasTi": paginasTi, "paginasBa": paginasBa} #Dicionário contendo as variáveis para utilizar no template
+            context = {"aviso": 2, "paginasTi": paginasTi, "paginasBa": paginasBa} #Dicionário contendo as variáveis para utilizar no template
              
-            return render_template("menu.html", contexto=contexto)
+            return render_template("public/menu.html", context=context)
         else:
             return redirect("/")
         
@@ -303,14 +285,14 @@ def filial():
     #   Não tem parametros.
     
     # RETORNOS:
-    #   render_template("menu.html", contexto=contexto) = Redireciona para o menu do sistema
-    #     passando o contexto contendo a variáveis para utilizar no template;
+    #   render_template("menu.html", context=context) = Redireciona para o menu do sistema
+    #     passando o context contendo a variáveis para utilizar no template;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if session["filial"] == 1: #Troca a Filial na sessão do cookie
                 session["filial"] = 2
             else: 
@@ -338,9 +320,9 @@ def filial():
             #Query que trás a quantidade de títulos cadastrados no sistema
             qtdeTitulos = conexao.query.filter(conexao.t_ativo==1).count() 
             
-            contexto = {"paginasTi": paginasTi, "paginasBa": paginasBa, "qtdeClientes": clientes, "qtdeVendedores": vendedores, "qtdeTitulo": qtdeTitulos} #Dicionário contendo as variáveis para utilizar no template
+            context = {"paginasTi": paginasTi, "paginasBa": paginasBa, "qtdeClientes": clientes, "qtdeVendedores": vendedores, "qtdeTitulo": qtdeTitulos} #Dicionário contendo as variáveis para utilizar no template
             
-            return render_template("menu.html", contexto=contexto)
+            return render_template("public/menu.html", context=context)
         else:
             return redirect("/")
         

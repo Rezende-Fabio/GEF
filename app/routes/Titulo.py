@@ -36,7 +36,7 @@ def listaTitulos():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             return render_template("titulo/listaTitulos.html")
         
         else:
@@ -59,7 +59,7 @@ def popupTitulo(doc):
     #   doc = Número do documento que foi selecionado.
     
     # RETORNOS:
-    #   return render_template("titulo/listaTitulos.html", contexto=contexto) = Redireciona para listagem
+    #   return render_template("titulo/listaTitulos.html", context=context) = Redireciona para listagem
     #     mostrando um modal com a insformações do título;
     #   return render_template("titulo/listaTitulos.html") = Redireciona para listagem de títulos com a
     #     mensagem de que o título não pode ser excluido;
@@ -68,7 +68,7 @@ def popupTitulo(doc):
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if "view" in request.url:
                 conexao = Gf3004 #Conexão com a tabela de títulos
                 conexao2 = Gf3001 #Conexão com a tabela de clientes
@@ -80,8 +80,8 @@ def popupTitulo(doc):
                 segCliVend = DB.session.query(conexao.t_idCliente, conexao.t_idVendedor, func.count(conexao.t_numParcela).label('parcelas'), func.sum(conexao.t_valor).label('valorTotal'), conexao4.s_abrev, conexao2.c_razaosocial, conexao3.v_nome).filter(conexao.t_ativo == 1, conexao.t_numDoc == doc).join(conexao4, conexao4.s_id == conexao.t_segmento).join(conexao2, conexao2.c_id == conexao.t_idCliente).join(conexao3, conexao3.v_id == conexao.t_idVendedor).group_by(conexao.t_idCliente, conexao.t_idVendedor, conexao4.s_abrev)
                 #Query que trás todas a parcelas separadas do documento
                 parcelas = DB.session.query(conexao.t_dataVenc, conexao.t_valor, conexao.t_numParcela, conexao.t_status).filter(conexao.t_numDoc == doc).order_by(conexao.t_numParcela)
-                contexto = {"aviso": 2, "titulo": titulo, "segCliVend": segCliVend, "parcelas": parcelas} #Dicionário contendo as variáveis para utilizar no template
-                return render_template("titulo/listaTitulos.html", contexto=contexto)
+                context = {"aviso": 2, "titulo": titulo, "segCliVend": segCliVend, "parcelas": parcelas} #Dicionário contendo as variáveis para utilizar no template
+                return render_template("titulo/listaTitulos.html", context=context)
             
             else:
                 conexao = Gf3004 #Conexão com a tabela de títulos
@@ -99,8 +99,8 @@ def popupTitulo(doc):
                     flash(f"Título {doc} não pode ser excluido, pois existem baixa(s), efetue o estorno(s) para excluir!!") #Mensagem para ser exibida no Front
                     return redirect("/lista-titulos")
                 else:
-                    contexto = {"aviso": 1, "titulo": titulo} #Dicionário contendo as variáveis para utilizar no template
-                    return render_template("titulo/listaTitulos.html", contexto=contexto)
+                    context = {"aviso": 1, "titulo": titulo} #Dicionário contendo as variáveis para utilizar no template
+                    return render_template("titulo/listaTitulos.html", context=context)
 
         else:
             return redirect("/")
@@ -120,14 +120,14 @@ def cadTitulo():
     #   Não tem parametros.
     
     # RETORNOS:
-    #   return render_template("titulo/cadTitulo.html", contexto=contexto) = Redireciona para cadastro
+    #   return render_template("titulo/cadTitulo.html", context=context) = Redireciona para cadastro
     #     do título passando os segmentos, último número do documento e data atual;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3003 #Conexão com a tabela de segmentos
             #Query que trás os segmentos de acordo com a filial logada
             segmentos = conexao.query.filter(conexao.s_filial == session["filial"])
@@ -137,8 +137,8 @@ def cadTitulo():
             numDoc = conexao.query.order_by(conexao.t_numDoc.desc()).first()
             
             data = datetime.today().strftime("%Y-%m-%d")
-            contexto = {"titulo": "Inclusão de Título", "action": "/insert-titulo", "botao": "Gravar", "data": data, "numDoc": numDoc, "segmentos": segmentos} #Dicionário contendo as variáveis para utilizar no template
-            return render_template("titulo/cadTitulo.html", contexto=contexto)
+            context = {"titulo": "Inclusão de Título", "action": "/insert-titulo", "botao": "Gravar", "data": data, "numDoc": numDoc, "segmentos": segmentos} #Dicionário contendo as variáveis para utilizar no template
+            return render_template("titulo/cadTitulo.html", context=context)
         
         else:
             return redirect("/")
@@ -174,7 +174,7 @@ def insertTitulo():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 parcelas = int(request.form["parcelas"])
                 for x in range(0, parcelas):
@@ -204,7 +204,7 @@ def insertTitulo():
                     DB.session.commit()
                     
                 flash(f"Título cadastrado com sucessso!") #Mensagem para ser exibida no Front
-                Logger.log("Inserção de Título", session["usuario_logado"], session["filial"], f"Documento: {request.form['numDoc']}") #Gera log informando que foi feita uma inserção de título   
+                Logger.log("Inserção de Título", session["usuario"], session["filial"], f"Documento: {request.form['numDoc']}") #Gera log informando que foi feita uma inserção de título   
                 return redirect("/lista-titulos")
         else:
             return redirect("/")
@@ -225,7 +225,7 @@ def editarTitulo(doc):
     #   doc = Número do documento que foi selecionado.
     
     # RETORNOS:
-    #   return render_template("titulo/editTitulo.html", contexto=contexto) = Redireciona para edição
+    #   return render_template("titulo/editTitulo.html", context=context) = Redireciona para edição
     #     do título passando os segmentos, último número do documento e data atual;
     #   return redirect("/lista-titulos") = Redireciona para a listagem de títulos podendo ter duas mensagens
     #     não pode ser editado ou cadatrado com sucesso.
@@ -234,7 +234,7 @@ def editarTitulo(doc):
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3004 #Conexão com a tabela de títulos
             conexao2 = Gf3003 #Conexão com a tabela de segmentos
             conexao3 = Gf3001 #Conexão com a tabela de clientes
@@ -252,7 +252,7 @@ def editarTitulo(doc):
                     titulo.t_comissao = request.form["comissao"]
                 DB.session.commit()
                 flash(f"Título {titulo.t_numDoc} foi atualizado com sucesso!") #Mensagem para ser exibida no Front
-                Logger.log("Alteração de Título", session["usuario_logado"], session["filial"], f"Documento: {doc}") #Gera log informando que foi feita alteração no documento
+                Logger.log("Alteração de Título", session["usuario"], session["filial"], f"Documento: {doc}") #Gera log informando que foi feita alteração no documento
                 return redirect("/lista-titulos")
             
             else:
@@ -265,8 +265,8 @@ def editarTitulo(doc):
                     segCliVend = DB.session.query(conexao.t_idCliente, conexao.t_idVendedor, func.count(conexao.t_numParcela).label('parcelas'), func.sum(conexao.t_valor).label('valorTotal'), conexao2.s_abrev, conexao3.c_razaosocial, conexao4.v_nome).filter(conexao.t_ativo == 1, conexao.t_numDoc == doc).join(conexao2, conexao2.s_id == conexao.t_segmento).join(conexao3, conexao3.c_id == conexao.t_idCliente).join(conexao4, conexao4.v_id == conexao.t_idVendedor).group_by(conexao.t_idCliente, conexao.t_idVendedor, conexao2.s_abrev)
                     #Query que trás todas a parcelas separadas do documento
                     parcelas = DB.session.query(conexao.t_dataVenc, conexao.t_valor, conexao.t_numParcela).filter(conexao.t_numDoc == doc).order_by(conexao.t_numParcela)
-                    contexto = {"titulo": titulo, "segCliVend": segCliVend, "parcelas": parcelas} #Dicionário contendo as variáveis para utilizar no template
-                    return render_template("titulo/editTitulo.html", contexto=contexto)
+                    context = {"titulo": titulo, "segCliVend": segCliVend, "parcelas": parcelas} #Dicionário contendo as variáveis para utilizar no template
+                    return render_template("titulo/editTitulo.html", context=context)
                 
         else:
             return redirect("/")
@@ -292,14 +292,14 @@ def deleteTitulo(doc):
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3004 #Conexão com a tabela de títulos
             titulos = conexao.query.filter_by(t_numDoc=doc)
             for titulo in titulos:
                 titulo.t_ativo = 0     
             DB.session.commit()
             flash(f"Título {doc} excluido com sucesso!") #Mensagem para ser exibida no Front
-            Logger.log("Exclusão de Título", session["usuario_logado"], session["filial"], f"Documento: {doc}") #Gera log informando que o documento foi esxcluido
+            Logger.log("Exclusão de Título", session["usuario"], session["filial"], f"Documento: {doc}") #Gera log informando que o documento foi esxcluido
             return redirect("/lista-titulos")
 
         else:
@@ -325,7 +325,7 @@ def docRefCli(idCli):
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3004 #Conexão com a tabela de títulos
             #Query que trás todos os documentos que o cliente tem no sistema
             docs = conexao.query.filter(conexao.t_idCliente==idCli).group_by(conexao.t_docRef).all()
@@ -354,7 +354,7 @@ def docRecfTitulo():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 doc = request.get_json()
                 conexao = Gf3004 #Conexão com a tabela de título
@@ -385,7 +385,7 @@ def titulos():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 conexao = Gf3004 #Conexão com a tabela de títulos
                 conexao2 = Gf3001 #Conexão com a tabela de clientes 
@@ -428,7 +428,7 @@ def titulosRecebidos():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 conexao = Gf3004 #Conexão com a tabela títulos
                 listaValor = []
@@ -471,7 +471,7 @@ def titulosReceber():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 conexao = Gf3004 #Conexão com a tabela de título
                 listaValor = []
@@ -514,7 +514,7 @@ def titulosComparar():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 conexao = Gf3004 #Conexão com a tabela de título
                 listaValorAtual = []
@@ -579,7 +579,7 @@ def tipoDevolucao():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 conexao = Gf3006 #Conexão com a tabela de movimento
                 dataAtual = date.today()
@@ -616,7 +616,7 @@ def docRef():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 data = request.get_json()
                 conexao = Gf3004 #Conexão com a tabela de título

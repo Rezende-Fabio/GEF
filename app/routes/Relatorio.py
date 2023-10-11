@@ -29,7 +29,7 @@ def relatComissao():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             return render_template("relatorios/relatComissao.html")
         
         else:
@@ -56,7 +56,7 @@ def relatDevolucao():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             return render_template("relatorios/relatDevolucao.html")
         
         else:
@@ -77,18 +77,18 @@ def relatRecebidos():
     #   Não tem parametros.
     
     # RETORNOS:
-    #   return render_template("relatorios/relatRecebidos.html", contexto=contexto) = Redireciona para 
+    #   return render_template("relatorios/relatRecebidos.html", context=context) = Redireciona para 
     #     os parametros de impressão do relatório passando os segmentos;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3003
             segmentos = conexao.query.filter()
-            contexto = {"segmentos": segmentos}
-            return render_template("relatorios/relatRecebidos.html", contexto=contexto)
+            context = {"segmentos": segmentos}
+            return render_template("relatorios/relatRecebidos.html", context=context)
         
         else:
             return redirect("/")
@@ -108,18 +108,18 @@ def relatReceber():
     #   Não tem parametros.
     
     # RETORNOS:
-    #   return render_template("relatorios/relatReceber.html", contexto=contexto) = Redireciona para 
+    #   return render_template("relatorios/relatReceber.html", context=context) = Redireciona para 
     #     os parametros de impressão do relatório passando os segmentos;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3003
             segmentos = conexao.query.filter()
-            contexto = {"segmentos": segmentos}
-            return render_template("relatorios/relatReceber.html", contexto=contexto)
+            context = {"segmentos": segmentos}
+            return render_template("relatorios/relatReceber.html", context=context)
         
         else:
             return redirect("/")
@@ -145,7 +145,7 @@ def relatConsistencia():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             return render_template("relatorios/relatConsistencia.html")
         
         else:
@@ -172,7 +172,7 @@ def relatObservacoes():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             return render_template("relatorios/relatObservacao.html")
         
         else:

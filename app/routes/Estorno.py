@@ -35,7 +35,7 @@ def listaEstorno():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             return render_template("estorno/listaEstorno.html")
         
         else:
@@ -61,11 +61,11 @@ def popupDelBaixa(doc, parcela):
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao5 = Gf3006
             baixas = conexao5.query.filter(conexao5.m_numDoc == doc, conexao5.m_parcela == parcela, conexao5.m_ativo == 1)
-            contexto = {"baixas": baixas, "aviso": 1}
-            return render_template("estorno/listaEstorno.html", contexto=contexto)
+            context = {"baixas": baixas, "aviso": 1}
+            return render_template("estorno/listaEstorno.html", context=context)
         
         else:
             return redirect("/")
@@ -90,7 +90,7 @@ def deletarBaixa():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 listaIds = request.get_json(force=True)
                 ids = []
@@ -116,7 +116,7 @@ def deletarBaixa():
                     titulo.estornaSaldo(baixa.m_valor)
                 
                     DB.session.commit()
-                    Logger.log("Estorno de Baixa", session["usuario_logado"], session["filial"], f"Documento: {baixa.m_numDoc} Parcela: {baixa.m_parcela}")
+                    Logger.log("Estorno de Baixa", session["usuario"], session["filial"], f"Documento: {baixa.m_numDoc} Parcela: {baixa.m_parcela}")
                 return jsonify({"success": True, "ids":ids})
         else:
             return redirect("/")
@@ -141,7 +141,7 @@ def estornos():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 conexao = Gf3004 #Conexão com a tabela de títulos
                 conexao2 = Gf3003 #Conexão com a tabela de segmentos 

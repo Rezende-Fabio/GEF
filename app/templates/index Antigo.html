@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_gerais.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugin/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugin/fontawesome/css/all.min.css') }}">
+
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/jquery/jquery.mask.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/popper/popper.min.js') }}"></script>  
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/jquery/jquery-ui.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/funcoes.js') }}"></script>
+
+    <style>
+        body {
+            background-color: #d7ebff;
+        }
+    </style>
+
+    <title>..:: GEF III - Login ::..</title>
+</head>
+<body>
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+            <div class="fadeIn first">
+                <img style="width: 50%;height: 10%;margin-bottom: 1rem;" src="{{ url_for('static', filename='img/logo2.png') }}" id="icon" alt="User Icon"/>
+            </div>
+            <!-- Exibe alert com a mensagem de usuário e senha inválido -->
+            {% for message in get_flashed_messages() %}
+                {% if message %}
+                    <script>
+                        window.setTimeout(function() {
+                            $(".alert").fadeTo(900, 0).slideUp(900, function(){
+                                $(this).remove(); 
+                            });
+                        }, 5000);
+                    </script>
+                    <div class="alert alert-danger d-flex align-items-center" style="display: flex;align-items: center;justify-content: center; width: 20rem; margin-left: 1rem;" role="alert">
+                        <div style="display: flex;align-items: center;justify-content: center;">
+                            <i class="fa-solid fa-circle-exclamation" style="font-size: 1rem; padding-right: 0.5rem; padding-bottom: 0.2rem;"></i>
+                            <h6>{{ message }}</h6>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+                    
+            <form class="inputLogin" action="/autenticar" method="POST">
+                <div class="row mb-2">    
+                    <div class="col-sm">
+                        <input class="input-login fadeIn second" type="text" style="text-transform: uppercase;" name="usuario" id="usuario" tabindex="1" placeholder="Login" maxlength="12" required autofocus>
+                    </div>
+                </div>    
+                <div class="row mb-2">    
+                    <div class="col-sm">
+                        <input class="input-login fadeIn third" type="password" style="text-transform: uppercase;" name="senha" id="senha" tabindex="2" placeholder="Senha" maxlength="10" required>
+                    </div>
+                </div>
+                <div class="row mb-2">    
+                    <div class="col-sm">
+                        <select class="fadeIn fourth" id="select-login" type="text" tabindex="12" name="filial" id="filial">
+                            <option value="1">Morungaba</option>
+                            <option value="2">Votorantim</option>
+                        </select>
+                    </div>
+                </div>     
+                <input type="submit" name="btnConfirmar" id="btnConfirmar" class="btn btn-outline-success btn-sm fadeIn fourth" value="Acessar"/>
+                <br>
+            </form>
+            <div class="login-mensagem" id="retorno"></div>
+            <div id="formFooter">
+                <a class="underlineHover" style="text-decoration: none;" href="/esqueci-senha">Esqueceu a senha?</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exibe modal para prenchimento dos dados para mudar a senha -->
+    {% if context %}
+        {% if context.aviso == 1 %}
+            <section class="modal-form">
+                <div id="card-form">
+                    <h2>Preencha seus dados</h2>
+                    <hr>
+                    <form action="/esqueci-senha" method="POST">
+                        <div id="inputs">
+                            <div class="alert" id="alert" style="display: none;" role="alert">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            <label for="email">E-mail:</label>
+                            <input type="email" id="email" name="email" class="input" style="text-transform: uppercase;" maxlength="50" required>
+                            <label for="usuario">Usuário:</label>
+                            <input type="text" id="user" name="user" style="text-transform: uppercase;" maxlength="12" required>
+                        </div>
+                        <div id="btns">
+                            <input type="button" id="btnEnviar" class="btn btn-outline-success" value="Enviar">
+                            <a href="/" class="btn btn-outline-danger">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            
+            <!-- Ajax que envia a insformações digitadas no modal -->
+            <script type="text/javascript">
+                $(document).ready(function(){
+
+                    $("#btnEnviar").click(function(){
+                        $.ajax({
+                        url: '/esqueci-senha',
+                        type: 'POST',
+                        data:{
+                            email: $("#email").val(),
+                            usuario: $("#user").val()
+                        },
+                        beforeSend: function(){
+                        },
+                        success: function(data){
+                            if (data.success === false){
+                                if (data.hasOwnProperty("email")){
+                                    var h6 = `E-mail não foi enviado, contate a aquipe de T.I`;
+                                    $("#alert").append(h6);
+                                    $("#alert").addClass("alert alert-danger alert-dismissible fade show");
+                                    $("#alert").show();
+                                }else{
+                                    var h6 = `E-mail/Usúario incorreto!`;
+                                    $("#alert").append(h6);
+                                    $("#alert").addClass("alert alert-danger alert-dismissible fade show");
+                                    $("#alert").show();
+                                }
+                            }else{
+                                var h6 = `E-mail enviado com sucesso!<br>Verifique sua caixa de entrada.`;
+                                $("#alert").empty();
+                                $("#alert").append(h6);
+                                $("#alert").removeClass();
+                                $("#alert").addClass("alert alert-success alert-dismissible fade show");
+                                $("#alert").show();
+                                $("#email").val("");
+                                $("#user").val("");
+                                setTimeout(function(){ 
+                                    window.location='/index'
+                                }, 7000);
+                            }
+                            
+                        },
+                        complete: function(data){
+                        },
+                        });
+                    });
+                });
+            </script>
+        {% endif %}
+    {% endif %}
+</body>
+</html>

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "public/base.html" %}
 {% block conteudo %}
     <!-- Exibe mensagem que foi enviado pelo Back -->
     {% for message in get_flashed_messages() %}
@@ -122,7 +122,7 @@
                             <select class="form-select form-select-sm border-radius-input" type="text" tabindex="8" name="segmento" id="segmento" style="max-width:100%;" onchange="parcelamento(this)" required>
                                 <option value="0">Todos</option>
                                 <!-- Loop para adicionar dinamicamente os segmentos cadastrados -->
-                                {% for segmento in contexto.segmentos %}
+                                {% for segmento in context.segmentos %}
                                     <option value="{{segmento.s_id}}">{{segmento.s_abrev}}</option>
                                 {% endfor %}
                             </select>

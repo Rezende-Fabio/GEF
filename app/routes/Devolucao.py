@@ -25,17 +25,17 @@ def cadDevolucao():
     #   Não tem parametros.
     
     # RETORNOS:
-    #   return render_template("devolucao/cadDevolucao.html", contexto=contexto)  = Redireciona para o 
+    #   return render_template("devolucao/cadDevolucao.html", context=context)  = Redireciona para o 
     #     cadastro de devolução;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             data = datetime.today().strftime("%Y-%m-%d") #Data atual
-            contexto = {"data": data} #Dicionário contendo as variáveis para utilizar no template
-            return render_template("devolucao/cadDevolucao.html", contexto=contexto)
+            context = {"data": data} #Dicionário contendo as variáveis para utilizar no template
+            return render_template("devolucao/cadDevolucao.html", context=context)
                 
         else:
             return redirect("/")
@@ -59,7 +59,7 @@ def devolucoes():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 conexao = Gf3007 #Conexão com a tabela de devoluções
                 conexao2 = Gf3001 #Conexão com a tabela de clientes
@@ -96,7 +96,7 @@ def insertDevolucao():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 idCliente = list(request.form["cliente"].split())
                 conexao = Gf3004 #Conexão com a tabela de títulos
@@ -117,7 +117,7 @@ def insertDevolucao():
                 DB.session.commit()
                 
                 flash("Devolução cadatrada com sucesso!") #Mensagem para ser exibida no Front
-                Logger.log("Devolução", session["usuario_logado"], session["filial"], f"Referência: {request.form['docRef']} Cliente: {idCliente[2]}") #Gera log informando que foi feita inserção da devolução
+                Logger.log("Devolução", session["usuario"], session["filial"], f"Referência: {request.form['docRef']} Cliente: {idCliente[2]}") #Gera log informando que foi feita inserção da devolução
                 return redirect("/cad-devolucao")
                 
         else:
@@ -140,14 +140,14 @@ def excluirDevolucaoModal(idDev):
     # RETORNOS:
     #   return redirect("/cad-devolucao") = Redireciona para o cadastro de devolução com mensagem de
     #     alerta;
-    #   return render_template("devolucao/cadDevolucao.html",contexto=contexto) = Redireciona para o
+    #   return render_template("devolucao/cadDevolucao.html",context=context) = Redireciona para o
     #     cadastro de  devolução com modal de confirmação de exclusão;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3006 #Conexão com a tabela de movimento
             #Query que verifica se existe baixas com o id da devolução passado
             existDev = conexao.query.filter(conexao.m_idDev==idDev, conexao.m_ativo==1).first()
@@ -160,8 +160,8 @@ def excluirDevolucaoModal(idDev):
                 conexao2 = Gf3007 #Conexão com a tabela de devolução
                 #Query que trás a devolução de acordo com o id passado
                 devolucao = conexao2.query.get(idDev)
-                contexto = {"aviso": 1, "devolucao": devolucao} #Dicionário contendo as variáveis para utilizar no template
-                return render_template("devolucao/cadDevolucao.html",contexto=contexto)
+                context = {"aviso": 1, "devolucao": devolucao} #Dicionário contendo as variáveis para utilizar no template
+                return render_template("devolucao/cadDevolucao.html",context=context)
             
         else:
             return redirect("/")
@@ -187,7 +187,7 @@ def excluirDevolucao(idDev):
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao2 = Gf3007 #Conexão com a tabela de devolução
             #Query que trás a devolução de acordo com o id passado
             dev = conexao2.query.get(idDev)
@@ -195,7 +195,7 @@ def excluirDevolucao(idDev):
             DB.session.commit()
             
             flash("Crédito excluido com sucesso!") #Mensagem para ser exibida no Front
-            Logger.log("Exclusão de Devolução", session["usuario_logado"], session["filial"], f"ID: {idDev}") #Gera log informando que foi feita exclusão da devolução
+            Logger.log("Exclusão de Devolução", session["usuario"], session["filial"], f"ID: {idDev}") #Gera log informando que foi feita exclusão da devolução
             return redirect("/cad-devolucao")
             
         else:
@@ -220,7 +220,7 @@ def listadevolucaoCliente():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 conexao = Gf3007
                 idCli = request.get_json()

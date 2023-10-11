@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "public/base.html" %}
 {% block head %}
     <script type="text/javascript" src="{{ url_for('static', filename='plugin/pagination/dataTi.js') }}"></script>
 {% endblock %}
@@ -49,15 +49,15 @@
         </div>
     </div>
     <!-- Modal de confrimação de exclusão do título -->
-    {% if contexto %}
-        {% if contexto.aviso == 1 %}
+    {% if context %}
+        {% if context.aviso == 1 %}
             <section class="modal-delete">
                 <div id="card-delete">
                     <h2>Aviso!</h2>
                     <hr>
-                    <p>Deseja mesmo excluir o título {{ contexto.titulo.t_numDoc }}?</p>
+                    <p>Deseja mesmo excluir o título {{ context.titulo.t_numDoc }}?</p>
                     <div id="btns">
-                        <a class="btn btn-success btn-sm" href="/deletar-titulo/{{ contexto.titulo.t_numDoc }}">Confirmar</a>
+                        <a class="btn btn-success btn-sm" href="/deletar-titulo/{{ context.titulo.t_numDoc }}">Confirmar</a>
                         <a class="btn btn-danger btn-sm" href="javascript:history.back()">Cancelar</a>
                     </div>
                 </div>
@@ -65,8 +65,8 @@
         {% endif %}
     {% endif %}
     <!-- Modal para vizualizar dados do título -->
-    {% if contexto %}
-        {% if contexto.aviso == 2 %}
+    {% if context %}
+        {% if context.aviso == 2 %}
             <section class="modal-view">
                 <div id="card-view">
                     <h2>Dados do Título</h2>
@@ -77,27 +77,27 @@
                                     <div class="col-2">
                                         <label for="">N. do Documento</label>
                                         <input type="text" class="form-control" style="text-transform: uppercase;" name="numDoc" id="numDoc" maxlength="40" size="40" 
-                                        tabindex="1" autocomplete="off" required value="{{contexto.titulo.t_numDoc}}" readonly>
+                                        tabindex="1" autocomplete="off" required value="{{context.titulo.t_numDoc}}" readonly>
                                     </div>
                                     <div class="col-2">
                                         <label for="">Documento Ref.</label>
                                         <input type="text" class="form-control" style="text-transform: uppercase;" name="docRef" id="docRef" maxlength="40" size="40" 
-                                        tabindex="1" autocomplete="off" required value="{{contexto.titulo.t_docRef}}" readonly>
+                                        tabindex="1" autocomplete="off" required value="{{context.titulo.t_docRef}}" readonly>
                                     </div>
                                     <div class="col-2">
                                         <label for="">Segmento</label>
                                         <input type="text" class="form-control" style="text-transform: uppercase;" name="segmento" id="segmento" maxlength="40" size="40" 
-                                        tabindex="1" autocomplete="off" required value="{{contexto.segCliVend[0].s_abrev}}" readonly>
+                                        tabindex="1" autocomplete="off" required value="{{context.segCliVend[0].s_abrev}}" readonly>
                                     </div>
                                     <div class="col-4">
                                         <label for="">Data do Lançamaneto</label>
                                         <input type="date" class="form-control" style="text-transform: uppercase;" name="dataLanc" id="dataLanc" maxlength="50" size="50" 
-                                        tabindex="3" autocomplete="off" required value="{{contexto.titulo.t_dataLanc | strftime}}" readonly>
+                                        tabindex="3" autocomplete="off" required value="{{context.titulo.t_dataLanc | strftime}}" readonly>
                                     </div>
                                     <div class="col-2">
                                         <label for="">Comissão</label>
                                         <input type="number" class="form-control" style="text-transform: uppercase;" name="comissao" id="comissao" maxlength="40" size="40" 
-                                        tabindex="4" autocomplete="off" required value="{{contexto.titulo.t_comissao}}" readonly>
+                                        tabindex="4" autocomplete="off" required value="{{context.titulo.t_comissao}}" readonly>
                                     </div> 
                                 </div>
                                 <br>        
@@ -105,12 +105,12 @@
                                     <div class="col-6">
                                         <label for="">Cliente</label>
                                         <input type="text" class="form-control" style="text-transform: uppercase;" name="cliente" id="cliente" maxlength="10" size="10" 
-                                        tabindex="5" autocomplete="off" required value="{{contexto.titulo.t_idCliente}} - {{contexto.segCliVend[0].c_razaosocial}}" readonly>
+                                        tabindex="5" autocomplete="off" required value="{{context.titulo.t_idCliente}} - {{context.segCliVend[0].c_razaosocial}}" readonly>
                                     </div>
                                     <div class="col-6">
                                         <label for="">Vendedor</label>
                                         <input type="text" class="form-control" style="text-transform: uppercase;" name="vendedor" id="vendedor" maxlength="10" size="10" 
-                                        tabindex="6" autocomplete="off" required value="{{contexto.titulo.t_idVendedor}} - {{contexto.segCliVend[0].v_nome}}" readonly>
+                                        tabindex="6" autocomplete="off" required value="{{context.titulo.t_idVendedor}} - {{context.segCliVend[0].v_nome}}" readonly>
                                     </div>                     
                                 </div>
                                 <br>
@@ -118,17 +118,17 @@
                                     <div class="col-4">
                                         <label for="">Valor Total</label>
                                         <input type="text" class="form-control" style="text-transform: uppercase;" name="valorTotal" id="valorTotal" maxlength="10" size="10" 
-                                        tabindex="7" autocomplete="off" required value="{{contexto.segCliVend[0].valorTotal | real}}" readonly>
+                                        tabindex="7" autocomplete="off" required value="{{context.segCliVend[0].valorTotal | real}}" readonly>
                                     </div>
                                     <div class="col-2">
                                         <label for="">Parcelas</label>
                                         <input type="text" class="form-control" style="text-transform: uppercase;" name="parcelas" id="parcelas" maxlength="40" size="40" 
-                                        tabindex="1" autocomplete="off" required value="{{contexto.segCliVend[0].parcelas}}" readonly>
+                                        tabindex="1" autocomplete="off" required value="{{context.segCliVend[0].parcelas}}" readonly>
                                     </div>
                                     <div class="col-2">
                                         <label for="">Filial</label>
                                         <input type="text" class="form-control" style="text-transform: uppercase;" name="filial" id="filial" maxlength="10" size="10" 
-                                        tabindex="6" autocomplete="off" required value="{{contexto.titulo.t_filialOri}}" readonly>
+                                        tabindex="6" autocomplete="off" required value="{{context.titulo.t_filialOri}}" readonly>
                                     </div> 
                                 </div>
                                 <div class="row">
@@ -146,7 +146,7 @@
                                             <label style="font-weight: 700; font-size:15px;">Status</label>
                                         </div>
                                     </div>
-                                    {% for parcela in contexto.parcelas %}
+                                    {% for parcela in context.parcelas %}
                                         <div class="row justify-content-md-center">
                                             <div class="col-2" style="display: flex;align-items: center;justify-content: center;">
                                                 <h6 style="margin-top: 0.4rem;">x{{parcela.t_numParcela}}</h6>

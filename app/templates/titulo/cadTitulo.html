@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+{% extends "public/base.html" %}
 {% block conteudo %}
     <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert">
     </div>
-    <h4 class="titulo-pagina">{{ contexto.titulo }}</h4><br>
+    <h4 class="titulo-pagina">{{ context.titulo }}</h4><br>
     <div class="container-form">
         <form id="rcorners2" class="container" style="width: 130%;" onsubmit="return validaFilial()" action="/insert-titulo" method="POST">
             <h5 id="titulo1">Dados do Título</h5>
@@ -11,7 +11,7 @@
                     <div class="col-2">
                         <label for="">N. do Documento</label>
                         <input type="text" class="form-control" style="text-transform: uppercase;" name="numDoc" id="numDoc" maxlength="40" size="40" 
-                        tabindex="1" autocomplete="off" required value="{% if contexto.numDoc == None %}1{% else %}{{ contexto.numDoc.t_numDoc + 1 }}{% endif %}" readonly>
+                        tabindex="1" autocomplete="off" required value="{% if context.numDoc == None %}1{% else %}{{ context.numDoc.t_numDoc + 1 }}{% endif %}" readonly>
                     </div>
                     <div class="col-2">
                         <label for="">Documento Ref.</label>
@@ -23,7 +23,7 @@
                         <select class="form-select form-select-sm border-radius-input" type="text" tabindex="2" name="segmento" id="segmento" required>
                             <option value=""></option>
                             <!-- Loop para adicionar dinamicamente os segmentos cadastrados -->
-                            {% for segmento in contexto.segmentos %}
+                            {% for segmento in context.segmentos %}
                                 <option value="{{ segmento.s_id }}">{{segmento.s_abrev}}</option>
                             {% endfor %}
                         </select>
@@ -31,7 +31,7 @@
                     <div class="col-4">
                         <label for="">Data do Lançamaneto</label>
                         <input type="date" class="form-control" style="text-transform: uppercase;" name="dataLanc" id="dataLanc" maxlength="50" size="50" 
-                        tabindex="3" autocomplete="off" required value="{{ contexto.data }}">
+                        tabindex="3" autocomplete="off" required value="{{ context.data }}">
                     </div>
                     <div class="col-2">
                         <label for="">Comissão</label>
@@ -98,7 +98,7 @@
             </div>
             <br><br>
             <div class="btn-position">
-                <input type="submit" class="btn btn-outline-success" id="btnGravar" value="{{ contexto.botao }}" tabindex="9">
+                <input type="submit" class="btn btn-outline-success" id="btnGravar" value="{{ context.botao }}" tabindex="9">
                 <a href="javascript:history.back()" class="btn btn-outline-danger" type="button" name="btnCancelar" id="btnCancelar" tabindex="10">Cancelar</a>
             </div>
         </form>

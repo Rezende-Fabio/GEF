@@ -4,5 +4,5 @@ Documentação
 settings.toml
 .flaskenv
 GefIII.db
-plugin
+plugins
 venv

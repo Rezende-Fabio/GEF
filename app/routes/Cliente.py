@@ -31,8 +31,9 @@ def listaClientes():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
-            return render_template("cliente/listaClientes.html")
+        if session["usuario"]:
+            context = {"active": "usuario", "titulo": "Lista de Cliente"}
+            return render_template("cliente/listaClientes.html", context=context)
         
         else:
             return redirect("/")
@@ -51,19 +52,19 @@ def popupViewCli(id):
     #   id = Id do cliente que foi selecionado.
     
     # RETORNOS:
-    #   return render_template("cliente/listaClientes.html", contexto=contexto) = Redireciona para 
+    #   return render_template("cliente/listaClientes.html", context=context) = Redireciona para 
     #     listagem de clientes com modal, com as informações do cliente;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3001 #Conexão com a tabela de clientes
             #Query que trás o cliente que foi selecionado
             cliente = conexao.query.get(id)
-            contexto = {"aviso": 2, "cliente": cliente} #Dicionário contendo as variáveis para utilizar no template
-            return render_template("cliente/listaClientes.html", contexto=contexto)
+            context = {"aviso": 2, "cliente": cliente} #Dicionário contendo as variáveis para utilizar no template
+            return render_template("cliente/listaClientes.html", context=context)
 
         else:
             return redirect("/")
@@ -84,16 +85,16 @@ def popupAtualizaBaseCli():
     #   Não tem parametros.
     
     # RETORNOS:
-    #   return render_template("cliente/listaClientes.html", contexto=contexto) = Redireciona para 
+    #   return render_template("cliente/listaClientes.html", context=context) = Redireciona para 
     #     listagem de clientes com modal para confrimação para a atualização de base;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
-            contexto = {"aviso": 1} #Dicionário contendo as variáveis para utilizar no template
-            return render_template("cliente/listaClientes.html", contexto=contexto)
+        if session["usuario"]:
+            context = {"aviso": 1} #Dicionário contendo as variáveis para utilizar no template
+            return render_template("cliente/listaClientes.html", context=context)
 
         else:
             return redirect("/")
@@ -117,11 +118,11 @@ def atualizaBaseCli():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 Atualizacao.integraClientes() #Chama função para a atualização
                 flash("Base atualizada com sucesso!") #Mensagem para ser exibida no Front
-                Logger.log("Atualização da base Clientes", session["usuario_logado"], session["filial"]) #Gera log informando que foi feita atualização da base de clientes
+                Logger.log("Atualização da base Clientes", session["usuario"], session["filial"]) #Gera log informando que foi feita atualização da base de clientes
             return jsonify("Sucsses")
             
         else:
@@ -147,7 +148,7 @@ def clientesInput(nome):
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3001 #Conexão com a tabela de clientes
             if nome.isdigit(): #Verifica se o que foi enviado é número
                 #Query que consulta os nomes de acordo com o código do cliente
@@ -177,7 +178,7 @@ def clientes():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 conexao = Gf3001 #Conexão com a tabela de clientes
                 #Query que trás todos os clientes
@@ -208,7 +209,7 @@ def idCliente():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 data = request.get_json()
                 conexao = Gf3001 #Conexão com a tabela de clientes

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "public/base.html" %}
 {% block conteudo %}
     <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert">
     </div>
@@ -11,27 +11,27 @@
                     <div class="col-2">
                         <label for="">N. do Documento</label>
                         <input type="text" class="form-control" style="text-transform: uppercase;" name="numDoc" id="numDoc" maxlength="40" size="40" 
-                        tabindex="" autocomplete="off" required value="{{contexto.titulo.t_numDoc}}" readonly>
+                        tabindex="" autocomplete="off" required value="{{context.titulo.t_numDoc}}" readonly>
                     </div>
                     <div class="col-3">
                         <label for="">Valor Parcela</label>
                         <input type="number" class="form-control" style="text-transform: uppercase;" name="valorParcela" id="valorParcela" maxlength="10" size="10" 
-                        tabindex="" step="0.01" autocomplete="off" required value="{{contexto.titulo.t_valor | float}}" readonly>
+                        tabindex="" step="0.01" autocomplete="off" required value="{{context.titulo.t_valor | float}}" readonly>
                     </div>
                     <div class="col-2">
                         <label for="">Parcela</label>
                         <input type="text" class="form-control" style="text-transform: uppercase;" name="parcela" id="parcela" maxlength="40" size="40" 
-                        tabindex="" autocomplete="off" required value="{{contexto.titulo.t_numParcela}}" readonly>
+                        tabindex="" autocomplete="off" required value="{{context.titulo.t_numParcela}}" readonly>
                     </div>
                     <div class="col-2">
                         <label for="">Documento Ref.</label>
                         <input type="text" class="form-control" style="text-transform: uppercase;" name="docRef" id="docRef" maxlength="40" size="40" 
-                        tabindex="" autocomplete="off" required value="{{contexto.segCliVend[0].s_abrev}}{{contexto.titulo.t_docRef}}" readonly>
+                        tabindex="" autocomplete="off" required value="{{context.segCliVend[0].s_abrev}}{{context.titulo.t_docRef}}" readonly>
                     </div>
                     <div class="col-3">
                         <label for="">Data do Lançamaneto</label>
                         <input type="date" class="form-control" style="text-transform: uppercase;" name="dataLanc" id="dataLanc" maxlength="50" size="50" 
-                        tabindex="" autocomplete="off" required value="{{contexto.titulo.t_dataLanc | strftime}}" readonly>
+                        tabindex="" autocomplete="off" required value="{{context.titulo.t_dataLanc | strftime}}" readonly>
                     </div>
                 </div>
                 <br>        
@@ -39,12 +39,12 @@
                     <div class="col-6">
                         <label for="">Cliente</label>
                         <input type="text" class="form-control" style="text-transform: uppercase;" name="cliente" id="cliente" maxlength="10" size="10" 
-                        tabindex="" autocomplete="off" required value="{{contexto.titulo.t_idCliente}} - {{contexto.segCliVend[0].c_razaosocial}}" readonly>
+                        tabindex="" autocomplete="off" required value="{{context.titulo.t_idCliente}} - {{context.segCliVend[0].c_razaosocial}}" readonly>
                     </div>
                     <div class="col-6">
                         <label for="">Vendedor</label>
                         <input type="text" class="form-control" style="text-transform: uppercase;" name="vendedor" id="vendedor" maxlength="10" size="10" 
-                        tabindex="" autocomplete="off" required value="{{contexto.titulo.t_idVendedor}} - {{contexto.segCliVend[0].v_nome}}" readonly>
+                        tabindex="" autocomplete="off" required value="{{context.titulo.t_idVendedor}} - {{context.segCliVend[0].v_nome}}" readonly>
                     </div>                     
                 </div>
                 <br>
@@ -52,17 +52,17 @@
                     <div class="col-2">
                         <label for="">Filial</label>
                         <input type="text" class="form-control" style="text-transform: uppercase;" name="filial" id="filial" maxlength="10" size="10" 
-                        tabindex="" autocomplete="off" required value="{{contexto.titulo.t_filialOri}}" readonly>
+                        tabindex="" autocomplete="off" required value="{{context.titulo.t_filialOri}}" readonly>
                     </div> 
                     <div class="col-2">
                         <label for="">Comissão</label>
                         <input type="number" class="form-control" style="text-transform: uppercase;" name="comissao" id="comissao" maxlength="40" size="40" 
-                        tabindex="" step="0.01" autocomplete="off" required value="{{contexto.titulo.t_comissao}}" readonly>
+                        tabindex="" step="0.01" autocomplete="off" required value="{{context.titulo.t_comissao}}" readonly>
                     </div> 
                     <div class="col-2">
                         <label for="">Saldo</label>
                         <input type="number" class="form-control" style="text-transform: uppercase;" name="valorSaldo" id="valorSaldo" maxlength="40" size="40" 
-                        tabindex="" step="0.01" autocomplete="off" required value="{{contexto.titulo.t_saldo | float}}" readonly>
+                        tabindex="" step="0.01" autocomplete="off" required value="{{context.titulo.t_saldo | float}}" readonly>
                     </div>
                     <div class="col-2">
                         <label for="">Saldo atualizado</label>
@@ -70,9 +70,9 @@
                         tabindex="" step="0.01" autocomplete="off" required value="" readonly>
                     </div>
                     <div class="col-2">
-                        <input type="text" class="form-control" style="text-transform: uppercase; display: none;" name="segmento" id="segmento" value="{{contexto.segCliVend[0].s_id}}">
+                        <input type="text" class="form-control" style="text-transform: uppercase; display: none;" name="segmento" id="segmento" value="{{context.segCliVend[0].s_id}}">
                         <!-- Adiociona um input zerado quando o cliente não tem crédito -->
-                        {% if contexto.credito == 0 %}
+                        {% if context.credito == 0 %}
                             <input type="text" class="form-control" style="display: none" name="valorCredito" id="valorCredito" autocomplete="off" value="">
                         {% endif %}
                     </div> 
@@ -81,7 +81,7 @@
             <h5 id="titulo2">Dados da Baixa</h5>
             <div class="container" id="cont2">
                 <!-- Caso o cliente tenha crédito adciona botão para selecionar o crédito -->
-                {% if contexto.credito > 0 %}
+                {% if context.credito > 0 %}
                     <div class="row justify-content-md-center">
                         <div class="col-7" id="credito">
                             <div class="texto-check">
@@ -99,12 +99,12 @@
                     <div class="col-4">
                         <label for="">Data da Baixa</label>
                         <input type="date" class="form-control" style="text-transform: uppercase;" name="dataBaixa" id="dataBaixa" maxlength="50" size="50" 
-                        tabindex="1" autocomplete="off" required value="{{contexto.titulo.t_dataVenc | strftime}}" autofocus>
+                        tabindex="1" autocomplete="off" required value="{{context.titulo.t_dataVenc | strftime}}" autofocus>
                     </div>
                     <div class="col-4">
                         <label for="">Valor Baixa</label>
                         <input type="number" class="form-control" style="text-transform: uppercase;" name="valorBaixa" id="valorBaixa" maxlength="10" size="10" 
-                        tabindex="2" step="0.01" autocomplete="off" required value="{{contexto.titulo.t_saldo | float}}" onblur="calculaSlado()">
+                        tabindex="2" step="0.01" autocomplete="off" required value="{{context.titulo.t_saldo | float}}" onblur="calculaSlado()">
                     </div>
                     <div class="row justify-content-md-center">
                         <div class="col-2">

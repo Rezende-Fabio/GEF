@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "public/base.html" %}
 {% block head %}
     <script type="text/javascript" src="{{ url_for('static', filename='plugin/pagination/dataVend.js') }}"></script>
 {% endblock %}
@@ -36,8 +36,8 @@
         </div>
     </div>
     <!-- Modal de confrimação de atualização da base de vendedores -->
-    {% if contexto %}
-        {% if contexto.aviso == 1 %}
+    {% if context %}
+        {% if context.aviso == 1 %}
             <section class="modal-alert">
                 <div id="card-alert">
                     <h2>Aviso!</h2>
@@ -86,8 +86,8 @@
         {% endif %}
     {% endif %}
     <!-- Modal com os dados do vendedor -->
-    {% if contexto %}
-        {% if contexto.aviso == 2 %}
+    {% if context %}
+        {% if context.aviso == 2 %}
             <section class="modal-view">
                 <div id="card-view">
                     <h2>Dados do Vendedor</h2>
@@ -98,63 +98,63 @@
                                 <div class="col-2">
                                     <label>Código:</label>
                                     <input class="form-control" type="text" style="text-transform: uppercase;" name="codigo" id="codigo" maxlength="6" size="10" tabindex="1" 
-                                        placeholder="Código" autocomplete="off" required onkeypress="return event.charCode >= 48 && event.charCode <= 57" disabled="" value="{{ contexto.vendedor.v_id }}">
+                                        placeholder="Código" autocomplete="off" required onkeypress="return event.charCode >= 48 && event.charCode <= 57" disabled="" value="{{ context.vendedor.v_id }}">
                                 </div>
                                 <div class="col-7">
                                     <label>Nome:</label>
                                     <input class="form-control" type="text" style="text-transform: uppercase;" name="razaoSocial" id="razaoSocial" maxlength="80" size="84" tabindex="3" 
-                                        placeholder="Razao Social" autocomplete="off" required disabled="" value="{{ contexto.vendedor.v_nome }}">
+                                        placeholder="Razao Social" autocomplete="off" required disabled="" value="{{ context.vendedor.v_nome }}">
                                 </div>
                                 <div class="col-3">
                                     <label>CPF/CNPJ:</label>
                                     <input class="cpfOuCnpj form-control" type="text" name="cpfcnpj" id="cpfcnpj" maxlength="18" size="25" tabindex="4" 
-                                        placeholder="CPF/CNPJ" autocomplete="off" disabled="" value="{{ contexto.vendedor.v_cpfcnpj | cpfCnpj }}">
+                                        placeholder="CPF/CNPJ" autocomplete="off" disabled="" value="{{ context.vendedor.v_cpfcnpj | cpfCnpj }}">
                                 </div> 
                             </div>   
                             <div class="row mb-2">    
                                 <div class="col-3">
                                     <label>Inscr. Estadual:</label>
                                     <input class="form-control" type="text" style="text-transform: uppercase;" name="inscrest" id="inscrest" maxlength="20" size="23" tabindex="5" 
-                                        placeholder="Inscr. Estadual" autocomplete="off" disabled="" value="{{ contexto.vendedor.v_inscricao }}">
+                                        placeholder="Inscr. Estadual" autocomplete="off" disabled="" value="{{ context.vendedor.v_inscricao }}">
                                 </div>
                                 <div class="col-4">
                                     <label>Telefone:</label>
                                     <input class="form-control" type="text" style="text-transform: uppercase;" name="telefone" id="telefone" maxlength="20" size="22" tabindex="6" 
-                                        placeholder="Telefone" autocomplete="off" disabled="" value="{{ contexto.vendedor.v_telefone }}">
+                                        placeholder="Telefone" autocomplete="off" disabled="" value="{{ context.vendedor.v_telefone }}">
                                 </div>
                                 <div class="col-5">
                                     <label>E-mail:</label>
                                     <input class="form-control" type="email" style="text-transform: uppercase;" name="email" id="email" maxlength="45" size="54" tabindex="7" 
-                                        placeholder="E-mail" autocomplete="off" required disabled="" value="{{ contexto.vendedor.v_email }}">
+                                        placeholder="E-mail" autocomplete="off" required disabled="" value="{{ context.vendedor.v_email }}">
                                 </div> 
                             </div>
                             <div class="row mb-2">
                                 <div class="col-4">
                                     <label>CEP:</label>
                                     <input class="form-control" type="text" style="text-transform: uppercase;" name="cep" id="cep" maxlength="20" size="16" tabindex="8" 
-                                        placeholder="CEP" autocomplete="off" required disabled="" value="{{ contexto.vendedor.v_cep | cep }}" >
+                                        placeholder="CEP" autocomplete="off" required disabled="" value="{{ context.vendedor.v_cep | cep }}" >
                                 </div>
                                 <div class="col-8">
                                     <label>Endereço:</label> 
                                     <input class="form-control" type="text" style="text-transform: uppercase;" name="logradouro" id="logradouro" maxlength="50" size="61" tabindex="9" 
-                                        placeholder="Endereço" autocomplete="off" disabled="" value="{{ contexto.vendedor.v_endereco }}">
+                                        placeholder="Endereço" autocomplete="off" disabled="" value="{{ context.vendedor.v_endereco }}">
                                 </div>
                             </div> 
                             <div class="row mb-2">    
                                 <div class="col-3">
                                     <label>Bairro:</label>
                                     <input class="form-control" type="text" style="text-transform: uppercase;" name="bairro" id="bairro" maxlength="25" size="31" tabindex="10" 
-                                        placeholder="Bairro" autocomplete="off" disabled="" value="{{ contexto.vendedor.v_bairro }}">
+                                        placeholder="Bairro" autocomplete="off" disabled="" value="{{ context.vendedor.v_bairro }}">
                                 </div>
                                 <div class="col-5">
                                     <label>Cidade:</label>
                                     <input class="form-control" type="text" style="text-transform: uppercase;" name="cidade" id="cidade" maxlength="20" size="21" tabindex="11" 
-                                        placeholder="Cidade" autocomplete="off" disabled="" value="{{ contexto.vendedor.v_cidade }}">
+                                        placeholder="Cidade" autocomplete="off" disabled="" value="{{ context.vendedor.v_cidade }}">
                                 </div>
                                 <div class="col-3">
                                     <label>UF:</label>
                                     <input class="form-control" type="text" style="text-transform: uppercase;" name="uf" id="uf" maxlength="20" size="21" tabindex="11" 
-                                        placeholder="Cidade" autocomplete="off" disabled="" value="{{ contexto.vendedor.v_uf }}">
+                                        placeholder="Cidade" autocomplete="off" disabled="" value="{{ context.vendedor.v_uf }}">
                                 </div>
                             </div>
                             <br>  
@@ -167,58 +167,56 @@
             </section>
         {% endif %}
     {% endif %}
-    
-    {% block script %}
-        <script>
-            var table = $('#lista-vendedor').tableSortable({
-                data: dataVend,
-                columns: columnsVend,
-                searchField: '#searchField',
-                responsive: {
-                    600: {
-                        columns: {
-                            formCode: 'Form Code',
-                            formName: 'Form Name',
-                        },
-                    },
-                },
-                rowsPerPage: 10,
-                pagination: true,
-                tableWillMount: function() {
-                    //console.log('table will mount')
-                },
-                tableDidMount: function() {
-                    //console.log('table did mount')
-                },
-                tableWillUpdate: function() {/*console.log('table will update')*/},
-                tableDidUpdate: function() {/*console.log('table did update')*/},
-                tableWillUnmount: function() {/*console.log('table will unmount')*/},
-                tableDidUnmount: function() {/*console.log('table did unmount')*/},
-                onPaginationChange: function(nextPage, setPage) {
-                    setPage(nextPage);
-                }
-            });
-
-            $('#changeRows').on('change', function() {
-                table.updateRowsPerPage(parseInt($(this).val(), 10));
-            })
-
-            $('#rerender').click(function() {
-                table.refresh(true);
-            })
-
-            $('#distory').click(function() {
-                table.distroy();
-            })
-
-            $('#refresh').click(function() {
-                table.refresh();
-            })
-
-            $('#setPage2').click(function() {
-                table.setPage(1);
-            })
-        </script>
-    {% endblock %} 
-
 {% endblock %}
+{% block script %}
+<script>
+    var table = $('#lista-vendedor').tableSortable({
+        data: dataVend,
+        columns: columnsVend,
+        searchField: '#searchField',
+        responsive: {
+            600: {
+                columns: {
+                    formCode: 'Form Code',
+                    formName: 'Form Name',
+                },
+            },
+        },
+        rowsPerPage: 10,
+        pagination: true,
+        tableWillMount: function() {
+            //console.log('table will mount')
+        },
+        tableDidMount: function() {
+            //console.log('table did mount')
+        },
+        tableWillUpdate: function() {/*console.log('table will update')*/},
+        tableDidUpdate: function() {/*console.log('table did update')*/},
+        tableWillUnmount: function() {/*console.log('table will unmount')*/},
+        tableDidUnmount: function() {/*console.log('table did unmount')*/},
+        onPaginationChange: function(nextPage, setPage) {
+            setPage(nextPage);
+        }
+    });
+
+    $('#changeRows').on('change', function() {
+        table.updateRowsPerPage(parseInt($(this).val(), 10));
+    })
+
+    $('#rerender').click(function() {
+        table.refresh(true);
+    })
+
+    $('#distory').click(function() {
+        table.distroy();
+    })
+
+    $('#refresh').click(function() {
+        table.refresh();
+    })
+
+    $('#setPage2').click(function() {
+        table.setPage(1);
+    })
+</script>
+{% endblock %} 

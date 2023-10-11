@@ -1,24 +1,21 @@
 from sqlalchemy import Column, String, DateTime, Boolean, Float, Integer, Numeric, ForeignKey
 from werkzeug.security import check_password_hash
 from ..configurations.DataBase import DB
+from flask_login import UserMixin
 
 
 #Usuários
-class SysUsers(DB.Model):
-    s_codigo = DB.Column(DB.Integer, primary_key=True)
+class SysUsers(UserMixin, DB.Model):
+    id = DB.Column(DB.Integer, primary_key=True)
     s_usuario = DB.Column(DB.String(10))
-    s_senha = DB.Column(DB.String(32))
-    s_nome = DB.Column(DB.String(80))
-    s_email = DB.Column(DB.String(80), unique=True)
+    s_senha = DB.Column(DB.String(65))
+    s_nome = DB.Column(DB.String(45))
+    s_email = DB.Column(DB.String(80))
     s_admin = DB.Column(DB.Boolean)
     s_ativo = DB.Column(DB.Boolean)
     s_novaSenha = DB.Column(DB.Boolean)
+    s_complex = DB.Column(DB.String(36))
     
-    def __repr__(self):
-        return f"{self.s_codigo}"
-    
-    def verificaSenha(self, senha):
-        return check_password_hash(self.s_senha, senha)
 
 #Cliente
 class Gf3001(DB.Model):
@@ -81,12 +78,12 @@ class Gf3004(DB.Model):
     t_valor = DB.Column(DB.Float)
     t_dataLanc = DB.Column(DB.String(8))
     t_dataVenc = DB.Column(DB.String(8))
-    t_idCliente = DB.Column(DB.String(10), DB.ForeignKey("gf3001.c_id"))
-    t_idVendedor = DB.Column(DB.String(10), DB.ForeignKey("gf3002.v_id"))
+    t_idCliente = DB.Column(DB.String(10))
+    t_idVendedor = DB.Column(DB.String(10))
     t_saldo = DB.Column(DB.Float)
     t_status = DB.Column(DB.Boolean)
     t_docRef = DB.Column(DB.String(12))
-    t_segmento = DB.Column(DB.Integer, DB.ForeignKey("gf3003.s_id"))
+    t_segmento = DB.Column(DB.Integer)
     t_filialOri = DB.Column(DB.Integer)
     t_filial = DB.Column(DB.Integer)
     t_ativo = DB.Column(DB.Boolean)
@@ -108,9 +105,9 @@ class Gf3004(DB.Model):
 #Comissão
 class Gf3005(DB.Model):
     c_id =  DB.Column(DB.Integer, primary_key=True)
-    c_idVendedor = DB.Column(DB.String(10), DB.ForeignKey("gf3002.v_id"))
+    c_idVendedor = DB.Column(DB.String(10))
     c_baseCalc = DB.Column(DB.Float)
-    c_idBaixa = DB.Column(DB.Integer, DB.ForeignKey("gf3006.m_id"))
+    c_idBaixa = DB.Column(DB.Integer)
     c_valor = DB.Column(DB.Float)
     c_dataBaixa = DB.Column(DB.String(8))
     c_dataPgto = DB.Column(DB.String(8))
@@ -126,7 +123,7 @@ class Gf3006(DB.Model):
     m_parcela = DB.Column(DB.Integer)
     m_dataBaixa = DB.Column(DB.String(8))
     m_docRef = DB.Column(DB.String(15))
-    m_idCliente = DB.Column(DB.String(10), DB.ForeignKey("gf3001.c_id"))
+    m_idCliente = DB.Column(DB.String(10))
     m_valor = DB.Column(DB.Float)
     m_tipoBaixa = DB.Column(DB.String(4))
     m_filial = DB.Column(DB.Integer)
@@ -134,8 +131,8 @@ class Gf3006(DB.Model):
     m_deconto = DB.Column(DB.Float)
     m_observ = DB.Column(DB.String(140))
     m_usuario = DB.Column(DB.String(10))
-    m_idDev = DB.Column(DB.Integer, DB.ForeignKey("gf3007.d_id"))
-    m_segmento = DB.Column(DB.Integer, DB.ForeignKey("gf3003.s_id"))
+    m_idDev = DB.Column(DB.Integer)
+    m_segmento = DB.Column(DB.Integer)
     m_ativo = DB.Column(DB.Boolean)
     
     def calculaComissao(self, valor):
@@ -148,7 +145,7 @@ class Gf3006(DB.Model):
 #Devolução
 class Gf3007(DB.Model):
     d_id = DB.Column(DB.Integer, primary_key=True)
-    d_idCliente = DB.Column(DB.String(10), DB.ForeignKey("gf3001.c_id"))
+    d_idCliente = DB.Column(DB.String(10))
     d_valor = DB.Column(DB.Float)
     d_docRef = DB.Column(DB.String(15))
     d_dataCad = DB.Column(DB.String(8))

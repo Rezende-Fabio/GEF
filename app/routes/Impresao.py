@@ -27,7 +27,7 @@ impressaoBlue = Blueprint("impressaoBlue", __name__)
 @impressaoBlue.route("/impressao-comissao", methods=["GET", "POST"])
 def impreComissao():
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             listaVend = []
             dataDe = request.form["dataDe"].replace("-", "")
             dataAte = request.form["dataAte"].replace("-", "")
@@ -47,7 +47,7 @@ def impreComissao():
                                                                                                                                                                                                                                                                                                                                         conexao.c_ativo==1, conexao.c_dataBaixa>=dataDe, conexao.c_dataBaixa<=dataAte).order_by(conexao.c_docRef, conexao.c_dataBaixa).count()
                                                 
                 nomeHtml = htmlComissao(comissoes, linhas)
-                contexto = {"datas": [dataDe, dataAte], "vendedor": nomeVend}
+                context = {"datas": [dataDe, dataAte], "vendedor": nomeVend}
                 
             else:
                 conexao = Gf3005
@@ -62,9 +62,9 @@ def impreComissao():
                     listaVend.append(x[0])
                 
                 nomeHtml = htmlComissaoVend(listaVend, dataDe, dataAte)
-                contexto = {"datas": [dataDe, dataAte]}
+                context = {"datas": [dataDe, dataAte]}
             
-            return render_template(f"impressoes/{nomeHtml}", contexto=contexto)
+            return render_template(f"impressoes/{nomeHtml}", context=context)
         else:
             return redirect("/")
     
@@ -78,7 +78,7 @@ def impreComissao():
 @impressaoBlue.route("/impressao-devolucao", methods=["GET", "POST"])
 def impreDevolucao():
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             dataDe = request.form["dataDe"].replace("-", "")
             dataAte = request.form["dataAte"].replace("-", "")
             
@@ -106,8 +106,8 @@ def impreDevolucao():
                 nomeHtml = htmlBaixasDev(baixas, linhas)
                 nomeCli = ""
              
-            contexto = {"datas": [dataDe, dataAte], "cliente": nomeCli}
-            return render_template(f"impressoes/{nomeHtml}", contexto=contexto)
+            context = {"datas": [dataDe, dataAte], "cliente": nomeCli}
+            return render_template(f"impressoes/{nomeHtml}", context=context)
         else:
             return redirect("/")
     
@@ -121,7 +121,7 @@ def impreDevolucao():
 @impressaoBlue.route("/impressao-recebidos", methods=["GET", "POST"])
 def impreRecebidos():
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             cliVend = ""
             coluna = ""
             descSegmento = ""
@@ -265,8 +265,8 @@ def impreRecebidos():
                 nomeHtml = htmlRecebPeriodo(baixas, linhas)                          
                 titulo = "Baixas por Periodo"
             
-            contexto = {"titulo": titulo, "datas": [dataDe, dataAte], "cliVend": cliVend, "coluna": coluna, "descSegmento": descSegmento}
-            return render_template(f"impressoes/{nomeHtml}", contexto=contexto)
+            context = {"titulo": titulo, "datas": [dataDe, dataAte], "cliVend": cliVend, "coluna": coluna, "descSegmento": descSegmento}
+            return render_template(f"impressoes/{nomeHtml}", context=context)
         else:
             return redirect("/")
     
@@ -280,7 +280,7 @@ def impreRecebidos():
 @impressaoBlue.route("/impressao-receber", methods=["GET", "POST"])
 def impreReceber():
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             cliVend = ""
             coluna = ""
             descSegmento = ""
@@ -376,8 +376,8 @@ def impreReceber():
                 
                 nomeHtml = htmlPlanilha(listaDoc)
                 titulo = "Títulos a Receber"
-                contexto = {"titulo": titulo}
-                return render_template(f"impressoes/{nomeHtml}", contexto=contexto)
+                context = {"titulo": titulo}
+                return render_template(f"impressoes/{nomeHtml}", context=context)
                 
             else:
                 dataDe = request.form["dataDe"].replace("-", "")
@@ -398,8 +398,8 @@ def impreReceber():
                 nomeHtml = htmlReceberPeriodo(baixas, linhas)
                 titulo = "Títulos a Receber"
             
-            contexto = {"titulo": titulo, "datas": [dataDe, dataAte], "cliVend": cliVend, "coluna": coluna, "descSegmento": descSegmento}
-            return render_template(f"impressoes/{nomeHtml}", contexto=contexto)
+            context = {"titulo": titulo, "datas": [dataDe, dataAte], "cliVend": cliVend, "coluna": coluna, "descSegmento": descSegmento}
+            return render_template(f"impressoes/{nomeHtml}", context=context)
 
         else:
             return redirect("/")
@@ -414,7 +414,7 @@ def impreReceber():
 @impressaoBlue.route("/impressao-consistencia", methods=["GET", "POST"])
 def impreConsisitencia():
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             
             if "dataDeCli" in request.form.keys():
                 dataDe = request.form["dataDeCli"].replace("-", "")
@@ -425,8 +425,8 @@ def impreConsisitencia():
                 
                 titulo = "Relatório de Consistência"
                 nomeHtml = htmlConsisCli(titulos, dataDe, dataAte)
-                contexto = {"titulo": titulo, "datas": [dataDe, dataAte]}
-                return render_template(f"impressoes/{nomeHtml}", contexto=contexto)
+                context = {"titulo": titulo, "datas": [dataDe, dataAte]}
+                return render_template(f"impressoes/{nomeHtml}", context=context)
                 
             else:
                 dataDe = request.form["dataDe"].replace("-", "")
@@ -454,8 +454,8 @@ def impreConsisitencia():
                 
                 titulo = "Relatório de Consistência"
                 nomeHtml = htmlConsis(titulos, linhas)
-                contexto = {"titulo": titulo, "datas": [dataDe, dataAte]}
-                return render_template(f"impressoes/{nomeHtml}", contexto=contexto)
+                context = {"titulo": titulo, "datas": [dataDe, dataAte]}
+                return render_template(f"impressoes/{nomeHtml}", context=context)
             
         else:
             return redirect("/")
@@ -470,7 +470,7 @@ def impreConsisitencia():
 @impressaoBlue.route("/impressao-observacao", methods=["GET", "POST"])
 def impreObservacao():
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             dataDe = request.form["dataDe"].replace("-", "")
             dataAte = request.form["dataAte"].replace("-", "")
             conexao = Gf3006

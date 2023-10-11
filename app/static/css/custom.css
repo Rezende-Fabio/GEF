@@ -1,6 +1,7 @@
 /*
 Inicio index
 */
+
 .image-index{
   width: 100%;
   display: flex;
@@ -24,15 +25,106 @@ Inicio index
 .btn-acessar:hover{
   color: #ffffff !important;
 }
+
 /*
 Termino index
 */
+
 
 /*
 Inicio base
 */
 
+#layout-menu{
+  position: fixed; 
+  height: 100vw;
+}
+
+.layout-page{
+  margin-left: 15.5rem !important;
+}
+
+@media  screen and (max-width: 1200px) {
+  .layout-page{
+    margin-left: 0rem !important;
+  }
+}
+
+.clicavel{
+  cursor: pointer;
+}
+
+.card{
+  padding: 25px 8px 25px 8px !important;
+}
+
+.form-control{
+  text-transform: uppercase;
+}
+
+.alert{
+  border-left: 10px solid !important;
+}
+
+.alert h6{
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 0.4rem;
+}
+
+.alert i{
+  font-size: 1.5rem;
+  padding-right: 1rem;
+}
+
+.alert .progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 5px;
+  width: 100%;
+  background-color: currentColor;
+  animation: progress 8s linear forwards;
+}
+
+@keyframes progress {
+  100% {
+      width: 0%;
+  }
+}
 
 /*
 Termino base
+*/
+
+
+/*
+Inicio header
+*/
+
+.header-page{
+  width: 100%;
+}
+
+/*
+Termino header
+*/
+
+
+/*
+Inicio Cadastro de Usuário
+*/
+
+.ver-senha {
+  display: flex;
+  justify-content: center;
+  align-self: flex-end;
+}
+
+.ver-senha button:hover {
+  color: #ffffff;
+}
+
+/*
+Termino Cadastro de Usuário
 */

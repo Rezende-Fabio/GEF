@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "public/base.html" %}
 {% block head %}
     <script type="text/javascript" src="{{ url_for('static', filename='plugin/pagination/dataDev.js') }}"></script>
 {% endblock %}
@@ -53,7 +53,7 @@
                 <div class="col-3">
                     <label for="">Data do Lançamaneto</label>
                     <input type="date" class="form-control" style="text-transform: uppercase;" name="dataLanc" id="dataLanc" maxlength="50" size="50" 
-                    tabindex="3" autocomplete="off" required value="{{contexto.data}}">
+                    tabindex="3" autocomplete="off" required value="{{context.data}}">
                 </div>
             </div>
             <div class="row">
@@ -85,15 +85,15 @@
         </div>
     </div>
     <!-- Modal de confirmação de exclusão da devolução -->
-    {% if contexto %}
-        {% if contexto.aviso == 1 %}
+    {% if context %}
+        {% if context.aviso == 1 %}
             <section class="modal-delete">
                 <div id="card-delete">
                     <h2>Aviso!</h2>
                     <hr>
-                    <p>Deseja mesmo excluir a Devolução da Referência {{ contexto.devolucao.d_docRef }} ?</p>
+                    <p>Deseja mesmo excluir a Devolução da Referência {{ context.devolucao.d_docRef }} ?</p>
                     <div id="btns">
-                        <a class="btn btn-success btn-sm" href="/exluir-devolucao/{{contexto.devolucao.d_id}}">Confirmar</a>
+                        <a class="btn btn-success btn-sm" href="/exluir-devolucao/{{context.devolucao.d_id}}">Confirmar</a>
                         <a class="btn btn-danger btn-sm" href="javascript:history.back()">Cancelar</a>
                     </div>
                 </div>

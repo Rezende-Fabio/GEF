@@ -1,4 +1,5 @@
-from flask import render_template, request, redirect, flash, session, jsonify, Blueprint
+from flask import render_template, request, redirect, flash, session, jsonify, Blueprint, url_for
+from ..controllers.ControllerManterUsuario import ControllerManterUsuario
 from ..models.Tables import *
 from werkzeug.security import generate_password_hash
 from datetime import datetime
@@ -7,16 +8,17 @@ from ..extensions.configHtml import *
 import sys
 from ..configurations.DataBase import DB
 
+
 ###################################
 # Rotas relacionadas aos Usuários
 # TABELA DE USUARIOS SYSUSERS 
 ###################################
 
-usuarioBlue = Blueprint("usuarioBlue", __name__)
+usuarioBlue = Blueprint("usuarioBlue", __name__, url_prefix="/usuario")
 
 
 #Rota para Tela de listagem de usuários
-@usuarioBlue.route("/lista-usuarios", methods=["GET", "POST"])
+@usuarioBlue.route("/lista-usuarios", methods=["GET"])
 def listaUsuarios():
     ###################################################################################################
     # Função que renderiza a tela de listagem de usuários.
@@ -31,9 +33,9 @@ def listaUsuarios():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
-            return render_template("usuario/listaUsuarios.html")
-        
+        if session["usuario"]:
+            context = {"active": "usuario", "titulo": "Lista de Usuários"}
+            return render_template("usuario/listaUsuarios.html", context=context)
         else:
             return redirect("/")
     
@@ -51,19 +53,19 @@ def popupDeleteUser(id):
     #   id = Id do usuário que foi selecionado.
     
     # RETORNOS:
-    #   return render_template("usuario/listaUsuarios.html", contexto=contexto) = Redireciona para 
+    #   return render_template("usuario/listaUsuarios.html", context=context) = Redireciona para 
     #     cadastro de usuário;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = SysUsers #Conexão com a tabela de usuários
             #Query que trás o usuário de acordo com o id passado
             usuario = conexao.query.get(id)
-            contexto = {"usuario": usuario, "aviso": 1} #Dicionário contendo as variáveis para utilizar no template
-            return render_template("usuario/listaUsuarios.html", contexto=contexto)
+            context = {"usuario": usuario, "aviso": 1} #Dicionário contendo as variáveis para utilizar no template
+            return render_template("usuario/listaUsuarios.html", context=context)
         
         else:
             return redirect("/")
@@ -82,16 +84,16 @@ def cadUsuario():
     #   Não tem parametros.
     
     # RETORNOS:
-    #   return render_template("usuario/cadUsuario.html", contexto=contexto) = Redireciona para cadastro
+    #   return render_template("usuario/cadUsuario.html", context=context) = Redireciona para cadastro
     #     de usuários;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
-            contexto = {"titulo": "Inclusão de Usuário", "action": "/insert-user", "botao": "Gravar"} #Dicionário contendo as variáveis para utilizar no template
-            return render_template("usuario/cadUsuario.html", contexto=contexto)
+        if session["usuario"]:
+            context = {"titulo": "Inclusão de Usuário", "action": "/insert-user", "botao": "Gravar", "active": "usuario"} #Dicionário contendo as variáveis para utilizar no template
+            return render_template("usuario/cadUsuario.html", context=context)
         
         else:
             return redirect("/")
@@ -121,19 +123,12 @@ def insertUsuario():
     ###################################################################################################
     
     try: 
-        if session["usuario_logado"]:
-            user = SysUsers(s_usuario=request.form["usuario"].upper(), 
-                            s_senha=generate_password_hash(request.form["inputSenha"].upper()), 
-                            s_nome=request.form["nomecmp"], 
-                            s_email=request.form["email"], 
-                            s_admin=int(request.form["useradmin"]), 
-                            s_ativo=1, 
-                            s_novaSenha=0)
-            DB.session.add(user)
-            DB.session.commit()
-            flash(f"Usuário {user.s_nome} incluido com sucesso!") #Mensagem para ser exibida no Front
-            Logger.log("Inserção de Usuário", session["usuario_logado"], session["filial"], f"Nome: {request.form['nomecmp']}") #Gera log informando que foi feita uma inserção de usuário
-            return redirect("/lista-usuarios")
+        if session["usuario"]:
+            controleManterUsuario = ControllerManterUsuario()
+            controleManterUsuario.inserirUsuario(request.form)
+            flash(f"Usuário {request.form['usuario'].upper()} incluido com sucesso!", "success") #Mensagem para ser exibida no Front
+            Logger.log("Inserção de Usuário", session["usuario"], session["filial"], f"Nome: {request.form['nome']}") #Gera log informando que foi feita uma inserção de usuário
+            return redirect(url_for('usuarioBlue.listaUsuarios'))
 
         else:
             return redirect("/")
@@ -158,29 +153,25 @@ def editUsuario(id):
     # RETORNOS:
     #   return redirect("/lista-usuarios") = Redireciona para listagem de usuários com mensagem que 
     #     foi atualizado com sucesso;
-    #   return render_template("usuario/cadUsuario.html", contexto=contexto) = Redireciona para o 
+    #   return render_template("usuario/cadUsuario.html", context=context) = Redireciona para o 
     #     cadastro com a insformações do usuário que foi selecionado;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = SysUsers #Conexão com a tabela de usuários
             usuario = conexao.query.get(id)
             if request.method == "POST":
-                usuario.s_nome = request.form["nomecmp"]
-                usuario.s_email = request.form["email"]
-                usuario.s_usuario = request.form["usuario"].upper()
-                usuario.s_senha = generate_password_hash(request.form["inputSenha"].upper())
-                usuario.s_admin = int(request.form["useradmin"])
-                DB.session.commit()
-                flash(f"Usuário {usuario.s_nome} atualizado com sucesso!") #Mensagem para ser exibida no Front
-                Logger.log("Alteração de Usuário", session["usuario_logado"], session["filial"], f"ID: {id}") #Gera log informando que foi feita alteração no usuário
-                return redirect("/lista-usuarios")
+                controleManterUsuario = ControllerManterUsuario()
+                controleManterUsuario.editarUsuario(request.form, int(id))
+                flash(f"Usuário {request.form['usuario'].upper()} atualizado com sucesso!", "success") #Mensagem para ser exibida no Front
+                Logger.log("Alteração de Usuário", session["usuario"], session["filial"], f"ID: {id}") #Gera log informando que foi feita alteração no usuário
+                return redirect(url_for('usuarioBlue.listaUsuarios'))
 
-            contexto = {"titulo": "Atualização de Usuário", "action": "/editar-usuario/", "botao": "Alterar", "usuario": usuario} #Dicionário contendo as variáveis para utilizar no template
-            return render_template("usuario/cadUsuario.html", contexto=contexto)
+            context = {"titulo": "Atualização de Usuário", "action": "/editar-usuario/", "botao": "Alterar", "usuario": usuario} #Dicionário contendo as variáveis para utilizar no template
+            return render_template("usuario/cadUsuario.html", context=context)
         
         else:
             return redirect("/")
@@ -206,13 +197,13 @@ def deleteUsuario(id):
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = SysUsers
             usuario = conexao.query.get(id)
             usuario.s_ativo = 0
             DB.session.commit()
             flash(f"Usuário {usuario.s_nome} excluido com sucesso!") #Mensagem para ser exibida no Front
-            Logger.log("Exclusão de Usuário", session["usuario_logado"], session["filial"], f"ID: {id}") #Gera log informando que foi feita exclusão do usuário
+            Logger.log("Exclusão de Usuário", session["usuario"], session["filial"], f"ID: {id}") #Gera log informando que foi feita exclusão do usuário
             return redirect("/lista-usuarios")
 
         else:
@@ -237,14 +228,14 @@ def usuarios():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 conexao = SysUsers #Conexão com a tabela de usuários
                 #Query que trás todos os títulos exeto os excluidos
-                usuarios = DB.session.query(conexao.s_codigo, conexao.s_usuario, conexao.s_nome, conexao.s_admin).filter(conexao.s_ativo==1)
+                usuarios = DB.session.query(conexao.id, conexao.s_usuario, conexao.s_nome, conexao.s_admin).filter(conexao.s_ativo==1)
                 lista = []
                 for x in usuarios:
-                    lista.append({"cod": x.s_codigo, "user": x.s_usuario, "nome": x.s_nome, "admin": filtroStatusUser(x.s_admin)})
+                    lista.append({"cod": x.id, "user": x.s_usuario, "nome": x.s_nome, "admin": filtroStatusUser(x.s_admin)})
                 
                 return jsonify(lista)
             

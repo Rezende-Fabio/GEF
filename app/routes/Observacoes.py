@@ -28,7 +28,7 @@ def listaObservacoes():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             return render_template("observacoes/listaObservacoes.html")
         
         else:
@@ -55,7 +55,7 @@ def observacoes():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 conexao = Gf3006
                 conexao2 = Gf3001
@@ -84,22 +84,22 @@ def viewObservacoes(doc, parc):
     #   parc = Parcela do título.
     
     # RETORNOS:
-    #   return render_template("observacoes/listaObservacoes.html", contexto=contexto) = Redireciona
+    #   return render_template("observacoes/listaObservacoes.html", context=context) = Redireciona
     #      para tela de listagem com um Modal, com a insformações do título;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3006
             conexao2 = Gf3001
             
             baixa = DB.session.query(conexao.m_numDoc, conexao.m_docRef, conexao.m_parcela, conexao.m_dataBaixa, conexao.m_valor, conexao.m_juros, conexao.m_deconto, conexao.m_tipoBaixa, conexao.m_observ, conexao2.c_razaosocial.label("cliente"), conexao.m_idCliente).join(conexao2, conexao.m_idCliente==conexao2.c_id).filter(conexao.m_numDoc==doc, conexao.m_parcela==parc, conexao.m_observ!=None).first()
             
-            contexto = {"baixa": baixa, "aviso": 1}  #Dicionário contendo as variáveis para utilizar no template
+            context = {"baixa": baixa, "aviso": 1}  #Dicionário contendo as variáveis para utilizar no template
             
-            return render_template("observacoes/listaObservacoes.html", contexto=contexto) 
+            return render_template("observacoes/listaObservacoes.html", context=context) 
         else:
             return redirect("/")
         

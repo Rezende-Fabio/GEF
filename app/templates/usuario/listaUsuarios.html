@@ -1,108 +1,68 @@
-{% extends "base.html" %}
+{% extends "public/base.html" %}
 {% block head %}
-    <script type="text/javascript" src="{{ url_for('static', filename='plugin/pagination/dataUser.js') }}"></script>
 {% endblock %}
 {% block conteudo %}
+    {% include "public/header.html" %}
     <!-- Exibe mensagem que foi enviado pelo Back -->
-    {% for message in get_flashed_messages() %}
-        {% if message %}
-        <script>
-            window.setTimeout(function() {
-                $(".alert").fadeTo(500, 0).slideUp(500, function(){
-                    $(this).remove(); 
-                });
-            }, 6000);
-        </script>
-        <div class="alert alert-success d-flex align-items-center" role="alert">
-            <i class="fa-solid fa-circle-check" style="font-size: 1rem; padding-right: 1rem;"></i>
-            <div>
-                <h6>{{ message }}</h6>
-            </div>
-        </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <script>
+                    window.setTimeout(function() {
+                        $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                            $(this).remove(); 
+                        });
+                    }, 8000);
+                </script>
+                <div class="alert alert-{{ category }} d-flex align-items-center" role="alert">
+                    {% if category == "success" %}
+                        <i class="fa-solid fa-circle-check"></i>
+                    {% else %}
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    {% endif %}
+                    <h6>{{ message }}</h6>
+                    <div class="progress active"></div>
+                </div>
+            {% endfor %}
         {% endif %}
-    {% endfor %}
+    {% endwith %}
 
-    <div class="conteiner-top">
-        <h3 class="titulo-pagina">Lista de Usuários</h3>
-        <div class="col-md-3">
-            <input type="text" class="form-control" placeholder="Pesquisar" id="searchField">
-        </div>
-        <a style="width: 15%;" name="atualizaBase" id="atualizaBase" class="btn btn-outline-success" href="/cad-usuario">Cadastrar</a>
+    <div class="conteiner-fluid d-flex justify-content-end">
+        <a name="cadUser" id="cadUser" class="btn btn-success" href="{{ url_for('usuarioBlue.cadUsuario') }}">Cadastrar Usuário</a>
     </div>
-    
-    <div class="page-container">
-        <div class="container">
-            <div id="lista-usuarios"></div>
-        </div>
-    </div>
+    <div id="lista-usuarios"></div>
+
     <!-- Modal de confrimação de exclusão do usuário -->
-    {% if contexto %}
-        {% if contexto.aviso == 1 %}
+    {% if context %}
+        {% if context.aviso == 1 %}
             <section class="modal-delete">
                 <div id="card-delete">
                     <h2>Aviso!</h2>
                     <hr>
-                    <p>Deseja mesmo excluir o usuário {{ contexto.usuario.s_nome }}?</p>
+                    <p>Deseja mesmo excluir o usuário {{ context.usuario.s_nome }}?</p>
                     <div id="btns">
-                        <a class="btn btn-success btn-sm" href="/deletar-usuario/{{ contexto.usuario.s_codigo }}">Confirmar</a>
+                        <a class="btn btn-success btn-sm" href="/deletar-usuario/{{ context.usuario.s_codigo }}">Confirmar</a>
                         <a class="btn btn-danger btn-sm" href="javascript:history.back()">Cancelar</a>
                     </div>
                 </div>
             </section>
         {% endif %}
     {% endif %}
-
-    {% block script %}
-        <script>
-            var table = $('#lista-usuarios').tableSortable({
-                data: dataUser,
-                columns: columnsUser,
-                searchField: '#searchField',
-                responsive: {
-                    600: {
-                        columns: {
-                            formCode: 'Form Code',
-                            formName: 'Form Name',
-                        },
-                    },
-                },
-                rowsPerPage: 10,
-                pagination: true,
-                tableWillMount: function() {
-                    //console.log('table will mount')
-                },
-                tableDidMount: function() {
-                    //console.log('table did mount')
-                },
-                tableWillUpdate: function() {/*console.log('table will update')*/},
-                tableDidUpdate: function() {/*console.log('table did update')*/},
-                tableWillUnmount: function() {/*console.log('table will unmount')*/},
-                tableDidUnmount: function() {/*console.log('table did unmount')*/},
-                onPaginationChange: function(nextPage, setPage) {
-                    setPage(nextPage);
-                }
-            });
-
-            $('#changeRows').on('change', function() {
-                table.updateRowsPerPage(parseInt($(this).val(), 10));
-            })
-
-            $('#rerender').click(function() {
-                table.refresh(true);
-            })
-
-            $('#distory').click(function() {
-                table.distroy();
-            })
-
-            $('#refresh').click(function() {
-                table.refresh();
-            })
-
-            $('#setPage2').click(function() {
-                table.setPage(1);
-            })
-        </script>
-    {% endblock %}
-
+{% endblock %}
+{% block script %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/usuario/dataUser.js') }}"></script>
+    <script>
+        new gridjs.Grid({
+            columns: columnsUser,
+            data: () => {
+                return new Promise(resolve => {
+                    setTimeout(() => resolve(dataUser), 2000);
+                });
+            },
+            search: true,
+            sort: true,
+            paginationAutoPageSize: true,
+            pagination: true,
+        }).render(document.getElementById("lista-usuarios"));
+    </script>
 {% endblock %}

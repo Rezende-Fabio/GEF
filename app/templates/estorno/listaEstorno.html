@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "public/base.html" %}
 {% block head %}
     <script type="text/javascript" src="{{ url_for('static', filename='plugin/pagination/dataEstorn.js') }}"></script>
 {% endblock %}
@@ -34,8 +34,8 @@
         </div>
     </div>
     <!-- Modal para selecionar as baixas para devolução do título -->
-    {% if contexto %}
-        {% if contexto.aviso == 1 %}
+    {% if context %}
+        {% if context.aviso == 1 %}
             <section class="modal-baixa">
                 <form action="" method="POST">
                     <div id="card-baixa">
@@ -57,7 +57,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for baixa in contexto.baixas %}
+                                    {% for baixa in context.baixas %}
                                         <tr id="{{baixa.m_id}}">
                                             <td><input type="checkbox" value="{{baixa.m_id}}" class="danger" name='checkbox'></td>
                                             <td>{{baixa.m_docRef}}</td>

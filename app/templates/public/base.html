@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-default.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='plugin/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styleTable.css') }}">
 
     <!-- Bloco para a head -->
     {% block head %}
@@ -20,10 +21,13 @@
 
     <script type="text/javascript" src="{{ url_for('static', filename='js/config.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/helpers.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/grid/gridjs.umd.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery.mask.min.js') }}"></script>
 </head>
 
-<!-- <body style="background-color: rgba(184, 22, 22, 0.521);"> -->
-<body>
+<body {% if session.base == 'TESTE' %}style="background-color: #effd9e;"{% endif %}>
+    {% include "public/modal/modalTrocaFilial.html" %}
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
@@ -40,8 +44,8 @@
                 </div>
                 <div class="menu-inner-shadow"></div>
                 <ul class="menu-inner py-1">
-                    <li class="menu-item active">
-                        <a href="index.html" class="menu-link">
+                    <li class="menu-item {% if context.active == 'dashboard' %}active{% endif %}">
+                        <a href="{{ url_for('mainBlue.base') }}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-home-circle"></i>
                             <div data-i18n="Analytics">Dashboard</div>
                         </a>
@@ -53,12 +57,12 @@
                         </a>
                         <ul class="menu-sub">
                             <li class="menu-item">
-                                <a href="layouts-without-menu.html" class="menu-link">
+                                <a href="{{ url_for('clienteBlue.listaClientes') }}" class="menu-link">
                                     <div data-i18n="Without menu">Cliente</div>
                                 </a>
                             </li>
                             <li class="menu-item">
-                                <a href="layouts-without-navbar.html" class="menu-link">
+                                <a href="{{ url_for('vendedorBlue.listaVendedores') }}" class="menu-link">
                                     <div data-i18n="Without navbar">Vendedor</div>
                                 </a>
                             </li>
@@ -135,9 +139,9 @@
                             </li>
                         </ul>
                     </li>
-                    {% if session.user_admin %}
-                        <li class="menu-item">
-                            <a href="index.html" class="menu-link">
+                    {% if session.usuario.admin %}
+                        <li class="menu-item {% if context.active == 'usuario' %}active{% endif %}">
+                            <a href="{{ url_for('usuarioBlue.listaUsuarios') }}" class="menu-link">
                                 <i class="menu-icon tf-icons bx bx-user-circle"></i>
                                 <div>Usuários</div>
                             </a>
@@ -187,8 +191,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <span class="fw-semibold d-block">{{ session.usuario_logado }}</span>
-                                                    {% if session.user_admin %}
+                                                    <span class="fw-semibold d-block">{{ session.usuario.nome }}</span>
+                                                    {% if session.usuario.admin %}
                                                         <small class="text-muted">Admin</small>
                                                     {% else %}
                                                         <small class="text-muted">Usuário</small>
@@ -202,7 +206,7 @@
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item clicavel" style="text-decoration: none;" data-bs-toggle="modal" data-bs-target="#backDropModalFilial">
                                             <i class="bx bx-transfer-alt me-2"></i>
                                             <span class="align-middle">Trocar de Filial</span>
                                         </a>
@@ -228,27 +232,17 @@
                     </div>
                     <footer class="content-footer footer bg-footer-theme">
                         <div
-                            class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                            class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column" {% if session.base == 'TESTE' %}style="background-color: #effd9e;"{% endif %}>
                             <div class="mb-2 mb-md-0">
                                 ©
                                 <script>
                                     document.write(new Date().getFullYear());
                                 </script>
-                                , made with ❤️ by
-                                <a href="https://themeselection.com" target="_blank"
-                                    class="footer-link fw-bolder">ThemeSelection</a>
+                                Designed by Fabio Rezende
                             </div>
                             <div>
-                                <a href="https://themeselection.com/license/" class="footer-link me-4"
-                                    target="_blank">License</a>
-                                <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More
-                                    Themes</a>
-
                                 <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
                                     target="_blank" class="footer-link me-4">Documentation</a>
-
-                                <a href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-                                    target="_blank" class="footer-link me-4">Support</a>
                             </div>
                         </div>
                     </footer>
@@ -263,14 +257,12 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
     <script type="text/javascript"
-        src="{{ url_for('static', filename='plugin/bootstrap/js/bootstrap.min.js') }}"></script>
+        src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.min.js') }}"></script>
     <script type="text/javascript"
-        src="{{ url_for('static', filename='plugin/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='plugin/jquery/jquery.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='plugin/jquery/jquery.mask.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='plugin/popper/popper.js') }}"></script>
+        src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/popper/popper.js') }}"></script>
     <script type="text/javascript"
-        src="{{ url_for('static', filename='plugin/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+        src="{{ url_for('static', filename='plugins/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
 
     {% block script %}
     {% endblock %}

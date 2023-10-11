@@ -32,7 +32,7 @@ def listaBaixas():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             return render_template("baixa/listaBaixas.html")
         
         else:
@@ -53,14 +53,14 @@ def cadBaixa(doc, parcela):
     #   parcela = Número da parcela do título que foi selecionado.
     
     # RETORNOS:
-    #   return render_template("baixa/cadBaixa.html", contexto=contexto)  = Redireciona para baixa do 
+    #   return render_template("baixa/cadBaixa.html", context=context)  = Redireciona para baixa do 
     #     título com os dados referentes ao título que foi seleiconado;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3004 #Conexão com a tabela de títulos
             conexao2 = Gf3003 #Conexão com a tabela de segmentos 
             conexao3 = Gf3001 #Conexão com a tabela de clientes
@@ -74,8 +74,8 @@ def cadBaixa(doc, parcela):
             parcelas = DB.session.query(conexao.t_dataVenc, conexao.t_valor, conexao.t_numParcela).filter(conexao.t_numDoc == doc).order_by(conexao.t_numParcela)
             #Query que trás o crédito do cliente caso ele tenha
             credito = DB.session.query(conexao5.d_id).filter(conexao5.d_idCliente==titulo.t_idCliente, conexao5.d_status==1, conexao5.d_ativo==1).join(conexao, conexao.t_idCliente == conexao5.d_idCliente).count()
-            contexto = {"titulo": titulo, "segCliVend": segCliVend, "parcelas": parcelas, "credito": credito} #Dicionário contendo as variáveis para utilizar no template
-            return render_template("baixa/cadBaixa.html", contexto=contexto) 
+            context = {"titulo": titulo, "segCliVend": segCliVend, "parcelas": parcelas, "credito": credito} #Dicionário contendo as variáveis para utilizar no template
+            return render_template("baixa/cadBaixa.html", context=context) 
                 
         else:
             return redirect("/")
@@ -117,7 +117,7 @@ def insertBaixa():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 
                 idCliente = list(request.form["cliente"].split())
@@ -180,7 +180,7 @@ def insertBaixa():
                     m_juros=float(juros),
                     m_deconto=float(desconto),
                     m_observ=observ,
-                    m_usuario=session["usuario_logado"],
+                    m_usuario=session["usuario"],
                     m_idDev=idDev,
                     m_segmento=request.form["segmento"],
                     m_ativo=1
@@ -217,7 +217,7 @@ def insertBaixa():
                     DB.session.commit()
 
                 flash(f"Baixa efetuada com sucesso!") #Mensagem para ser exibida no Front
-                Logger.log("Baixa de Título", session["usuario_logado"], session["filial"], f"Documento: {request.form['numDoc']} Parcela: {request.form['parcela']}") #Gera log informando que foi feita baixa no título 
+                Logger.log("Baixa de Título", session["usuario"], session["filial"], f"Documento: {request.form['numDoc']} Parcela: {request.form['parcela']}") #Gera log informando que foi feita baixa no título 
                 return redirect("/lista-baixas")
 
         else:
@@ -243,7 +243,7 @@ def baixas():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 dataAtual = datetime.today().strftime("%Y%m%d")
                 conexao = Gf3004

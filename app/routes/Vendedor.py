@@ -29,8 +29,9 @@ def listaVendedores():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
-            return render_template("vendedor/listaVendedores.html")
+        if session["usuario"]:
+            context = {"active": "usuario", "titulo": "Lista de Cliente"}
+            return render_template("vendedor/listaVendedores.html", context=context)
             
         else:
             return redirect("/")
@@ -49,19 +50,19 @@ def popupViewVend(id):
     #   id = Id do vendedor que foi selecionado.
     
     # RETORNOS:
-    #   return render_template("vendedor/listaVendedores.html", contexto=contexto) = Redireciona para 
+    #   return render_template("vendedor/listaVendedores.html", context=context) = Redireciona para 
     #     listagem de vendedores com modal, com as informações do vendedor;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3002 #Conexão com a tabela de vendedores
             #Query que trás o usuário que foi selcionado
             vendedor = conexao.query.get(id)
-            contexto = {"aviso": 2, "vendedor": vendedor} #Dicionário contendo as variáveis para utilizar no template
-            return render_template("vendedor/listaVendedores.html", contexto=contexto)
+            context = {"aviso": 2, "vendedor": vendedor} #Dicionário contendo as variáveis para utilizar no template
+            return render_template("vendedor/listaVendedores.html", context=context)
 
         else:
             return redirect("/")
@@ -81,16 +82,16 @@ def popupAtualizaBaseVend():
     #   Não tem parametros.
     
     # RETORNOS:
-    #   return render_template("vendedor/listaVendedores.html", contexto=contexto) = Redireciona para 
+    #   return render_template("vendedor/listaVendedores.html", context=context) = Redireciona para 
     #     listagem de vendedores com modal para confrimação para a atualização de base;
     #   return redirect("/") = Redireciona para o index se o usuário não estiver logado;
     #   return redirect("/index") = Redireciona para o index quando ocorre uma exeção.
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
-            contexto = {"aviso": 1} #Dicionário contendo as variáveis para utilizar no template
-            return render_template("vendedor/listaVendedores.html", contexto=contexto)
+        if session["usuario"]:
+            context = {"aviso": 1} #Dicionário contendo as variáveis para utilizar no template
+            return render_template("vendedor/listaVendedores.html", context=context)
 
         else:
             return redirect("/")
@@ -114,11 +115,11 @@ def atualizaBaseVend():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 Atualizacao.integraVendedor() #Chama função para a atualização
                 flash("Base atualizada com sucesso!") #Mensagem para ser exibida no Front
-                Logger.log("Atualização da base Vendedores", session["usuario_logado"], session["filial"]) #Gera log informando que foi feita atualização da base de vendedores
+                Logger.log("Atualização da base Vendedores", session["usuario"], session["filial"]) #Gera log informando que foi feita atualização da base de vendedores
             return jsonify("Sucsses")
 
     except Exception as erro:
@@ -141,7 +142,7 @@ def vendedoresInput(nome):
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             conexao = Gf3002 #Conexão com a tabela de vendedores
             if nome.isdigit(): #Verifica se o que foi enviado é número
                 #Query que consulta os nomes de acordo com o código do vendedor
@@ -171,7 +172,7 @@ def vendedores():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 conexao = Gf3002 #Conexão com a tabela de vendedores
                 #Query que trás todos os vendedores
@@ -201,7 +202,7 @@ def idVendedor():
     ###################################################################################################
     
     try:
-        if session["usuario_logado"]:
+        if session["usuario"]:
             if request.method == "POST":
                 data = request.get_json()
                 conexao = Gf3002 #Conexão com a tabela de vendedores

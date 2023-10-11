@@ -206,8 +206,8 @@ button.list-group-item-primary.active {
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #696cff;
+  color: #fff !important;
+  background-color: #696cff !important;
   border-color: #696cff;
   box-shadow: 0 0.125rem 0.25rem 0 rgba(105, 108, 255, 0.4);
 }
@@ -215,7 +215,7 @@ button.list-group-item-primary.active {
   color: #fff;
   background-color: #5f61e6;
   border-color: #5f61e6;
-  transform: translateY(-1px);
+  transform: translateY(-3px);
 }
 .btn-check:focus + .btn-primary, .btn-primary:focus, .btn-primary.focus {
   color: #fff;
@@ -237,8 +237,8 @@ button.list-group-item-primary.active {
 }
 
 .btn-outline-primary {
-  color: #696cff;
-  border-color: #696cff;
+  color: #696cff !important;
+  border-color: #696cff !important;
   background: transparent;
 }
 .btn-outline-primary:hover {
@@ -295,12 +295,16 @@ button.list-group-item-primary.active {
   color: #696cff !important;
 }
 
-.nav .nav-link:hover, .nav .nav-link:focus {
-  color: #5f61e6;
+.nav .nav-link:not(:focus):hover, .nav {
+  color: #5f61e6 !important;
+}
+
+.nav .nav-link.active:hover{
+  color: #fff !important;
 }
 
 .nav-pills .nav-link.active, .nav-pills .nav-link.active:hover, .nav-pills .nav-link.active:focus {
-  background-color: #696cff;
+  background-color: #696cff !important;
   color: #fff;
   box-shadow: 0 2px 4px 0 rgba(105, 108, 255, 0.4);
 }

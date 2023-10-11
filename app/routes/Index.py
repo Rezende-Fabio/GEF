@@ -49,10 +49,7 @@ def index():
     else:
         session["base"] = "PRODUCAO"
     
-    if request.remote_addr not in ips:
-        return render_template("public/alert.html")
-    else:
-        return render_template("public/index.html")
+    return render_template("public/index.html")
     
 
 #Rota para esqueci a senha 

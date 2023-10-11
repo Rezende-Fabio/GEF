@@ -2,28 +2,28 @@
 Inicio index
 */
 
-.image-index{
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.image-index {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.image-index img{
-  width: 35%;
+.image-index img {
+    width: 35%;
 }
 
-#formAuthentication label{
-  font-size: 14px;
-  font-weight: 600;
+#formAuthentication label {
+    font-size: 14px;
+    font-weight: 600;
 }
 
-.btn-acessar{
-  font-weight: bold !important;
-} 
+.btn-acessar {
+    font-weight: bold !important;
+}
 
-.btn-acessar:hover{
-  color: #ffffff !important;
+.btn-acessar:hover {
+    color: #ffffff !important;
 }
 
 /*
@@ -35,62 +35,155 @@ Termino index
 Inicio base
 */
 
-#layout-menu{
-  position: fixed; 
-  height: 100vw;
+#layout-menu {
+    position: fixed;
+    height: 100vw;
 }
 
-.layout-page{
-  margin-left: 15.5rem !important;
+.layout-page {
+    margin-left: 15.5rem !important;
 }
 
-@media  screen and (max-width: 1200px) {
-  .layout-page{
-    margin-left: 0rem !important;
-  }
+@media screen and (max-width: 1200px) {
+    .layout-page {
+        margin-left: 0rem !important;
+    }
 }
 
-.clicavel{
-  cursor: pointer;
+.clicavel {
+    cursor: pointer;
 }
 
-.card{
-  padding: 25px 8px 25px 8px !important;
+.card {
+    padding: 25px 8px 25px 8px !important;
 }
 
-.form-control{
-  text-transform: uppercase;
+.form-control {
+    text-transform: uppercase;
 }
 
-.alert{
-  border-left: 10px solid !important;
+.alert {
+    border-left: 10px solid !important;
 }
 
-.alert h6{
-  font-size: 15px;
-  font-weight: bold;
-  margin-top: 0.4rem;
+.alert h6 {
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 0.4rem;
 }
 
-.alert i{
-  font-size: 1.5rem;
-  padding-right: 1rem;
+.alert i {
+    font-size: 1.5rem;
+    padding-right: 1rem;
 }
 
 .alert .progress {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 5px;
-  width: 100%;
-  background-color: currentColor;
-  animation: progress 8s linear forwards;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 5px;
+    width: 100%;
+    background-color: currentColor;
+    animation: progress 8s linear forwards;
 }
 
 @keyframes progress {
-  100% {
-      width: 0%;
-  }
+    100% {
+        width: 0%;
+    }
+}
+
+.ui-menu {
+    background-color: #ffffff;
+    list-style: none;
+    width: 2rem;
+    padding: 2px 2px 2px 5px;
+    border-radius: 0 0 0.5rem 0.5rem;
+    border: 1px solid #000000;
+    color: #000000;
+    z-index: 999999999999999;
+    box-shadow: 5px 5px 5px 1px #00000050;
+}
+
+.ui-menu li:hover {
+    background-color: #a1a1a1;
+    padding: 2px 2px 2px 5px;
+}
+
+.ui-menu li:focus {
+    background-color: #a1a1a1;
+}
+
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active,
+a.ui-button:active,
+.ui-button:active,
+.ui-button.ui-state-active:hover {
+    background-color: #c4c4c4;
+    padding: 2px 2px 2px 5px;
+}
+
+.icon-size {
+    font-size: 3rem;
+    color: #cfc63f;
+}
+
+.msg-modal-alert {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+input:focus {
+    outline: 2.5px solid #9999FF !important;
+}
+
+select:focus {
+    outline: 2.5px solid #9999FF !important;
+}
+
+textarea:focus {
+    outline: 2.5px solid #9999FF !important;
+}
+
+.titulo-card {
+    font-weight: bold;
+}
+
+.btn {
+    font-weight: bold !important;
+}
+
+.btn:hover{
+    transform: translateY(-4px) !important;
+    box-shadow: 0 0.225rem 0.225rem 0 rgba(0, 0, 0, 0.4) !important;
+}
+
+textarea {
+    min-height: 35px !important;
+    max-height: 95px !important;
+}
+
+.modal-title{
+    font-weight: bold !important;
+    font-size: 19px !important;
+}
+
+.gridjs-input{
+    width: 25rem !important;
+}
+
+.nav .nav-link, .nav .nav-link {
+    font-weight: bold !important;
+}
+
+.alert-menu-item{
+    margin-left: 1.9rem;
+    background-color: #ff0000;
+    padding: 1px 5px 1px 5px;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 5px;
 }
 
 /*
@@ -102,8 +195,12 @@ Termino base
 Inicio header
 */
 
-.header-page{
-  width: 100%;
+.header-page {
+    width: 100%;
+}
+
+.header-page h2{
+    font-weight: 600;
 }
 
 /*
@@ -116,15 +213,52 @@ Inicio Cadastro de Usuário
 */
 
 .ver-senha {
-  display: flex;
-  justify-content: center;
-  align-self: flex-end;
+    display: flex;
+    justify-content: center;
+    align-self: flex-end;
 }
 
 .ver-senha button:hover {
-  color: #ffffff;
+    color: #ffffff;
 }
 
 /*
 Termino Cadastro de Usuário
+*/
+
+
+/*
+Inicio Incluir Baixa
+*/
+
+.saldo-atual {
+    border: 2px solid #b32e2e !important;
+}
+
+#scroll-dev{
+    width: 100%;
+}
+
+/*
+Termino Incluir Baixa
+*/
+
+
+/*
+Inicio Relatório
+*/
+
+/*.nav .nav-link{
+    background-color: #ffffff !important;
+    border: 1px solid #5f61e6 !important;
+}*/
+
+.data-observ{
+    font-size: 15px;
+    color: #ff0000;
+    margin-bottom: 0.5rem;
+}
+
+/*
+Termino Relatório
 */

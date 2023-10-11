@@ -1,5 +1,5 @@
 <div class="modal fade" id="backDropModal" data-bs-backdrop="static" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <form class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="backDropModalTitle">Preencha seus dados</h5>
@@ -12,10 +12,16 @@
                         <input type="text" id="nameBackdrop" class="form-control" placeholder="Informe seu usuário" />
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col mb-3">
+                        <label for="nameBackdrop" class="form-label">E-mail:</label>
+                        <input type="text" id="nameBackdrop" class="form-control" placeholder="Informe seu E-mail" />
+                    </div>
+                </div>
             </div>
             <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-outline-success">Enviar</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success">Enviar</button>
             </div>
         </form>
     </div>

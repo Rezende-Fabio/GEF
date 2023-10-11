@@ -34,7 +34,7 @@
                     <div class="card-body">
                         <div class="app-brand justify-content-center">
                             <div class="image-index">
-                                <img src="{{ url_for('static', filename='img/logo2.png') }}" id="icon"
+                                <img src="{{ url_for('static', filename='img/logo3.png') }}" id="icon"
                                     alt="User Icon" />
                             </div>
                         </div>
@@ -48,13 +48,12 @@
                                     }, 5000);
                                 </script>
                                 <div class="alert alert-danger d-flex align-items-center" role="alert">
-                                    <i class="fa-solid fa-circle-exclamation"
-                                        style="font-size: 1rem; padding-right: 0.5rem; padding-bottom: 0.2rem;"></i>
+                                    <i class="fa-solid fa-circle-exclamation" style="font-size: 1.5rem; padding-right: 0.8rem; padding-bottom: 0.2rem;"></i>
                                     <h6>{{ message }}</h6>
                                 </div>
                             {% endif %}
                         {% endfor %}
-                        <form id="formAuthentication" class="mb-3" action="{{ url_for('mainBlue.autenticar') }}"
+                        <form id="formAuthentication" class="mb-3" action="{{ url_for('autenticacaoBlue.autenticar') }}"
                             method="POST">
                             <div class="mb-3">
                                 <label for="usuario" class="form-label">Usuário:</label>
@@ -83,7 +82,7 @@
                         </form>
                         <p class="text-center">
                             <a class="underlineHover" style="text-decoration: none;" data-bs-toggle="modal"
-                                data-bs-target="#backDropModal" href="{{ url_for('mainBlue.esqueciSenha') }}">Esqueceu a senha?</a>
+                                data-bs-target="#backDropModal">Esqueceu a senha?</a>
                         </p>
                     </div>
                 </div>

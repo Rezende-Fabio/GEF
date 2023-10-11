@@ -2,6 +2,7 @@ from datetime import datetime
 from .pastaLog import Pasta
 
 class Logger():
+    
     def log(operacao, usuario, filial, documento=False):
         diaAtual = datetime.now().strftime("%d")
         pasta = Pasta()

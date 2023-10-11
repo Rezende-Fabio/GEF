@@ -1,7 +1,6 @@
 {% extends "public/base.html" %}
-{% block head %}
-{% endblock %}
 {% block conteudo %}
+{% include "public/modal/modalExclusao.html" %}
     {% include "public/header.html" %}
     <!-- Exibe mensagem que foi enviado pelo Back -->
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -64,5 +63,48 @@
             paginationAutoPageSize: true,
             pagination: true,
         }).render(document.getElementById("lista-usuarios"));
+    </script>
+    <script>
+        $(document).ready(function() {
+    
+            $('#modalExclusao').on('show.bs.modal', function (event) {
+                var modal = $(this);
+                var idDoElementoClicado = modal.data('id');
+                
+                $.ajax({
+                    url: `/usuario/usuario/${idDoElementoClicado}`,
+                    type: 'GET',
+                    success: function(data) {
+                        $('#msgModal').html("");
+                        $('#msgModal').html(data.msg);
+                    },
+                    error: function(erro){
+                        console.log(erro);
+                    }
+                });
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).on('click', '.abrirModal', function() {
+            var idDoElementoClicado = $(this).data('id');
+            $('#modalExclusao').data('id', idDoElementoClicado);
+            $('#modalExclusao').modal('show');
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).on('click', '.btn-excluir', function() {
+            var idSelecionado = $('#modalExclusao').data('id');
+            $.ajax({
+                url: `/usuario/deletar-usuario/${idSelecionado}`,
+                type: 'DELETE',
+                success: function(data) {
+                    location.reload();
+                },
+                error: function(erro){
+                    console.error(erro);
+                }
+            });
+        });
     </script>
 {% endblock %}

@@ -1,9 +1,10 @@
 from flask_login import login_user, logout_user
-from ..models.entity.Usuario import Usuario
-from ..models.dao.LoginDao import LoginDao
+from ..models.Models import SysUsers
 from flask import session
+from ..response.Response import Response
 
-class ControllerLogin:
+
+class ControllerLogin(Response):
     """
     Classe Controller para as funções relacionadas ao login do sistema
     @author - Fabio
@@ -24,25 +25,34 @@ class ControllerLogin:
             4 - Usuário não encontrado.
         """
 
-        loginDao = LoginDao()
-        usersResp = loginDao.consultarUsuario(usuario=form["usuario"].upper())
+        usersResp = SysUsers.query.filter(SysUsers.s_usuario==form["usuario"].upper()).first()
 
         if usersResp:
-            user = Usuario(id=usersResp.id, usuario=usersResp.s_usuario, senha=form["senha"].upper(), complex=usersResp.s_complex, 
-                           senhaCompara=usersResp.s_senha, ativo=usersResp.s_ativo, admin=usersResp.s_admin, nome=usersResp.s_nome,
-                           senhaNova=usersResp.s_novaSenha)
-            if user.ativo:
-                if user.verificarSenha():
-                    session["usuario"] = user.toJson()
+            if usersResp.s_ativo:
+                if usersResp.verificarSenha(form["senha"].upper()):
+                    login_user(usersResp)
+                    session["usuario"] = usersResp.toJson()
                     session["filial"] = int(form["filial"])
-                    return 1
+                    session.permanent = True
+
+                    return self.redirect(url="dashboardBlue.dashboard")
                 else:
-                    return 2
+                    return self.redirect(url="indexBlue.index", mensagem="Usuário/Senha incorreto!")
             else:
-                return 3
+                return self.redirect(url="indexBlue.index", mensagem="Usuário deletado")
         else:
-            return 4
+            return self.redirect(url="indexBlue.index", mensagem="Usuário não existe")
 
 
 
+    def efetuarLogout(self) -> None:
+        """
+        Realiza o processo de logout do usuário.
+        """
 
+        logout_user()
+        session.clear()
+
+        return self.redirect(url="mainBlue.index")
+
+        

@@ -1,107 +1,136 @@
 {% extends "public/base.html" %}
 {% block conteudo %}
-    <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert">
-    </div>
-    <h4 class="titulo-pagina">Atualizar Título</h4><br>
-    <div class="container-form">
-        <form id="rcorners2" class="container" style="width: 130%;" action="/editar-titulo/{{context.titulo.t_numDoc}}" method="POST">
-            <h5 id="titulo1">Dados do Título</h5>
-            <div class="container" id="cont1">
-                <div class="row">
-                    <div class="col-2">
-                        <label for="">N. do Documento</label>
-                        <input type="text" class="form-control" style="text-transform: uppercase;" name="numDoc" id="numDoc" maxlength="40" size="40" 
-                        tabindex="1" autocomplete="off" required value="{{context.titulo.t_numDoc}}" readonly>
-                    </div>
-                    <div class="col-2">
-                        <label for="">Documento Ref.</label>
-                        <input type="text" class="form-control" style="text-transform: uppercase;" name="docRef" id="docRef" maxlength="40" size="40" 
-                        tabindex="1" autocomplete="off" required value="{{context.titulo.t_docRef}}" readonly>
-                    </div>
-                    <div class="col-2">
-                        <label for="">Segmento</label>
-                        <input type="text" class="form-control" style="text-transform: uppercase;" name="segmento" id="segmento" maxlength="40" size="40" 
-                        tabindex="1" autocomplete="off" required value="{{context.segCliVend[0].s_abrev}}" readonly>
-                    </div>
-                    <div class="col-4">
-                        <label for="">Data do Lançamaneto</label>
-                        <input type="date" class="form-control" style="text-transform: uppercase;" name="dataLanc" id="dataLanc" maxlength="50" size="50" 
-                        tabindex="3" autocomplete="off" required value="{{context.titulo.t_dataLanc | strftime}}" readonly>
-                    </div>
-                    <div class="col-2">
-                        <label for="">Comissão</label>
-                        <input type="number" class="form-control" style="text-transform: uppercase;" name="comissao" id="comissao" maxlength="40" size="40" 
-                        tabindex="4" step="0.01" autocomplete="off" required value="{{context.titulo.t_comissao}}">
-                    </div> 
-                </div>
-                <br>        
-                <div class="row">
-                    <div class="col-6">
-                        <label for="">Cliente</label>
-                        <input type="text" class="form-control" style="text-transform: uppercase;" name="cliente" id="cliente" maxlength="10" size="10" 
-                        tabindex="5" autocomplete="off" required value="{{context.titulo.t_idCliente}} - {{context.segCliVend[0].c_razaosocial}}" readonly>
-                    </div>
-                    <div class="col-6">
-                        <label for="">Vendedor</label>
-                        <input type="text" class="form-control" style="text-transform: uppercase;" name="vendedor" id="vendedor" maxlength="10" size="10" 
-                        tabindex="6" autocomplete="off" required value="{{context.titulo.t_idVendedor}} - {{context.segCliVend[0].v_nome}}" readonly>
-                    </div>                     
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-4">
-                        <label for="">Valor Total</label>
-                        <input type="text" class="form-control" style="text-transform: uppercase;" name="valorTotal" id="valorTotal" maxlength="10" size="10" 
-                        tabindex="7" autocomplete="off" required value="{{context.segCliVend[0].valorTotal | float}}" readonly>
-                    </div>
-                    <div class="col-2">
-                        <label for="">Parcelas</label>
-                        <input type="text" class="form-control" style="text-transform: uppercase;" name="parcelas" id="parcelas" maxlength="40" size="40" 
-                        tabindex="1" autocomplete="off" required value="{{context.segCliVend[0].parcelas}}" readonly>
-                    </div>
-                    <div class="col-2">
-                        <label for="">Filial</label>
-                        <input type="text" class="form-control" style="text-transform: uppercase;" name="filial" id="filial" maxlength="10" size="10" 
-                        tabindex="6" autocomplete="off" required value="{{context.titulo.t_filialOri}}" readonly>
-                    </div> 
-                </div> 
-            </div>
-            <h5 id="titulo2">Dados das Parcelas</h5>
-            <div class="container" id="cont2">
-                <div class="row justify-content-md-center">
-                    <div class="row justify-content-md-center">
+{% include "public/header.html" %}
+<div class="alert alert-danger d-flex align-items-center d-none" role="alert">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <h6 class="msg"></h6>
+</div>
+<form action="/editar-titulo/{{context.tituloDoc.t_numDoc}}"
+    method="POST">
+    <div class="row mb-1">
+        <div class="col-xxl">
+            <div class="card p-4">
+                <h5 class="titulo-card">Dados do Título</h5>
+                <div class="container" id="cont1">
+                    <div class="row">
                         <div class="col-2">
-                            <label>Num. Parcelas</label>
+                            <label for="">N. do Documento</label>
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="numDoc"
+                                id="numDoc" maxlength="40" size="40" tabindex="1" autocomplete="off" required
+                                value="{{context.tituloDoc.t_numDoc}}" readonly>
+                        </div>
+                        <div class="col-2">
+                            <label for="">Documento Ref.</label>
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="docRef"
+                                id="docRef" maxlength="40" size="40" tabindex="1" autocomplete="off" required
+                                value="{{context.tituloDoc.t_docRef}}" readonly>
+                        </div>
+                        <div class="col-2">
+                            <label for="">Segmento</label>
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="segmento"
+                                id="segmento" maxlength="40" size="40" tabindex="1" autocomplete="off" required
+                                value="{{context.segCliVend[0].s_abrev}}" readonly>
                         </div>
                         <div class="col-4">
-                            <label>Valor</label>
+                            <label for="">Data do Lançamaneto</label>
+                            <input type="date" class="form-control" style="text-transform: uppercase;" name="dataLanc"
+                                id="dataLanc" maxlength="50" size="50" tabindex="3" autocomplete="off" required
+                                value="{{context.tituloDoc.t_dataLanc | strftime}}" readonly>
                         </div>
-                        <div class="col-4">
-                            <label>Data Vencimento</label>
+                        <div class="col-2">
+                            <label for="">Comissão</label>
+                            <input type="number" class="form-control" style="text-transform: uppercase;" name="comissao"
+                                id="comissao" maxlength="40" size="40" tabindex="4" step="0.01" autocomplete="off"
+                                required value="{{context.tituloDoc.t_comissao}}">
                         </div>
                     </div>
-                    <!-- Loop para adicionar dinamicamente as parcelas dp título -->
-                    {% for parcela in context.parcelas %}
+                    <br>
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="">Cliente</label>
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="cliente"
+                                id="cliente" maxlength="10" size="10" tabindex="5" autocomplete="off" required
+                                value="{{context.tituloDoc.t_idCliente}} - {{context.segCliVend[0].c_razaosocial}}"
+                                readonly>
+                        </div>
+                        <div class="col-6">
+                            <label for="">Vendedor</label>
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="vendedor"
+                                id="vendedor" maxlength="10" size="10" tabindex="6" autocomplete="off" required
+                                value="{{context.tituloDoc.t_idVendedor}} - {{context.segCliVend[0].v_nome}}" readonly>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="">Valor Total</label>
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="valorTotal"
+                                id="valorTotal" maxlength="10" size="10" tabindex="7" autocomplete="off" required
+                                value="{{context.segCliVend[0].valorTotal | float}}" readonly>
+                        </div>
+                        <div class="col-2">
+                            <label for="">Parcelas</label>
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="parcelas"
+                                id="parcelas" maxlength="40" size="40" tabindex="1" autocomplete="off" required
+                                value="{{context.segCliVend[0].parcelas}}" readonly>
+                        </div>
+                        <div class="col-2">
+                            <label for="">Filial</label>
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="filial"
+                                id="filial" maxlength="10" size="10" tabindex="6" autocomplete="off" required
+                                value="{{context.tituloDoc.t_filialOri}}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-1">
+        <div class="col-xxl">
+            <div class="card p-4">
+                <h5 class="titulo-card">Dados das Parcelas</h5>
+                <div class="container mb-5">
+                    <div class="row justify-content-md-center">
                         <div class="row justify-content-md-center">
                             <div class="col-2">
-                                <h6 style="margin-top: 0.4rem;">x{{parcela.t_numParcela}} R$</h6>
+                                <label>Num. Parcelas</label>
                             </div>
                             <div class="col-4">
-                                <input type="text" class="form-control" style="text-transform: uppercase;" name="valor{{parcela.t_numParcela}}" id="valor{{parcela.t_numParcela}}" maxlength="10" size="10" tabindex="4" value="{{parcela.t_valor}}" readonly>
+                                <label>Valor</label>
                             </div>
                             <div class="col-4">
-                                <input type="date" class="form-control" class="" style="text-transform: uppercase;" name="parcela{{parcela.t_numParcela}}" id="parcela{{parcela.t_numParcela}}" maxlength="10" size="10" tabindex="4" autocomplete="off" value="{{parcela.t_dataVenc | strftime}}" required>
+                                <label>Data Vencimento</label>
                             </div>
                         </div>
-                    {% endfor %}
+                        <!-- Loop para adicionar dinamicamente as parcelas dp título -->
+                        {% for parcela in context.parcelas %}
+                            <div class="row justify-content-md-center mb-2">
+                                <div class="col-2">
+                                    <h6 style="margin-top: 0.4rem;">x{{parcela.t_numParcela}} R$</h6>
+                                </div>
+                                <div class="col-4">
+                                    <input type="text" class="form-control" style="text-transform: uppercase;"
+                                        name="valor{{parcela.t_numParcela}}" id="valor{{parcela.t_numParcela}}"
+                                        maxlength="10" size="10" tabindex="4" value="{{parcela.t_valor}}" readonly>
+                                </div>
+                                <div class="col-4">
+                                    <input type="date" class="form-control" class="" style="text-transform: uppercase;"
+                                        name="parcela{{parcela.t_numParcela}}" id="parcela{{parcela.t_numParcela}}"
+                                        maxlength="10" size="10" tabindex="4" autocomplete="off"
+                                        value="{{parcela.t_dataVenc | strftime}}" required>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a href="javascript:history.back()" class="btn btn-danger" type="button" name="btnCancelar"
+                        id="btnCancelar" tabindex="10">Cancelar</a>
+                    <input type="submit" class="btn btn-success" id="btnGravar" value="Atualizar" tabindex="9">
                 </div>
             </div>
-            <br><br>
-            <div class="btn-position">
-                <input type="submit" class="btn btn-outline-success" id="btnGravar" value="Atualizar" tabindex="9">
-                <a href="javascript:history.back()" class="btn btn-outline-danger" type="button" name="btnCancelar" id="btnCancelar" tabindex="10">Cancelar</a>
-            </div>
-        </form>
+        </div>
     </div>
+</form>
 
 {% endblock %}

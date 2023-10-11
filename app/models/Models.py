@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, DateTime, Boolean, Float, Integer, Numeric, ForeignKey
-from werkzeug.security import check_password_hash
 from ..configurations.DataBase import DB
 from flask_login import UserMixin
+import bcrypt
 
 
 #Usuários
@@ -15,6 +15,32 @@ class SysUsers(UserMixin, DB.Model):
     s_ativo = DB.Column(DB.Boolean)
     s_novaSenha = DB.Column(DB.Boolean)
     s_complex = DB.Column(DB.String(36))
+
+    def items(self):
+        return {key: value for key, value in self.__dict__.items() if key != '_sa_instance_state' and value is not None}
+
+    def gerarSenha(self, senha: str) -> None:
+        salt = bcrypt.gensalt(8)
+        hash = bcrypt.hashpw(senha.encode('utf-8'), salt)
+        self.s_senha = hash.decode("utf-8")
+        self.s_complex = salt.decode("utf-8")
+        
+    def verificarSenha(self, senha: str) -> bool:
+        hash = bcrypt.hashpw(senha.encode('utf-8'), bytes(self.s_complex, 'utf-8'))
+        if hash.decode('utf-8') == self.s_senha:
+            return True
+        else:
+            return False
+        
+    def toJson(self) -> dict:
+        json = {
+            "id": self.id,
+            "nome": self.s_nome,
+            "usuario": self.s_usuario,
+            "admin": self.s_admin
+        }
+
+        return json
     
 
 #Cliente

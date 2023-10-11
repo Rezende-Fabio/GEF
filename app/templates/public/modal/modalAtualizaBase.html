@@ -1,0 +1,29 @@
+<div class="modal fade" id="backDropModalAtulizaBase" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="backDropModalTitle">AVISO</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="card-alert">
+                    <div class="d-flex justify-content-center align-items-center flex-column">
+                        <p>Está ação ira atualizar toda a base do GEF de a cordo com os dados do Protheus.</p>
+                        <p>Deseja continuar?</p>
+                    </div>
+                </div>
+                <div class="justify-content-center align-items-center flex-column" style="display: none;" id="loader">
+                    <h2>Aguarde!</h2>
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>Atualizando ...</p>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between" id="btns-atualiza-base">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btn-sim" class="btn btn-success">Confirmar</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+{% extends "public/base.html" %}
+{% block head %}
+    <script type="text/javascript" src="{{ url_for('static', filename='plugin/pagination/dataDev.js') }}"></script>
+{% endblock %}
+{% block conteudo %}
+{% include "public/header.html" %}
+    <!-- Exibe mensagem que foi enviado pelo Back -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <script>
+                    window.setTimeout(function() {
+                        $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                            $(this).remove(); 
+                        });
+                    }, 8000);
+                </script>
+                <div class="alert alert-{{ category }} d-flex align-items-center" role="alert">
+                    {% if category == "success" %}
+                        <i class="fa-solid fa-circle-check"></i>
+                    {% else %}
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    {% endif %}
+                    <h6>{{ message }}</h6>
+                    <div class="progress active"></div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="conteiner-fluid d-flex justify-content-end">
+        <a class="btn btn-success" href="{{ url_for('devolucaoBlue.cadDevolucao') }}">Cadastrar Devolução</a>
+    </div>
+    <div id="lista-devolucoes"></div>
+
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/devolucao/dataDev.js') }}"></script>
+<script>
+    new gridjs.Grid({
+        columns: columnsDev,
+        data: () => {
+            return new Promise(resolve => {
+                setTimeout(() => resolve(dataDev), 2000);
+            });
+        },
+        search: {
+            ignoreHiddenColumns: false,
+        },
+        sort: true,
+        paginationAutoPageSize: true,
+        pagination: true,
+    }).render(document.getElementById("lista-devolucoes"));
+</script>
+{% endblock %} 

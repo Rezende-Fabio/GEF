@@ -1,216 +1,105 @@
 {% extends "public/base.html" %}
-{% block head %}
-    <script type="text/javascript" src="{{ url_for('static', filename='plugin/pagination/dataDev.js') }}"></script>
-{% endblock %}
 {% block conteudo %}
-    <!-- Exibe mensagem que foi enviado pelo Back -->
-    {% for message in get_flashed_messages() %}
-        {% if "sucesso" in message %}
-            <script>
-                window.setTimeout(function() {
-                    $(".alert").fadeTo(500, 0).slideUp(500, function(){
-                        $(this).remove(); 
-                    });
-                }, 2000);
-            </script>
-            <div class="alert alert-success d-flex align-items-center" role="alert">
-                <i class="fa-solid fa-circle-check" style="font-size: 1rem; padding-right: 1rem;"></i>
-                <div>
-                    <h6>{{ message }}</h6>
-                </div>
-            </div>
-        {% else %}
-            <script>
-                window.setTimeout(function() {
-                    $(".alert").fadeTo(500, 0).slideUp(500, function(){
-                        $(this).remove(); 
-                    });
-                }, 15000);
-            </script>
-            <div class="alert alert-danger d-flex align-items-center" role="alert">
-                <i class="fa-solid fa-circle-exclamation" style="font-size: 1rem; padding-right: 1rem;"></i>
-                <div>
-                    <h6>{{ message }}</h6>
-                </div>
-            </div>
-        {% endif %}
-    {% endfor %}
-    <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert">
-    </div>
-    <div class="container" id="cadDev">
-        <h4 class="titulo-pagina">Cadastro de Devolução</h4><br>
-        <form id="rcorners2" class="container" onsubmit="return ValidaVendDev()" action="/insert-devolucao" method="POST">
-            <div class="row">
-                <div class="col-6">
-                    <label for="">Cliente</label>
-                    <input type="text" class="form-control" style="text-transform: uppercase;" name="cliente" id="cliente" maxlength="40" size="40" tabindex="1" autocomplete="off" required>
-                </div>
-                <div class="col-3">
-                    <label for="">Valor</label>
-                    <input type="number" class="form-control" style="text-transform: uppercase;" name="valor" id="valor" maxlength="10" size="10" 
-                    tabindex="2" step="0.01" autocomplete="off" required>
-                </div> 
-                <div class="col-3">
-                    <label for="">Data do Lançamaneto</label>
-                    <input type="date" class="form-control" style="text-transform: uppercase;" name="dataLanc" id="dataLanc" maxlength="50" size="50" 
-                    tabindex="3" autocomplete="off" required value="{{context.data}}">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-3">
-                    <label for="">Ref.</label>
-                    <input type="text" class="form-control" style="text-transform: uppercase;" name="docRef" id="docRef" maxlength="40" size="40" tabindex="4" autocomplete="off" required>
-                </div>
-            </div>
-            <br>
-            <br>
-            <div class="btn-position">
-                <input type="submit" class="btn btn-outline-success" id="btnGravarDev" value="Gravar">
-            </div>
-        </form>   
-    </div>
-    
-    <div class="conteiner-top">
-        <div style="display: flex; justify-content:left;">
-            <h3 class="titulo-pagina">Lista Devolução</h3>
-        </div>
-        <div class="col-md-3">
-            <input type="text" class="form-control" placeholder="Pesquisar" id="searchField">
-        </div>
-    </div>
-    
-    <div class="page-container">
-        <div class="container">
-            <div id="lista-devolucao"></div>
-        </div>
-    </div>
-    <!-- Modal de confirmação de exclusão da devolução -->
-    {% if context %}
-        {% if context.aviso == 1 %}
-            <section class="modal-delete">
-                <div id="card-delete">
-                    <h2>Aviso!</h2>
-                    <hr>
-                    <p>Deseja mesmo excluir a Devolução da Referência {{ context.devolucao.d_docRef }} ?</p>
-                    <div id="btns">
-                        <a class="btn btn-success btn-sm" href="/exluir-devolucao/{{context.devolucao.d_id}}">Confirmar</a>
-                        <a class="btn btn-danger btn-sm" href="javascript:history.back()">Cancelar</a>
+{% include "public/header.html" %}
+<form onsubmit="return ValidaVendDev()" action="/insert-devolucao" method="POST">
+    <div class="row mb-1">
+        <div class="col-xxl">
+            <div class="card p-4">
+                <div class="row">
+                    <div class="col-6">
+                        <label for="">Cliente</label>
+                        <input type="text" class="form-control" style="text-transform: uppercase;" name="cliente" id="cliente" maxlength="40" size="40" tabindex="1" autocomplete="off" required>
+                    </div>
+                    <div class="col-3">
+                        <label for="">Valor</label>
+                        <input type="number" class="form-control" style="text-transform: uppercase;" name="valor" id="valor" maxlength="10" size="10" 
+                        tabindex="2" step="0.01" autocomplete="off" required>
+                    </div> 
+                    <div class="col-3">
+                        <label for="">Data do Lançamaneto</label>
+                        <input type="date" class="form-control" style="text-transform: uppercase;" name="dataLanc" id="dataLanc" maxlength="50" size="50" 
+                        tabindex="3" autocomplete="off" required value="{{context.data}}">
                     </div>
                 </div>
-            </section>
-        {% endif %}
-    {% endif %}
-
-    {% block script %}
-        <script>
-            $("#cliente").keyup(function(){
-                var nomeCli = this.value
-                if (nomeCli.length >= 2){
-
-                    var nomes=[]
-                    function carregaNomesCli(){
-                        $.getJSON(`/clientes/${nomeCli}`, function(data, status, xhr){
-                            for (var i = 0; i < data.length; i++){
-                                nomes.push(data[i].nome)
-                            }
-                        });
-                    }
-                    carregaNomesCli();
-
-                    $("#cliente").autocomplete({
-                        source: nomes,
-                    });
-
-                    $(".ui-helper-hidden-accessible").css("display", "none")
-                }
-            })
-        </script>
-
-        <script>
-            $("#docRef").keyup(function(){
-                var idCli = $("#cliente").val().split(" ")
-                if (this.value.length >= 1){
-                    var docs=[]
-
-                    function docCli(){
-                        $.getJSON(`/doc-ref/${idCli[0]}`, function(data, status, xhr){
-                            for (var i = 0; i < data.length; i++){
-                                docs.push(data[i].doc)
-                            }
-                        });
-                    }
-                    docCli();
-
-                    $("#docRef").autocomplete({
-                        source: docs,
-                    });
-
-                    $(".ui-helper-hidden-accessible").css("display", "none")
-                }
-            })
-        </script>
-
-        <script>
-            var table = $('#lista-devolucao').tableSortable({
-                data: dataDev,
-                columns: columnsDev,
-                searchField: '#searchField',
-                responsive: {
-                    600: {
-                        columns: {
-                            formCode: 'Form Code',
-                            formName: 'Form Name',
-                        },
-                    },
-                },
-                rowsPerPage: 5,
-                pagination: true,
-                tableWillMount: function() {
-                    console.log('table will mount')
-                },
-                tableDidMount: function() {
-                    console.log('table did mount')
-                },
-                tableWillUpdate: function() {console.log('table will update')},
-                tableDidUpdate: function() {console.log('table did update')},
-                tableWillUnmount: function() {console.log('table will unmount')},
-                tableDidUnmount: function() {console.log('table did unmount')},
-                onPaginationChange: function(nextPage, setPage) {
-                    setPage(nextPage);
-                }
-            });
-
-            $('#changeRows').on('change', function() {
-                table.updateRowsPerPage(parseInt($(this).val(), 10));
-            })
-
-            $('#rerender').click(function() {
-                table.refresh(true);
-            })
-
-            $('#distory').click(function() {
-                table.distroy();
-            })
-
-            $('#refresh').click(function() {
-                table.refresh();
-            })
-
-            $('#setPage2').click(function() {
-                table.setPage(1);
-            })
-        </script>
-
-        <script>
-            $(document).ready(function() {
-                $('#docRef').keyup(function(e){
-                    if (/\D/g.test(this.value)){
-                        // Filtro para digitar apenas números
-                        this.value = this.value.replace(/\D/g, '');
-                    }
-                });
-            });
-        </script>
-    {% endblock %} 
-
+                <div class="row mb-5">
+                    <div class="col-3">
+                        <label for="">Ref.</label>
+                        <input type="text" class="form-control" style="text-transform: uppercase;" name="docRef" id="docRef" maxlength="40" size="40" tabindex="4" autocomplete="off" required>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a href="javascript:history.back()" class="btn btn-danger" type="button" name="btnCancelar" id="btnCancelar" tabindex="6">Cancelar</a>
+                    <input type="submit" class="btn btn-success" id="btnGravarDev" value="Gravar">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>   
 {% endblock %}
+{% block script %}
+    <script>
+        $("#cliente").keyup(function(){
+            var nomeCli = this.value
+            if (nomeCli.length >= 2){
+
+                var nomes=[]
+                function carregaNomesCli(){
+                    $.getJSON(`/clientes/${nomeCli}`, function(data, status, xhr){
+                        for (var i = 0; i < data.length; i++){
+                            nomes.push(data[i].nome)
+                        }
+                    });
+                }
+                carregaNomesCli();
+
+                $("#cliente").autocomplete({
+                    source: nomes,
+                });
+
+                $(".ui-helper-hidden-accessible").css("display", "none")
+            }
+        })
+    </script>
+
+    <script>
+        $("#docRef").keyup(function(){
+            var idCli = $("#cliente").val().split(" ")
+            if (this.value.length >= 1){
+                var docs=[]
+
+                function docCli(){
+                    $.getJSON(`/doc-ref/${idCli[0]}`, function(data, status, xhr){
+                        for (var i = 0; i < data.length; i++){
+                            docs.push(data[i].doc)
+                        }
+                    });
+                }
+                docCli();
+
+                $("#docRef").autocomplete({
+                    source: docs,
+                });
+
+                $(".ui-helper-hidden-accessible").css("display", "none")
+            }
+        })
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#docRef').keyup(function(e){
+                if (/\D/g.test(this.value)){
+                    // Filtro para digitar apenas números
+                    this.value = this.value.replace(/\D/g, '');
+                }
+            });
+
+            $('#valor').keyup(function(e){
+                if (/\D/g.test(this.value)){
+                    // Filtro para digitar apenas números
+                    this.value = this.value.replace(/\D/g, '');
+                }
+            });
+        });
+    </script>
+{% endblock %} 

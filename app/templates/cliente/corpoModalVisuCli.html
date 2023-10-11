@@ -1,0 +1,97 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel3">Dados do Cliente {{ context.cliente.c_razaosocial }}</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="row mb-2">
+        <div class="col-2">
+            <label>Código:</label>
+            <input class="form-control" type="text" style="text-transform: uppercase;" name="codigo" id="codigo"
+                maxlength="6" size="10" tabindex="1" placeholder="Código" autocomplete="off" disabled=""
+                value="{{ context.cliente.c_codigo }}">
+        </div>
+        <div class="col-2">
+            <label>Loja:</label>
+            <input class="form-control" type="text" style="text-transform: uppercase;" name="loja" id="loja"
+                maxlength="2" size="5" tabindex="2" placeholder="Loja" autocomplete="off" disabled=""
+                value="{{ context.cliente.c_loja }}">
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-8">
+            <label>Razao Social:</label>
+            <input class="form-control" type="text" style="text-transform: uppercase;" name="razaoSocial"
+                id="razaoSocial" maxlength="80" size="84" tabindex="3" placeholder="Razao Social" autocomplete="off"
+                disabled="" value="{{ context.cliente.c_razaosocial }}">
+        </div>
+        <div class="col-4">
+            <label>CPF/CNPJ:</label>
+            <input class="cpfOuCnpj form-control" type="text" name="cpfcnpj" id="cpfcnpj" maxlength="18" size="25"
+                tabindex="4" placeholder="CPF/CNPJ" autocomplete="off" disabled=""
+                value="{{ context.cliente.c_cpfcnpj | cpfCnpj }}">
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-4">
+            <label>Inscr. Estadual:</label>
+            <input class="form-control" type="text" style="text-transform: uppercase;" name="inscrest" id="inscrest"
+                maxlength="20" size="23" tabindex="5" placeholder="Inscr. Estadual" autocomplete="off" disabled=""
+                value="{{ context.cliente.c_inscricao }}">
+        </div>
+        <div class="col-3">
+            <label>Telefone:</label>
+            <input class="form-control" type="text" style="text-transform: uppercase;" name="telefone" id="telefone"
+                maxlength="20" size="22" tabindex="6" placeholder="Telefone" autocomplete="off" disabled=""
+                value="{{ context.cliente.c_telefone }}">
+        </div>
+        <div class="col-5">
+            <label>E-mail:</label>
+            <input class="form-control" type="email" style="text-transform: uppercase;" name="email" id="email"
+                maxlength="45" size="54" tabindex="7" placeholder="E-mail" autocomplete="off" disabled=""
+                value="{{ context.cliente.c_email }}">
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-3">
+            <label>CEP:</label>
+            <input class="form-control" type="text" style="text-transform: uppercase;" name="cep" id="cep"
+                maxlength="20" size="16" tabindex="8" placeholder="CEP" autocomplete="off" disabled=""
+                value="{{ context.cliente.c_cep | cep }}">
+        </div>
+        <div class="col-7">
+            <label>Endereço:</label>
+            <input class="form-control" type="text" style="text-transform: uppercase;" name="logradouro" id="logradouro"
+                maxlength="50" size="61" tabindex="9" placeholder="Endereço" autocomplete="off" disabled=""
+                value="{{ context.cliente.c_endereco }}">
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-3">
+            <label>Bairro:</label>
+            <input class="form-control" type="text" style="text-transform: uppercase;" name="bairro" id="bairro"
+                maxlength="25" size="31" tabindex="10" placeholder="Bairro" autocomplete="off" disabled=""
+                value="{{ context.cliente.c_bairro }}">
+        </div>
+        <div class="col-4">
+            <label>Cidade:</label>
+            <input class="form-control" type="text" style="text-transform: uppercase;" name="cidade" id="cidade"
+                maxlength="20" size="21" tabindex="11" placeholder="Cidade" autocomplete="off" disabled=""
+                value="{{ context.cliente.c_cidade }}">
+        </div>
+        <div class="col-3">
+            <label>UF:</label>
+            <input class="form-control" type="text" style="text-transform: uppercase;" name="uf" id="uf" maxlength="20"
+                size="21" tabindex="11" placeholder="Cidade" autocomplete="off" disabled=""
+                value="{{ context.cliente.c_uf }}">
+        </div>
+        <div class="col-2">
+            <label>Vendedor:</label>
+            <input class="form-control" type="text" style="text-transform: uppercase;" name="vendedor" id="vendedor"
+                maxlength="6" size="10" tabindex="13" placeholder="Vendedor" autocomplete="off" disabled=""
+                value="{{ context.cliente.c_codvend }}">
+        </div>
+    </div>
+</div>
+<div class="modal-footer justify-content-center">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+</div>

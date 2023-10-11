@@ -1,12 +1,12 @@
-from flask import render_template, request, redirect, flash, session, jsonify, Blueprint, url_for
+from flask import render_template, request, redirect, flash, session, jsonify, Blueprint, url_for, g
 from ..controllers.ControllerManterUsuario import ControllerManterUsuario
-from ..models.Tables import *
-from werkzeug.security import generate_password_hash
-from datetime import datetime
+from ..models.Models import *
 from ..extensions.logs import Logger
 from ..extensions.configHtml import *
 import sys
 from ..configurations.DataBase import DB
+from flask_login import login_required
+from datetime import datetime
 
 
 ###################################
@@ -16,9 +16,18 @@ from ..configurations.DataBase import DB
 
 usuarioBlue = Blueprint("usuarioBlue", __name__, url_prefix="/usuario")
 
+@usuarioBlue.before_request
+def before_request():
+    conexao = Gf3004
+    dataAtual = datetime.today().strftime("%Y%m%d") 
+    qtdeAtraso = conexao.query.filter(conexao.t_dataVenc<dataAtual, conexao.t_ativo==True, conexao.t_status==True).count()
+    
+    g.qtdeAtraso = qtdeAtraso
+
 
 #Rota para Tela de listagem de usuários
 @usuarioBlue.route("/lista-usuarios", methods=["GET"])
+@login_required
 def listaUsuarios():
     ###################################################################################################
     # Função que renderiza a tela de listagem de usuários.
@@ -33,18 +42,16 @@ def listaUsuarios():
     ###################################################################################################
     
     try:
-        if session["usuario"]:
-            context = {"active": "usuario", "titulo": "Lista de Usuários"}
-            return render_template("usuario/listaUsuarios.html", context=context)
-        else:
-            return redirect("/")
-    
+        context = {"active": "usuario", "titulo": "Lista de Usuários"}
+        return render_template("usuario/listaUsuarios.html", context=context)
+      
     except Exception as erro:
         Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
         return redirect("/index")
     
 #Rota para modal de confirmação para excluir usuário
-@usuarioBlue.route("/lista-usuarios/<id>")
+@usuarioBlue.route("/usuario/<id>", methods=["GET"])
+@login_required
 def popupDeleteUser(id):
     ###################################################################################################
     # Função que renderiza a tela de listagem de usuários com modal de confrimação de exclusão.
@@ -60,15 +67,11 @@ def popupDeleteUser(id):
     ###################################################################################################
     
     try:
-        if session["usuario"]:
-            conexao = SysUsers #Conexão com a tabela de usuários
-            #Query que trás o usuário de acordo com o id passado
-            usuario = conexao.query.get(id)
-            context = {"usuario": usuario, "aviso": 1} #Dicionário contendo as variáveis para utilizar no template
-            return render_template("usuario/listaUsuarios.html", context=context)
-        
-        else:
-            return redirect("/")
+        conexao = SysUsers #Conexão com a tabela de usuários
+        #Query que trás o usuário de acordo com o id passado
+        usuario = conexao.query.get(id)
+        context = {"msg": f"Desejesa realmente excluir o(a) usuário(a) {usuario.s_usuario}"} #Dicionário contendo as variáveis para utilizar no template
+        return jsonify(context)
         
     except Exception as erro:
         Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
@@ -76,6 +79,7 @@ def popupDeleteUser(id):
 
 #Rota para Tela de cadastrode usuário
 @usuarioBlue.route("/cad-usuario")
+@login_required
 def cadUsuario():
     ###################################################################################################
     # Função que renderiza a tela de cadastro de usuários.
@@ -91,19 +95,17 @@ def cadUsuario():
     ###################################################################################################
     
     try:
-        if session["usuario"]:
-            context = {"titulo": "Inclusão de Usuário", "action": "/insert-user", "botao": "Gravar", "active": "usuario"} #Dicionário contendo as variáveis para utilizar no template
-            return render_template("usuario/cadUsuario.html", context=context)
+        context = {"titulo": "Inclusão de Usuário", "action": "/insert-user", "botao": "Gravar", "active": "usuario"} #Dicionário contendo as variáveis para utilizar no template
+        return render_template("usuario/cadUsuario.html", context=context)
         
-        else:
-            return redirect("/")
-    
     except Exception as erro:
         Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
         return redirect("/index")
 
+
 #Rota para inserir usuário
 @usuarioBlue.route("/insert-user", methods=["GET", "POST"])
+@login_required
 def insertUsuario():
     ###################################################################################################
     # Função que insere usuário no banco.
@@ -123,22 +125,17 @@ def insertUsuario():
     ###################################################################################################
     
     try: 
-        if session["usuario"]:
-            controleManterUsuario = ControllerManterUsuario()
-            controleManterUsuario.inserirUsuario(request.form)
-            flash(f"Usuário {request.form['usuario'].upper()} incluido com sucesso!", "success") #Mensagem para ser exibida no Front
-            Logger.log("Inserção de Usuário", session["usuario"], session["filial"], f"Nome: {request.form['nome']}") #Gera log informando que foi feita uma inserção de usuário
-            return redirect(url_for('usuarioBlue.listaUsuarios'))
-
-        else:
-            return redirect("/")
+        controleManterUsuario = ControllerManterUsuario()
+        return controleManterUsuario.inserirUsuario(request.form)
     
     except Exception as erro:
         Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
         return redirect("/index")
 
+
 #Rota para a edição do usuário
 @usuarioBlue.route("/editar-usuario/<id>", methods=["GET", "POST"])
+@login_required
 def editUsuario(id):
     ###################################################################################################
     # Função que renderiza a tela de cadastro com os dados do usuário que foi selecionado.
@@ -160,28 +157,22 @@ def editUsuario(id):
     ###################################################################################################
     
     try:
-        if session["usuario"]:
-            conexao = SysUsers #Conexão com a tabela de usuários
-            usuario = conexao.query.get(id)
-            if request.method == "POST":
-                controleManterUsuario = ControllerManterUsuario()
-                controleManterUsuario.editarUsuario(request.form, int(id))
-                flash(f"Usuário {request.form['usuario'].upper()} atualizado com sucesso!", "success") #Mensagem para ser exibida no Front
-                Logger.log("Alteração de Usuário", session["usuario"], session["filial"], f"ID: {id}") #Gera log informando que foi feita alteração no usuário
-                return redirect(url_for('usuarioBlue.listaUsuarios'))
+        conexao = SysUsers #Conexão com a tabela de usuários
+        usuario = conexao.query.get(id)
+        if request.method == "POST":
+            controleManterUsuario = ControllerManterUsuario()
+            return controleManterUsuario.editarUsuario(request.form, int(id))
 
-            context = {"titulo": "Atualização de Usuário", "action": "/editar-usuario/", "botao": "Alterar", "usuario": usuario} #Dicionário contendo as variáveis para utilizar no template
-            return render_template("usuario/cadUsuario.html", context=context)
-        
-        else:
-            return redirect("/")
+        context = {"titulo": "Atualização de Usuário", "action": "/editar-usuario/", "botao": "Alterar", "usuario": usuario} #Dicionário contendo as variáveis para utilizar no template
+        return render_template("usuario/cadUsuario.html", context=context)
         
     except Exception as erro:
         Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
         return redirect("/index")
 
 #Rota para a exclusão lógica do usuário
-@usuarioBlue.route("/deletar-usuario/<id>")
+@usuarioBlue.route("/deletar-usuario/<id>", methods=["DELETE"])
+@login_required
 def deleteUsuario(id):
     ###################################################################################################
     # Função que efetua o delete lógico do usuário no banco.
@@ -197,17 +188,20 @@ def deleteUsuario(id):
     ###################################################################################################
     
     try:
-        if session["usuario"]:
-            conexao = SysUsers
-            usuario = conexao.query.get(id)
+        conexao = SysUsers
+        usuario = conexao.query.get(id)
+        if usuario.s_usuario == session["usuario"]["usuario"]:
+            flash(f"Usuário logado não pode ser excluido!", "danger") #Mensagem para ser exibida no Front
+            return jsonify("error")
+        elif id == '1':
+            flash(f"O usuário ADMIN não pode ser excluido!", "danger") #Mensagem para ser exibida no Front
+            return jsonify("error")
+        else:
             usuario.s_ativo = 0
             DB.session.commit()
-            flash(f"Usuário {usuario.s_nome} excluido com sucesso!") #Mensagem para ser exibida no Front
+            flash(f"Usuário {usuario.s_usuario} excluido com sucesso!", "success") #Mensagem para ser exibida no Front
             Logger.log("Exclusão de Usuário", session["usuario"], session["filial"], f"ID: {id}") #Gera log informando que foi feita exclusão do usuário
-            return redirect("/lista-usuarios")
-
-        else:
-            return redirect("/")
+            return jsonify("success")
         
     except Exception as erro:
         Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
@@ -215,6 +209,7 @@ def deleteUsuario(id):
     
     
 @usuarioBlue.route("/usuarios", methods=["GET", "POST"])
+@login_required
 def usuarios():
     ###################################################################################################
     # API que retorna um json com lista de usuários exceto os excluidos.
@@ -228,16 +223,15 @@ def usuarios():
     ###################################################################################################
     
     try:
-        if session["usuario"]:
-            if request.method == "POST":
-                conexao = SysUsers #Conexão com a tabela de usuários
-                #Query que trás todos os títulos exeto os excluidos
-                usuarios = DB.session.query(conexao.id, conexao.s_usuario, conexao.s_nome, conexao.s_admin).filter(conexao.s_ativo==1)
-                lista = []
-                for x in usuarios:
-                    lista.append({"cod": x.id, "user": x.s_usuario, "nome": x.s_nome, "admin": filtroStatusUser(x.s_admin)})
-                
-                return jsonify(lista)
+        if request.method == "POST":
+            conexao = SysUsers #Conexão com a tabela de usuários
+            #Query que trás todos os títulos exeto os excluidos
+            usuarios = DB.session.query(conexao.id, conexao.s_usuario, conexao.s_nome, conexao.s_admin).filter(conexao.s_ativo==1)
+            lista = []
+            for x in usuarios:
+                lista.append({"cod": x.id, "user": x.s_usuario, "nome": x.s_nome, "admin": filtroStatusUser(x.s_admin)})
+            
+            return jsonify(lista)
             
     except Exception as erro:
         Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro

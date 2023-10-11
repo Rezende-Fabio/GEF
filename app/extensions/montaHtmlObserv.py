@@ -2,7 +2,7 @@ import os
 import shutil
 from datetime import datetime
 from app.extensions.configHtml import *
-from ..models.Tables import *
+from ..models.Models import *
 
 ##################################################################
 # Monta o HTML com os títulos que tem observação para a impressão
@@ -27,9 +27,9 @@ def htmlObservacao(listaId):
                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
                         <title>Observacoes</title>
 
-                        <link rel="stylesheet" href="{{ url_for('static', filename='plugin/bootstrap/css/bootstrap.min.css') }}">
-                        <script type="text/javascript" src="{{ url_for('static', filename='plugin/bootstrap/js/bootstrap.min.js') }}"></script>
-                        <script type="text/javascript" src="{{ url_for('static', filename='plugin/bootstrap/js/bootstrap.bundle.min.js') }}"></script> 
+                        <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap/css/bootstrap.min.css') }}">
+                        <script type="text/javascript" src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.min.js') }}"></script>
+                        <script type="text/javascript" src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script> 
 
                         <style>
                             .cabec{

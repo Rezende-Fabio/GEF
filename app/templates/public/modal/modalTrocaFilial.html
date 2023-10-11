@@ -1,20 +1,24 @@
 <div class="modal fade" id="backDropModalFilial" data-bs-backdrop="static" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <form class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="backDropModalTitle">AVISO</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="d-flex justify-content-center align-items-center flex-column">
-                    <p>Está ação ira efetuar a troca de Filial.</p>
-                    <br>
-                    <p>Deseja continuar?</p>
+                <div class="row">
+                    <div class="col-2 mb-3">
+                        <i class="fa-solid fa-triangle-exclamation icon-size"></i>
+                    </div>
+                    <div class="col mb-3 d-flex align-items-center flex-column">
+                        <span class='msg-modal-alert'>Está ação ira efetuar a troca de Filial.</span>
+                        <span class='msg-modal-alert'>Deseja continuar?</span>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
-                <a type="button" href="{{ url_for('mainBlue.filial') }}" class="btn btn-outline-success">Confirmar</a>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                <a type="button" href="{{ url_for('dashboardBlue.filial') }}" class="btn btn-success">Confirmar</a>
             </div>
         </form>
     </div>

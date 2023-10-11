@@ -1,10 +1,11 @@
-from flask import render_template, request, redirect, flash, session, jsonify, Blueprint
+from flask import render_template, request, redirect, flash, session, jsonify, Blueprint, g
 from sqlalchemy import func
-from ..models.Tables import *
-from ..bd.integracao import *
+from ..models.Models import *
+from ..extensions.integracao import *
 from datetime import datetime
 from ..extensions.logs import Logger
 import sys
+from flask_login import login_required
 
 ###################################
 # Rotas relacionadas aos relatórios
@@ -12,8 +13,17 @@ import sys
 
 relatorioBlue = Blueprint("relatorioBlue", __name__)
 
+@relatorioBlue.before_request
+def before_request():
+    conexao = Gf3004
+    dataAtual = datetime.today().strftime("%Y%m%d") 
+    qtdeAtraso = conexao.query.filter(conexao.t_dataVenc<dataAtual, conexao.t_ativo==True, conexao.t_status==True).count()
+    
+    g.qtdeAtraso = qtdeAtraso
+
 #Rota para a tela de parametros do relatório de comissão
-@relatorioBlue.route("/relat-comissao")
+@relatorioBlue.route("/relat-comissao", methods=["GET"])
+@login_required
 def relatComissao():
     ###################################################################################################
     # Função que redireciona para a tela de parametros da impressão do relatório de comissão.
@@ -29,18 +39,16 @@ def relatComissao():
     ###################################################################################################
     
     try:
-        if session["usuario"]:
-            return render_template("relatorios/relatComissao.html")
-        
-        else:
-            return redirect("/")
-    
+        context = {"active": "relatComi", "titulo": "Parâmetros para o relatório de comissão"}
+        return render_template("relatorios/relatComissao.html", context=context)
+
     except Exception as erro:
         Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera o log passando a URL e o erro
         return redirect("/index")
 
 #Rota para a tela de parametros do relatório de devoluções    
-@relatorioBlue.route("/relat-devolucao")
+@relatorioBlue.route("/relat-devolucao", methods=["GET"])
+@login_required
 def relatDevolucao():
     ###################################################################################################
     # Função que redireciona para a tela de parametros da impressão do relatório de devolução.
@@ -56,18 +64,16 @@ def relatDevolucao():
     ###################################################################################################
     
     try:
-        if session["usuario"]:
-            return render_template("relatorios/relatDevolucao.html")
+        context = {"active": "relatDev", "titulo": "Parâmetros para o relatório de devoluções"}
+        return render_template("relatorios/relatDevolucao.html", context=context)
         
-        else:
-            return redirect("/")
-    
     except Exception as erro:
         Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera o log passando a URL e o erro
         return redirect("/index")
 
 #Rota para a tela de parametros do relatório de títulos recebidos    
-@relatorioBlue.route("/relat-recebidos")
+@relatorioBlue.route("/relat-recebidos", methods=["GET"])
+@login_required
 def relatRecebidos():
     ###################################################################################################
     # Função que redireciona para a tela de parametros da impressão do relatório de títulos recebidos,
@@ -84,21 +90,18 @@ def relatRecebidos():
     ###################################################################################################
     
     try:
-        if session["usuario"]:
-            conexao = Gf3003
-            segmentos = conexao.query.filter()
-            context = {"segmentos": segmentos}
-            return render_template("relatorios/relatRecebidos.html", context=context)
-        
-        else:
-            return redirect("/")
+        conexao = Gf3003
+        segmentos = conexao.query.filter()
+        context = {"segmentos": segmentos, "active": "relatRecebidos", "titulo": "Parâmetros para o relatório de títulos recebidos"}
+        return render_template("relatorios/relatRecebidos.html", context=context)
     
     except Exception as erro:
         Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera o log passando a URL e o erro
         return redirect("/index")
     
 #Rota para a tela de parametros do relatório de títulos a receber
-@relatorioBlue.route("/relat-receber")
+@relatorioBlue.route("/relat-receber", methods=["GET"])
+@login_required
 def relatReceber():
     ###################################################################################################
     # Função que redireciona para a tela de parametros da impressão do relatório de títulos a receber,
@@ -115,21 +118,18 @@ def relatReceber():
     ###################################################################################################
     
     try:
-        if session["usuario"]:
-            conexao = Gf3003
-            segmentos = conexao.query.filter()
-            context = {"segmentos": segmentos}
-            return render_template("relatorios/relatReceber.html", context=context)
-        
-        else:
-            return redirect("/")
+        conexao = Gf3003
+        segmentos = conexao.query.filter()
+        context = {"segmentos": segmentos, "active": "relatReceber", "titulo": "Parâmetros para o relatório de títulos a receber"}
+        return render_template("relatorios/relatReceber.html", context=context)
     
     except Exception as erro:
         Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera o log passando a URL e o erro
         return redirect("/index")
     
 #Rota para a tela de parametros do relatório de títulos a receber
-@relatorioBlue.route("/relat-consistecia")
+@relatorioBlue.route("/relat-consistecia", methods=["GET"])
+@login_required
 def relatConsistencia():
     ###################################################################################################
     #   Função que redireciona para a tela de parametros da impressão do relatório de consistência.
@@ -145,18 +145,16 @@ def relatConsistencia():
     ###################################################################################################
     
     try:
-        if session["usuario"]:
-            return render_template("relatorios/relatConsistencia.html")
-        
-        else:
-            return redirect("/")
+        context = {"active": "relatConsis", "titulo": "Parâmetros para o relatório de consistência"}
+        return render_template("relatorios/relatConsistencia.html", context=context)
     
     except Exception as erro:
         Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera o log passando a URL e o erro
         return redirect("/index")
     
 #Rota para a tela de parametros do relatório de Observações
-@relatorioBlue.route("/relat-observacoes")
+@relatorioBlue.route("/relat-observacoes", methods=["GET"])
+@login_required
 def relatObservacoes():
     ###################################################################################################
     #   Função que redireciona para a tela de parametros da impressão do relatório de observações.
@@ -172,11 +170,8 @@ def relatObservacoes():
     ###################################################################################################
     
     try:
-        if session["usuario"]:
-            return render_template("relatorios/relatObservacao.html")
-        
-        else:
-            return redirect("/")
+        context = {"active": "relatObs", "titulo": "Parâmetros para o relatório de observações"}
+        return render_template("relatorios/relatObservacao.html", context=context)
     
     except Exception as erro: 
         Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera o log passando a URL e o erro

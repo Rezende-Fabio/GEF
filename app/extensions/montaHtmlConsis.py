@@ -2,7 +2,7 @@ import os
 import shutil
 from datetime import datetime
 from app.extensions.configHtml import *
-from ..models.Tables import *
+from ..models.Models import *
 
 ##################################################################
 # Monta o HTML de consistencia para a impressão

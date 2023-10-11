@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ERRO 404</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styleError.css') }}">
+</head>
+<body>
+    <div id="error">Erro</div>
+    <div class="error-num-404">
+        <div class="error-num-404__clip">404</div>
+    </div>
+    <p id="desc">Página não encontrada</p>
+    {% if session.usuario %}
+        <p class="link">Volte para o <a href="{{url_for('dashboardBlue.dashboard')}}">Menu</a></p>     
+    {% else %}
+        <p class="link">Volte para o <a href="{{url_for('indexBlue.index')}}">Index</a></p>
+    {% endif %}
+</body>
+</html>

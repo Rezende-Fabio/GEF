@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ERRO 500</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styleError.css') }}">
+</head>
+<body>
+    <div id="error">Erro</div>
+    <div class="error-num">500
+        <div class="error-num__clip">500</div>
+    </div>
+    <p id="desc">Erro no Servidor. Contate o setor de T.I</p>
+    {% if session.usuario %}
+        <p class="link">Volte para o <a href="{{url_for('mainBlue.dashboard')}}">Menu</a></p>     
+    {% else %}
+        <p class="link">Volte para o <a href="{{url_for('mainBlue.index')}}">Index</a></p>
+    {% endif %}
+</body>
+</html>

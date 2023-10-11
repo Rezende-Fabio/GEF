@@ -1,27 +1,23 @@
-<div class="modal fade" id="backDropModal" data-bs-backdrop="static" tabindex="-1">
-    <div class="modal-dialog">
+<div class="modal fade" id="modalExclusao" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
         <form class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="backDropModalTitle">Preencha seus dados</h5>
+                <h5 class="modal-title" id="backDropModalTitle">AVISO</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col mb-3">
-                        <label for="nameBackdrop" class="form-label">Usuário:</label>
-                        <input type="text" id="nameBackdrop" class="form-control" placeholder="Informe seu usuário" />
+                    <div class="col-2 mb-3">
+                        <i class="fa-solid fa-triangle-exclamation icon-size"></i>
                     </div>
-                </div>
-                <div class="row g-2">
-                    <div class="col mb-0">
-                        <label for="emailBackdrop" class="form-label">Email</label>
-                        <input type="text" id="emailBackdrop" class="form-control" placeholder="xxxx@xxx.xx" />
+                    <div class="col mb-3 d-flex align-items-center">
+                        <span class='msg-modal-alert' id="msgModal"></span>
                     </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-outline-success">Enviar</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn-excluir btn btn-success">Confirmar</button>
             </div>
         </form>
     </div>

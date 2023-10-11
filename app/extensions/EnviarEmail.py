@@ -27,7 +27,7 @@ class EnviaEmail:
         
             msg.add_alternative(htmlMsg, subtype="html")
             
-            with smtplib.SMTP_SSL('',) as smtp: #Abre o servidor executa as funções abaixo e fecha a conexão
+            with smtplib.SMTP_SSL('', ) as smtp: #Abre o servidor executa as funções abaixo e fecha a conexão
                 smtp.login(endercoEmail, senhaEmail) #Faz login no Servidor
                 smtp.send_message(msg) #Envia o E-mail
             

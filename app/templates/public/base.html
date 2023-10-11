@@ -22,8 +22,6 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/config.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/helpers.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='plugins/grid/gridjs.umd.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery.mask.min.js') }}"></script>
 </head>
 
 <body {% if session.base == 'TESTE' %}style="background-color: #effd9e;"{% endif %}>
@@ -33,7 +31,7 @@
             <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
                 <div class="app-brand demo">
                     <a href="index.html" class="app-brand-link">
-                        <img style="width: 35%;" src="{{ url_for('static', filename='img/logo2.png') }}" id="icon"
+                        <img style="width: 35%;" src="{{ url_for('static', filename='img/logo3.png') }}" id="icon"
                             alt="User Icon" />
                         <span class="app-brand-text demo menu-text fw-bolder ms-2">GEF III</span>
                     </a>
@@ -45,95 +43,97 @@
                 <div class="menu-inner-shadow"></div>
                 <ul class="menu-inner py-1">
                     <li class="menu-item {% if context.active == 'dashboard' %}active{% endif %}">
-                        <a href="{{ url_for('mainBlue.base') }}" class="menu-link">
+                        <a href="{{ url_for('dashboardBlue.dashboard') }}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-home-circle"></i>
                             <div data-i18n="Analytics">Dashboard</div>
                         </a>
                     </li>
-                    <li class="menu-item">
+                    <li class="menu-item {% if context.active in ['cliente', 'vendedor', 'titulo'] %}open active{% endif %}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons bx bx-add-to-queue"></i>
                             <div data-i18n="Layouts">Cadastros</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item">
+                            <li class="menu-item {% if context.active == 'cliente' %}active{% endif %}">
                                 <a href="{{ url_for('clienteBlue.listaClientes') }}" class="menu-link">
                                     <div data-i18n="Without menu">Cliente</div>
                                 </a>
                             </li>
-                            <li class="menu-item">
+                            <li class="menu-item {% if context.active == 'vendedor' %}active{% endif %}">
                                 <a href="{{ url_for('vendedorBlue.listaVendedores') }}" class="menu-link">
                                     <div data-i18n="Without navbar">Vendedor</div>
                                 </a>
                             </li>
-                            <li class="menu-item">
-                                <a href="layouts-container.html" class="menu-link">
-                                    <div data-i18n="Container">Titulo</div>
+                            <li class="menu-item {% if context.active == 'titulo' %}active{% endif %}">
+                                <a href="{{ url_for('tituloBlue.listaTitulos') }}" class="menu-link">
+                                    <div data-i18n="Container">Título</div>
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <li class="menu-item">
+                    <li class="menu-item {% if context.active in ['baixa', 'devolucao', 'estorno', 'observacao'] %}open active{% endif %}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons bx bx-trending-up"></i>
                             <div data-i18n="Layouts">Movimentos</div>
+                            <span class="alert-menu-item">{{ g.qtdeAtraso }}</span>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="layouts-without-menu.html" class="menu-link">
+                            <li class="menu-item {% if context.active == 'baixa' %}active{% endif %}">
+                                <a href="{{ url_for('baixaBlue.listaBaixas') }}" class="menu-link">
                                     <div data-i18n="Without menu">Baixas</div>
+                                    <span class="alert-menu-item">{{ g.qtdeAtraso }}</span>
                                 </a>
                             </li>
-                            <li class="menu-item">
-                                <a href="layouts-without-navbar.html" class="menu-link">
+                            <li class="menu-item {% if context.active == 'devolucao' %}active{% endif %}">
+                                <a href="{{ url_for('devolucaoBlue.listageDevolucoes') }}" class="menu-link">
                                     <div data-i18n="Without navbar">Devoluções</div>
                                 </a>
                             </li>
-                            <li class="menu-item">
-                                <a href="layouts-container.html" class="menu-link">
+                            <li class="menu-item {% if context.active == 'estorno' %}active{% endif %}">
+                                <a href="{{ url_for('estornoBlue.listaEstorno') }}" class="menu-link">
                                     <div data-i18n="Container">Estornos</div>
                                 </a>
                             </li>
-                            <li class="menu-item">
-                                <a href="layouts-container.html" class="menu-link">
+                            <li class="menu-item {% if context.active == 'observacao' %}active{% endif %}">
+                                <a href="{{ url_for('observacaoBlue.listaObservacoes') }}" class="menu-link">
                                     <div data-i18n="Container">Observações</div>
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <li class="menu-item">
+                    <li class="menu-item {% if context.active in ['relatReceber', 'relatRecebidos', 'relatDev', 'relatComi', 'relatConsis', 'relatObs'] %}open active{% endif %}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons bx bx-file"></i>
                             <div data-i18n="Layouts">Relatórios</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="layouts-without-menu.html" class="menu-link">
+                            <li class="menu-item {% if context.active == 'relatReceber' %}active{% endif %}">
+                                <a href="{{ url_for('relatorioBlue.relatReceber') }}" class="menu-link">
                                     <div data-i18n="Without menu">Títulos a Receber</div>
                                 </a>
                             </li>
-                            <li class="menu-item">
-                                <a href="layouts-without-navbar.html" class="menu-link">
+                            <li class="menu-item {% if context.active == 'relatRecebidos' %}active{% endif %}">
+                                <a href="{{ url_for('relatorioBlue.relatRecebidos') }}" class="menu-link">
                                     <div data-i18n="Without navbar">Títulos Recebidos</div>
                                 </a>
                             </li>
-                            <li class="menu-item">
-                                <a href="layouts-container.html" class="menu-link">
+                            <li class="menu-item {% if context.active == 'relatDev' %}active{% endif %}">
+                                <a href="{{ url_for('relatorioBlue.relatDevolucao') }}" class="menu-link">
                                     <div data-i18n="Container">Devoluções</div>
                                 </a>
                             </li>
-                            <li class="menu-item">
-                                <a href="layouts-container.html" class="menu-link">
+                            <li class="menu-item {% if context.active == 'relatComi' %}active{% endif %}">
+                                <a href="{{ url_for('relatorioBlue.relatComissao') }}" class="menu-link">
                                     <div data-i18n="Container">Comissões</div>
                                 </a>
                             </li>
-                            <li class="menu-item">
-                                <a href="layouts-container.html" class="menu-link">
+                            <li class="menu-item {% if context.active == 'relatConsis' %}active{% endif %}">
+                                <a href="{{ url_for('relatorioBlue.relatConsistencia') }}" class="menu-link">
                                     <div data-i18n="Container">Consistência</div>
                                 </a>
                             </li>
-                            <li class="menu-item">
-                                <a href="layouts-container.html" class="menu-link">
+                            <li class="menu-item {% if context.active == 'relatObs' %}active{% endif %}">
+                                <a href="{{ url_for('relatorioBlue.relatObservacoes') }}" class="menu-link">
                                     <div data-i18n="Container">Observações</div>
                                 </a>
                             </li>
@@ -146,7 +146,7 @@
                                 <div>Usuários</div>
                             </a>
                         </li>
-                        <li class="menu-item">
+                        <li class="menu-item {% if context.active == 'parametros' %}active{% endif %}">
                             <a href="index.html" class="menu-link">
                                 <i class="menu-icon tf-icons bx bx-slider-alt"></i>
                                 <div>Parâmetros</div>
@@ -215,7 +215,7 @@
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="{{ url_for('mainBlue.logout') }}">
+                                        <a class="dropdown-item" href="{{ url_for('autenticacaoBlue.logout') }}">
                                             <i class="bx bx-power-off me-2"></i>
                                             <span class="align-middle">Sair</span>
                                         </a>
@@ -253,16 +253,17 @@
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
 
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/chart/chart.umd.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery-ui.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery-knob/jquery.knob.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/menu.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
-    <script type="text/javascript"
-        src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.min.js') }}"></script>
-    <script type="text/javascript"
-        src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='plugins/popper/popper.js') }}"></script>
-    <script type="text/javascript"
-        src="{{ url_for('static', filename='plugins/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
 
     {% block script %}
     {% endblock %}

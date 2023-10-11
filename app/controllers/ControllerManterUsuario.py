@@ -1,7 +1,10 @@
-from ..models.dao.ManterUsuarioDao import ManterUsuarioDao
-from ..models.entity.Usuario import Usuario
+from ..configurations.DataBase import DB
+from ..response.Response import Response
+from ..models.Models import SysUsers
+from ..extensions.logs import Logger
+from flask import session
 
-class ControllerManterUsuario:
+class ControllerManterUsuario(Response):
     """
     Classe Controller para as funções relacionadas ao CRUD dos usuários
     @author - Fabio
@@ -18,17 +21,21 @@ class ControllerManterUsuario:
         :return: True se a inserção for bem-sucedida, False caso contrário.
         """
 
-        if form["useradmin"] == "1": userAdmin = True
-        else: userAdmin = False
+        try:
+            if form["useradmin"] == "1": userAdmin = True
+            else: userAdmin = False
 
-        usuario = Usuario(nome=form["nome"].upper(), usuario=form["usuario"].upper(), email=form["email"], admin=userAdmin, hashSenhaNova="", senhaNova=False, ativo=True)
-        usuario.gerarSenha(form["senha"].upper())
+            usuario = SysUsers(s_nome=form["nome"].upper(), s_usuario=form["usuario"].upper(), s_email=form["email"], s_admin=userAdmin, s_novaSenha=False, s_ativo=True)
+            usuario.gerarSenha(form["senha"].upper())
 
-        manterUsuarioDao = ManterUsuarioDao()
+            DB.session.add(usuario)
+            DB.session.commit()
 
-        if manterUsuarioDao.inserirUsuario(usuario):
-            return True
-        else:
+            Logger.log("Inserção de Usuário", session["usuario"], session["filial"], f"Nome: {form['nome']}")
+
+            return self.redirect('usuarioBlue.listaUsuarios', mensagem=f"Usuário {form['usuario'].upper()} incluido com sucesso!", categoria="success")
+        except Exception as erro:
+            print(erro)
             return False
         
 
@@ -41,17 +48,25 @@ class ControllerManterUsuario:
         :return: True se a inserção for bem-sucedida, False caso contrário.
         """
 
-        if form["useradmin"] == "1": userAdmin = True
-        else: userAdmin = False
+        try:
 
-        manterUsuarioDao = ManterUsuarioDao()
+            if form["useradmin"] == "1": userAdmin = True
+            else: userAdmin = False
 
-        usuario = Usuario(id=idUser, nome=form["nome"].upper(), usuario=form["usuario"].upper(), senha=form["senha"], email=form["email"], admin=userAdmin)
-        
-        if usuario.senha != manterUsuarioDao.consultarSenhaAntiga(idUser):
-            usuario.gerarSenha(form["senha"].upper())
-        
-        if manterUsuarioDao.editarUsuario(usuario):
-            return True
-        else:
+            userSenhaAntiga = SysUsers.query.get(idUser)
+
+            usuario = SysUsers(s_nome=form["nome"].upper(), s_usuario=form["usuario"].upper(), s_senha=form["senha"], 
+                               s_complex=userSenhaAntiga.s_complex, s_email=form["email"], s_admin=userAdmin)
+
+            if usuario.s_senha != userSenhaAntiga.s_senha:
+                usuario.gerarSenha(form["senha"].upper())
+
+            SysUsers.query.filter(SysUsers.id==idUser).update(usuario.items())
+            DB.session.commit()
+
+            Logger.log("Alteração de Usuário", session["usuario"], session["filial"], f"ID: {id}")
+
+            return self.redirect('usuarioBlue.listaUsuarios', mensagem=f"Usuário {form['usuario'].upper()} atualizado com sucesso!", categoria="success")
+        except Exception as erro:
+            print(erro)
             return False

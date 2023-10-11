@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta content="text/html"; charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom_impressao.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap/css/bootstrap.min.css') }}">
+
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery.mask.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery-ui.min.js') }}"></script>
+
+    <title>Impressão Devolução</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar" id="navbar">
+            <div class="header-comi">
+                <div class="header-img">
+                    <img class="img" src="{{ url_for('static', filename='img/logo3.png') }}" alt="User Icon"/>
+                </div>
+                <div class="header-titulo">
+                    <h5>GEF III</h5>
+                    <h6><strong><u>Baixas por Devolucões</u></strong></h6>
+                    <h7>Lançamentos do periodo: {{ context.datas[0] | data}} a {{ context.datas[1] | data}}</h7>
+                </div>
+                <div class="header-hora">
+                    <div id="data-hora"></div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div>
+            <table class='table' id="table">
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">Data Baixa</th>
+                        <th style="width: 6%;">Documento</th>
+                        <th style="width: 6%;">Ref.</th>
+                        <th style="width: 6%;">Cliente</th>
+                        <th style="width: 6%;">Vendedor</th>
+                        <th style="width: 6%;">Tipo Dev.</th>
+                        <th style="width: 6%; text-align: right;">Valor Devolução</th>
+                        <th style="width: 10%; text-align: right;"> Saldo a Receber</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody"><tr>
+                                        <td id="nota">15/09/2023</td>
+                                        <td>15744 / 2</td>
+                                        <td>FIOM154161</td>
+                                        <td>JOFEGE - S</td>
+                                        <td>JOSE LUIZ </td>
+                                        <td>Dev. Parc.</td>
+                                        <td style='text-align: right;'>R$ 3.000,00</td>
+                                        <td style='text-align: right;'>R$ 10.513,28</td>
+                                        </tr><tr>
+                                        <td id="nota">15/09/2023</td>
+                                        <td>15744 / 2</td>
+                                        <td>FIOM154161</td>
+                                        <td>JOFEGE - S</td>
+                                        <td>JOSE LUIZ </td>
+                                        <td>Dev. Parc.</td>
+                                        <td style='text-align: right;'>R$ 2.500,00</td>
+                                        <td style='text-align: right;'>R$ 10.513,28</td>
+                                        </tr>
+                            <tr id="tr-total">
+                    <td id="td-total">Total Dia</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style='text-align: right;'>R$ 5.500,00</td>
+                    <td style='text-align: right;'>R$ 21.026,56</td>
+                    </tr>
+                            
+                        <tr id="tr-total">
+                <td id="td-total">Total</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style='text-align: right;'>R$ 5.500,00</td>
+                <td style='text-align: right;'>R$ 21.026,56</td>
+                </tr>
+                        
+            </tbody>
+            </table>
+            </div>
+            <div id="btns">
+                <a class="btn btn-outline-primary btn-sm" href="javascript:window.print()">Imprimir</a>
+                <a class="btn btn-outline-danger btn-sm" href="javascript:window.close()">Fechar</a>
+            </div>
+            </body>
+            <script>
+                    
+                const zeroFill = n => {
+                    return ('0' + n).slice(-2);
+                }
+                    
+                const now = new Date();
+            
+                const data = zeroFill(now.getUTCDate()) + '/' + zeroFill((now.getMonth() + 1)) + '/' + now.getFullYear();
+                const hora = zeroFill(now.getHours()) + ':' + zeroFill(now.getMinutes());
+                document.getElementById('data-hora').innerHTML = `<h6>${data}</h6><h6>${hora}</h6>`;
+                    
+            </script>
+            <div id="rodape"></div>
+            </html>

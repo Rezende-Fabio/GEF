@@ -21,7 +21,7 @@ def rotas(app):
     from ..routes.Devolucao import devolucaoBlue
     app.register_blueprint(devolucaoBlue)
 
-    from ..routes.Estorno import estornoBlue
+    from ..routes.EstornoRoute import estornoBlue
     app.register_blueprint(estornoBlue)
 
     from ..routes.Filtros import filtrosBlue

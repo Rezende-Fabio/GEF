@@ -91,6 +91,18 @@ Inicio base
     animation: progress 8s linear forwards;
 }
 
+
+.alert .progress-3 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 5px;
+    width: 100%;
+    border-radius: 0px 5px 5px 0px;
+    background-color: currentColor;
+    animation: progress 3s linear forwards;
+}
+
 @keyframes progress {
     100% {
         width: 0%;

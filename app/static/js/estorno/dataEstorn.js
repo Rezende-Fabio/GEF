@@ -1,11 +1,9 @@
 var dataEstorn = []
 
 $.ajax({
-    url: '/estornos',
-    type: 'POST',
+    url: '/estorno/estornos',
+    type: 'GET',
     async: false,
-    dataType: 'json',
-    contentType: 'application/json',
     success: function(resp){
         for(x in resp){
            dataresp = {
@@ -16,7 +14,7 @@ $.ajax({
                 vendedor: resp[x].vend,
                 emissao: resp[x].lanc,
                 vencimento: resp[x].venc,
-                estornar: gridjs.html(`<div style="width: 100%;display: flex;align-items: center;text-align: center;justify-content: center;"><a href="/deletar-baixa/${resp[x].doc}/${resp[x].par}" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-circle-up"></i> Estornar</a></div>`)
+                estornar: gridjs.html(`<div style="width: 100%;display: flex;align-items: center;text-align: center;justify-content: center;"><button data-id="${resp[x].doc}/${resp[x].par}" class="abrirModal btn btn-danger btn-sm"><i class="fa-solid fa-circle-up"></i> Estornar</button></div>`)
            }
            dataEstorn.push(dataresp)
         }
@@ -70,3 +68,24 @@ var columnsEstorn = [
         sort: false,
     }
 ]
+
+
+new gridjs.Grid({
+    columns: columnsEstorn,
+    data: () => {
+        return new Promise(resolve => {
+            setTimeout(() => resolve(dataEstorn), 2000);
+        });
+    },
+    search: {
+        ignoreHiddenColumns: false,
+    },
+    sort: true,
+    paginationAutoPageSize: true,
+    pagination: true,
+    style: {
+        td: {
+            'font-size': '13.5px'
+        }
+    },
+}).render(document.getElementById("lista-baixas"));

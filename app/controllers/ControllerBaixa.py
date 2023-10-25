@@ -161,7 +161,7 @@ class ControllerBaixa(HttpResponse, Log):
 
     def inserirComissao(self, form: dict) -> None:
         #Query que trás o id da última baixa efetuada
-        baixa = Gf3006.query.filter(Gf3006.m_numDoc==int(form["numDoc"]), Gf3006.m_parcela==int(form["parcela"])).first()
+        baixa = Gf3006.query.order_by(Gf3006.m_id.desc()).first()
         
         idVendedor = list(form["vendedor"].split())
         comissao = Gf3005(

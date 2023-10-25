@@ -1,6 +1,7 @@
 {% extends "public/base.html" %}
 {% block conteudo %}
 {% include "public/header.html" %}
+{% include "public/modal/modalEstorno.html" %}
     <!-- Exibe mensagem que foi enviado pelo Back -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -27,132 +28,106 @@
     
     <div id="lista-baixas"></div>
 
-    <!-- Modal para selecionar as baixas para devolução do título -->
-    {% if context %}
-        {% if context.aviso == 1 %}
-            <section class="modal-baixa">
-                <form action="" method="POST">
-                    <div id="card-baixa">
-                        <h2>Baixas do Título</h2>
-                        <hr>
-                        <div class="alert" style="display: none;" id="alert" role="alert">
-                        </div>
-                        <div class="scroll">
-                            <table class='table table-striped'>
-                                <thead>
-                                    <tr class='table-info'>
-                                        <th>Check</th>
-                                        <th>Ref.</th>
-                                        <th>Documento</th>
-                                        <th>Parcela</th>
-                                        <th>DT baixa</th>
-                                        <th>Tipo Baixa</th>
-                                        <th>Valor</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for baixa in context.baixas %}
-                                        <tr id="{{baixa.m_id}}">
-                                            <td><input type="checkbox" value="{{baixa.m_id}}" class="danger" name='checkbox'></td>
-                                            <td>{{baixa.m_docRef}}</td>
-                                            <td>{{baixa.m_numDoc}}</td>
-                                            <td>{{baixa.m_parcela}}</td>
-                                            <td>{{baixa.m_dataBaixa | data}}</td>
-                                            <td>{{baixa.m_tipoBaixa | tpBixa}}</td>
-                                            <td>{{baixa.m_valor | real}}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="btns">
-                            <input type="button" class="btn btn-outline-success btn-sm" id="confirm" value="Confirmar">
-                            <a class="btn btn-outline-danger btn-sm" href="javascript:history.back()">Cancelar</a>
-                        </div>
-                    </div>
-                </form>
-                <script>
-                    $("#confirm").click(function(){
-                        var checkbox = $('input:checkbox[name^=checkbox]:checked');
-                        if(checkbox.length > 0){
-                            $("#confirm").prop('disabled', true);
-                            //array para armazenar os valores
-                            var listaIds = [];
-                            //função each para pegar os selecionados
-                            checkbox.each(function(){
-                                listaIds.push(parseInt($(this).val()));
-                            });
-
-                            $.ajax({
-                                url: '/deletar-baixa',
-                                type: 'POST',
-                                dataType: 'json',
-                                contentType: 'application/json',
-                                data:JSON.stringify({
-                                    list: listaIds,
-                                }),
-                                success: function(data){
-                                    if (data.success == true){
-                                        for (var i in data.ids){
-                                            $(`#${data.ids[i]}`).hide();
-                                        }
-                                        $("#alert").empty();
-                                        $("#alert").removeClass("alert-danger");
-                                        $("#alert").addClass("alert-success");
-                                        $("#alert").show();
-                                        $("#alert").append("<h6>Estorno efetuado com sucesso!</h6>");
-                                        setTimeout(function(){ 
-                                            $("#alert").toggle("slow");
-                                            window.location='/lista-estorno'
-                                        }, 3000);
-                                    }
-                                },
-                                error: function(data){
-                                    console.log(data)
-                                }
-                            
-                            });
-
-                        }else{
-                            window.scrollTo(0, 0);
-                            $("#alert").empty();
-                            $("#alert").removeClass("alert-success");
-                            $("#alert").addClass("alert-danger");
-                            $("#alert").show();
-                            $("#alert").append("<h6>Selecione uma baixa</h6>");
-                            setTimeout(function(){ 
-                                $("#alert").toggle("slow");
-                            }, 5000);
-                        }
-
-                    });
-                    
-                </script>
-            </section>
-        {% endif %}
-    {% endif %}
-{% endblock %}
+{% endblock conteudo %}
 {% block script %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/estorno/dataEstorn.js') }}"></script>
+
 <script>
-    new gridjs.Grid({
-        columns: columnsEstorn,
-        data: () => {
-            return new Promise(resolve => {
-                setTimeout(() => resolve(dataEstorn), 2000);
-            });
-        },
-        search: {
-            ignoreHiddenColumns: false,
-        },
-        sort: true,
-        paginationAutoPageSize: true,
-        pagination: true,
-        style: {
-            td: {
-                'font-size': '13.5px'
-            }
-        },
-    }).render(document.getElementById("lista-baixas"));
+    function mostraAlert(msg, categoria) {
+        var div = document.querySelector("#alert-estorno");
+        var divBody = document.querySelector("#bodyEstorno");
+    
+        div.innerHTML = "";
+        div.innerHTML += `<i class="fa-solid fa-circle-exclamation"></i> <h6>${msg}</h6>`
+        div.classList.remove("d-none");
+        if (categoria == "success"){
+            div.classList.remove("alert-danger");
+            div.classList.add("alert-success");
+            div.innerHTML += '<div class="progress-3 active"></div>';
+        }else{
+            div.classList.remove("alert-success");
+            div.classList.add("alert-danger");
+            div.innerHTML += '<div class="progress active"></div>';
+        }
+        divBody.scroll({
+            top: 0,
+            behavior: "smooth",
+        });
+        setTimeout(() => {
+            div.classList.add("d-none");
+        }, (categoria == "success") ? 3000 : 8000);
+    }
 </script>
-{% endblock %} 
+
+<script> 
+    $(document).on('click', '#confirmEstorno', function (){
+        var checkbox = $('input:checkbox[name^=checkbox]:checked');
+        if(checkbox.length > 0){
+            $("#confirmEstorno").prop('disabled', true);
+            var listaIds = [];
+            //função each para pegar os selecionados
+            checkbox.each(function(){
+                listaIds.push(parseInt($(this).val()));
+            });
+
+            $.ajax({
+                url: '/estorno/estornar-baixa',
+                type: 'PUT',
+                dataType: 'json',
+                contentType: 'application/json',
+                data:JSON.stringify({
+                    list: listaIds,
+                }),
+                success: function(data){
+                    for (var i in data){
+                        $(`#${data[i]}`).hide();
+                    }
+                    mostraAlert("Estorno efetuado com sucesso!", "success");
+                    setTimeout(function(){ 
+                        window.location='/estorno/lista-estorno'
+                    }, 3100);
+                },
+                error: function(error){
+                    $("#confirmEstorno").prop('disabled', false);
+                    window.location='/error_500';
+                    console.error(error);
+                }
+            
+            });
+
+        }else{
+            mostraAlert("Selecione uma baixa!", "danger");
+        }
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#modalEstorno').on('show.bs.modal', function (event) {
+            var modal = $(this);
+            var idEstorno = modal.data('id');
+
+            $.ajax({
+                url: `/estorno/${idEstorno}`,
+                type: 'GET',
+                success: function (data) {
+                    $('#corpoModalEstorno').html("");
+                    $('#corpoModalEstorno').html(data);
+                },
+                error: function (error) {
+                    window.location = "/error_500";
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).on('click', '.abrirModal', function () {
+        var idEstorno = $(this).data('id');
+        $('#modalEstorno').data('id', idEstorno);
+        $('#modalEstorno').modal('show');
+    });
+</script>
+{% endblock script %} 

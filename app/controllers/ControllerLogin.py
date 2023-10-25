@@ -49,7 +49,6 @@ class ControllerLogin(HttpResponse, Log):
         try:
             logout_user()
             session.clear()
-            g.clear()
             return self.responseRedirect(url="indexBlue.index")
         
         except:

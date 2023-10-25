@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel3">Baixas do Título {{context.baixas[0].m_numDoc}}</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body" id="bodyEstorno">
+    <div class="alert alert-danger d-flex align-items-center d-none" id="alert-estorno" role="alert">
+    </div>
+    <table class='table table-striped'>
+        <thead>
+            <tr class='table-info'>
+                <th>Check</th>
+                <th>Ref.</th>
+                <th>Documento</th>
+                <th>Parcela</th>
+                <th>Data baixa</th>
+                <th>Tipo Baixa</th>
+                <th class="d-flex justify-content-end">Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for baixa in context.baixas %}
+                <tr id="{{baixa.m_id}}">
+                    <td><input type="checkbox" value="{{baixa.m_id}}" class="danger" name='checkbox'></td>
+                    <td>{{baixa.m_docRef}}</td>
+                    <td>{{baixa.m_numDoc}}</td>
+                    <td>{{baixa.m_parcela}}</td>
+                    <td>{{baixa.m_dataBaixa | data}}</td>
+                    <td>{{baixa.m_tipoBaixa | tpBixa}}</td>
+                    <td class="d-flex justify-content-end">{{baixa.m_valor | real}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+<div class="modal-footer justify-content-between mt-2">
+    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+    <button type="button" class="btn btn-success" id="confirmEstorno">Confirmar</button>
+</div>

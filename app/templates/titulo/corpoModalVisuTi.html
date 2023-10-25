@@ -17,7 +17,7 @@
         <div class="col-2">
             <label for="">Segmento</label>
             <input type="text" class="form-control" style="text-transform: uppercase;" name="segmento" id="segmento" maxlength="40" size="40" 
-            tabindex="1" autocomplete="off" required value="{{context.segCliVend[0].s_abrev}}" readonly>
+            tabindex="1" autocomplete="off" required value="{{context.titulo.t_segmento}}" readonly>
         </div>
         <div class="col-4">
             <label for="">Data do Lançamaneto</label>
@@ -34,24 +34,24 @@
         <div class="col-6">
             <label for="">Cliente</label>
             <input type="text" class="form-control" style="text-transform: uppercase;" name="cliente" id="cliente" maxlength="10" size="10" 
-            tabindex="5" autocomplete="off" required value="{{context.titulo.t_idCliente}} - {{context.segCliVend[0].c_razaosocial}}" readonly>
+            tabindex="5" autocomplete="off" required value="{{context.titulo.t_idCliente}} - {{context.titulo.t_cliente.c_razaosocial}}" readonly>
         </div>
         <div class="col-6">
             <label for="">Vendedor</label>
             <input type="text" class="form-control" style="text-transform: uppercase;" name="vendedor" id="vendedor" maxlength="10" size="10" 
-            tabindex="6" autocomplete="off" required value="{{context.titulo.t_idVendedor}} - {{context.segCliVend[0].v_nome}}" readonly>
+            tabindex="6" autocomplete="off" required value="{{context.titulo.t_idVendedor}} - {{context.titulo.t_vendedor.v_nome}}" readonly>
         </div>                     
     </div>
     <div class="row mb-3">
         <div class="col-4">
             <label for="">Valor Total</label>
             <input type="text" class="form-control" style="text-transform: uppercase;" name="valorTotal" id="valorTotal" maxlength="10" size="10" 
-            tabindex="7" autocomplete="off" required value="{{context.segCliVend[0].valorTotal | real}}" readonly>
+            tabindex="7" autocomplete="off" required value="{{context.tituloValores.valorTotal | real}}" readonly>
         </div>
         <div class="col-2">
             <label for="">Parcelas</label>
             <input type="text" class="form-control" style="text-transform: uppercase;" name="parcelas" id="parcelas" maxlength="40" size="40" 
-            tabindex="1" autocomplete="off" required value="{{context.segCliVend[0].parcelas}}" readonly>
+            tabindex="1" autocomplete="off" required value="{{context.tituloValores.parcelas}}" readonly>
         </div>
         <div class="col-2">
             <label for="">Filial</label>

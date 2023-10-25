@@ -1,5 +1,6 @@
 from ..httpResponse.HttpResponse import HttpResponse
 from dateutil.relativedelta import relativedelta
+from .ControllerFiltros import filtroFloat
 from ..models.Models import Gf3003, Gf3006
 from flask import session, abort, request
 from ..configurations.DataBase import DB
@@ -55,19 +56,20 @@ class ControllerDashboard(HttpResponse, Log):
 
 
     def ultimasBaixas(self):
-        conexao3 = Gf3006
-        baixas = DB.session.query(conexao3.m_docRef, conexao3.m_numDoc, conexao3.m_parcela, conexao3.m_idCliente, conexao3.m_dataBaixa, conexao3.m_valor, conexao3.m_tipoBaixa, conexao3.m_segmento).filter(conexao3.m_ativo == 1).order_by(conexao3.m_id.desc())   
+        baixas = DB.session.query(Gf3006).filter(Gf3006.m_ativo == 1).order_by(Gf3006.m_id.desc())   
         paginasBaixa = baixas.paginate(page=1, per_page=5)
 
         return paginasBaixa
 
 
     def calcularPorcentagemDiferenca(self, valorAntigo: float, valorNovo: float):
-        valorNovo = self.filtroFloat(valorNovo) 
-        valorAntigo = self.filtroFloat(valorAntigo) 
+        valorNovo = filtroFloat(valorNovo) 
+        valorAntigo = filtroFloat(valorAntigo) 
 
         if valorAntigo == 0 and valorNovo == 0:
             return 0
+        elif valorAntigo == 0:
+            return ((valorNovo - valorAntigo) / 1) * 100
         else:
             return ((valorNovo - valorAntigo) / valorAntigo) * 100
     
@@ -84,32 +86,27 @@ class ControllerDashboard(HttpResponse, Log):
             dataAtual = dataAtual.strftime("%Y%m%d")
             primeiroDia = f"{dataAtual[0:6]}01"
 
-            somaPassado = DB.session.query(func.sum(Gf3006.m_valor)).filter(Gf3006.m_dataBaixa>=primeiroDia, Gf3006.m_dataBaixa<=ultimoDia, Gf3006.m_segmento==seg.s_id).first()
+            somaPassado = DB.session.query(func.sum(Gf3006.m_valor))\
+            .filter(Gf3006.m_dataBaixa>=primeiroDia, Gf3006.m_dataBaixa<=ultimoDia, Gf3006.m_idSegmento==seg.s_id).first()
 
             dataAtual = datetime.now()
             ultimoDia = dataAtual.replace(day=monthrange(dataAtual.year, dataAtual.month)[1]).strftime("%Y%m%d")
             dataAtual = dataAtual.strftime("%Y%m%d")
             primeiroDia = f"{dataAtual[0:6]}01"
 
-            somaAtual = DB.session.query(func.sum(Gf3006.m_valor)).filter(Gf3006.m_dataBaixa>=primeiroDia, Gf3006.m_dataBaixa<=ultimoDia, Gf3006.m_segmento==seg.s_id).first()
+            somaAtual = DB.session.query(func.sum(Gf3006.m_valor))\
+            .filter(Gf3006.m_dataBaixa>=primeiroDia, Gf3006.m_dataBaixa<=ultimoDia, Gf3006.m_idSegmento==seg.s_id).first()
 
             porcentagem = self.calcularPorcentagemDiferenca(somaPassado[0], somaAtual[0])
 
             dicSeg = {
-                "valor": self.filtroFloat(somaAtual[0]),
-                "porcentagem": self.filtroFloat(porcentagem)
+                "valor": filtroFloat(somaAtual[0]),
+                "porcentagem": filtroFloat(porcentagem)
             }
 
             valoresSeg[f"{seg.s_abrev}"] = dicSeg
 
         return valoresSeg
-    
-
-    def filtroFloat(self, valor):
-        if valor == None:
-            return 0
-        else:
-            return round(valor, 2)
 
 
     def calculoSegmentosUltimosMeses(self):
@@ -129,9 +126,9 @@ class ControllerDashboard(HttpResponse, Log):
                 
                 #Query que trás todas as baixas dentro do range
                 baixas = DB.session.query(func.sum(Gf3006.m_valor)) \
-                .filter(Gf3006.m_dataBaixa>=primeiroDia, Gf3006.m_dataBaixa<=ultimoDia, Gf3006.m_segmento==seg.s_id).first()
+                .filter(Gf3006.m_dataBaixa>=primeiroDia, Gf3006.m_dataBaixa<=ultimoDia, Gf3006.m_idSegmento==seg.s_id).first()
                 
-                listaValor.append(self.filtroFloat(baixas[0]))
+                listaValor.append(filtroFloat(baixas[0]))
                 listaMeses.append(nomeMes)
             
             listaValor.reverse()

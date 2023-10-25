@@ -25,6 +25,10 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/helpers.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='plugins/grid/gridjs.umd.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='plugins/apex-charts/apexcharts.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery-ui.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jqvmap/jquery.vmap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery-knob/jquery.knob.min.js') }}"></script>
 </head>
 
 <body {% if session.base == 'TESTE' %}style="background-color: #effd9e;"{% endif %}>
@@ -68,7 +72,7 @@
                                 </a>
                             </li>
                             <li class="menu-item {% if context.active == 'titulo' %}active{% endif %}">
-                                <a href="{{ url_for('tituloBlue.listaTitulos') }}" class="menu-link">
+                                <a href="{{ url_for('tituloBlue.renderListaTitulos') }}" class="menu-link">
                                     <div data-i18n="Container">Título</div>
                                 </a>
                             </li>
@@ -98,7 +102,7 @@
                                 </a>
                             </li>
                             <li class="menu-item {% if context.active == 'observacao' %}active{% endif %}">
-                                <a href="{{ url_for('observacaoBlue.listaObservacoes') }}" class="menu-link">
+                                <a href="{{ url_for('observacaoBlue.renderListaObservacoes') }}" class="menu-link">
                                     <div data-i18n="Container">Observações</div>
                                 </a>
                             </li>
@@ -111,32 +115,32 @@
                         </a>
                         <ul class="menu-sub">
                             <li class="menu-item {% if context.active == 'relatReceber' %}active{% endif %}">
-                                <a href="{{ url_for('relatorioBlue.relatReceber') }}" class="menu-link">
+                                <a href="{{ url_for('relatorioBlue.renderRelatReceber') }}" class="menu-link">
                                     <div data-i18n="Without menu">Títulos a Receber</div>
                                 </a>
                             </li>
                             <li class="menu-item {% if context.active == 'relatRecebidos' %}active{% endif %}">
-                                <a href="{{ url_for('relatorioBlue.relatRecebidos') }}" class="menu-link">
+                                <a href="{{ url_for('relatorioBlue.renderRelatRecebidos') }}" class="menu-link">
                                     <div data-i18n="Without navbar">Títulos Recebidos</div>
                                 </a>
                             </li>
                             <li class="menu-item {% if context.active == 'relatDev' %}active{% endif %}">
-                                <a href="{{ url_for('relatorioBlue.relatDevolucao') }}" class="menu-link">
+                                <a href="{{ url_for('relatorioBlue.renderRelatDevolucao') }}" class="menu-link">
                                     <div data-i18n="Container">Devoluções</div>
                                 </a>
                             </li>
                             <li class="menu-item {% if context.active == 'relatComi' %}active{% endif %}">
-                                <a href="{{ url_for('relatorioBlue.relatComissao') }}" class="menu-link">
+                                <a href="{{ url_for('relatorioBlue.renderRelatComissao') }}" class="menu-link">
                                     <div data-i18n="Container">Comissões</div>
                                 </a>
                             </li>
                             <li class="menu-item {% if context.active == 'relatConsis' %}active{% endif %}">
-                                <a href="{{ url_for('relatorioBlue.relatConsistencia') }}" class="menu-link">
+                                <a href="{{ url_for('relatorioBlue.renderRelatConsistencia') }}" class="menu-link">
                                     <div data-i18n="Container">Consistência</div>
                                 </a>
                             </li>
                             <li class="menu-item {% if context.active == 'relatObs' %}active{% endif %}">
-                                <a href="{{ url_for('relatorioBlue.relatObservacoes') }}" class="menu-link">
+                                <a href="{{ url_for('relatorioBlue.renderRelatObservacao') }}" class="menu-link">
                                     <div data-i18n="Container">Observações</div>
                                 </a>
                             </li>
@@ -254,16 +258,13 @@
     </div>
 
     <script type="text/javascript" src="{{ url_for('static', filename='plugins/chart/chart.umd.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery-ui.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery-knob/jquery.knob.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/menu.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/popper/popper.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='plugins/popper/popper.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='plugins/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
 
     {% block script %}
     {% endblock %}

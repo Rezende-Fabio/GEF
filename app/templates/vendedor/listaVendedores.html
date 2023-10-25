@@ -37,7 +37,7 @@
 {% block script %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/vendedor/dataVend.js') }}"></script>
 <script>
-    function progress() {
+    function fProgressBar() {
         const progressBar = document.getElementById('progressBar');
 
         const source = new EventSource('/vendedor/atualiza-baseVend');
@@ -61,7 +61,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#btn-sim").click(function () {
-            progress();
+            fProgressBar();
             $("#loader").css("display", "flex");
             $("#card-alert").css("display", "none");
             $("#btns-atualiza-base").css("display", "none");
@@ -74,10 +74,10 @@
     $(document).ready(function () {
         $('#modalVisu').on('show.bs.modal', function (event) {
             var modal = $(this);
-            var idDoElementoClicado = modal.data('id');
+            var idVend = modal.data('id');
 
             $.ajax({
-                url: `/vendedor/${idDoElementoClicado}`,
+                url: `/vendedor/${idVend}`,
                 type: 'GET',
                 success: function (data) {
                     $('#corpoModalVisu').html("");
@@ -94,8 +94,8 @@
 
 <script type="text/javascript">
     $(document).on('click', '.abrirModal', function () {
-        var idDoElementoClicado = $(this).data('id');
-        $('#modalVisu').data('id', idDoElementoClicado);
+        var idVend = $(this).data('id');
+        $('#modalVisu').data('id', idVend);
         $('#modalVisu').modal('show');
     });
 </script>

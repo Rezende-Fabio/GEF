@@ -5,7 +5,7 @@
     <i class="fa-solid fa-circle-exclamation"></i>
     <h6 class="msg"></h6>
 </div>
-<form onsubmit="return validaFilial()" action="/insert-titulo" method="POST">
+<form onsubmit="return validaFilial()" id="form-titulo">
     <div class="row mb-1">
         <div class="col-xxl">
             <div class="card p-4">
@@ -21,7 +21,7 @@
                     <div class="col-2">
                         <label for="">Documento Ref.</label>
                         <input type="text" class="form-control" style="text-transform: uppercase;" name="docRef"
-                            id="docRef" maxlength="40" size="40" tabindex="1" autocomplete="off" required value="">
+                            id="docRef" maxlength="10" size="40" tabindex="1" autocomplete="off" required value="">
                     </div>
                     <div class="col-2">
                         <label for="">Segmento</label>
@@ -106,34 +106,30 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <a href="{{ url_for('tituloBlue.listaTitulos') }}" class="btn btn-danger" type="button"
+                    <a href="{{ url_for('tituloBlue.renderListaTitulos') }}" class="btn btn-danger" type="button"
                         name="btnCancelar" id="btnCancelar" tabindex="9">Cancelar</a>
-                    <input type="submit" class="btn btn-success" id="btnGravar" value="{{ context.botao }}">
+                    <input type="submit" class="btn btn-success" id="btnGravar" value="Cadastrar">
                 </div>
             </div>
         </div>
     </div>
 </form>
-{% endblock %}
+{% endblock conteudo %}
 {% block script %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/titulo/funcoes.js') }}"></script>
+
 <script>
     $("#vendedor").keyup(function () {
         var nomeVend = this.value
         if (nomeVend.length >= 1) {
-
-            var nomes = []
-            function carregaNomes() {
-                $.getJSON(`/vendedores/${nomeVend}`, function (data, status, xhr) {
-                    for (var i = 0; i < data.length; i++) {
-                        nomes.push(data[i].nome)
-                    }
+            $.getJSON(`/vendedor/vendedores/${nomeVend}`, function (data, status, xhr) {
+                var nomes = data.map(function (item) {
+                    return item.nome;
                 });
-            }
-            carregaNomes();
 
-            $("#vendedor").autocomplete({
-                source: nomes,
+                $("#vendedor").autocomplete({
+                    source: nomes,
+                });
             });
 
             $(".ui-helper-hidden-accessible").css("display", "none")
@@ -144,23 +140,18 @@
 <script>
     $("#cliente").keyup(function () {
         var nomeCli = this.value
-        if (nomeCli.length >= 2) {
-
-            var nomes = []
-            function carregaNomesCli() {
-                $.getJSON(`/clientes/${nomeCli}`, function (data, status, xhr) {
-                    for (var i = 0; i < data.length; i++) {
-                        nomes.push(data[i].nome)
-                    }
+        if (nomeCli.length >= 1) {
+            $.getJSON(`/cliente/clientes/${nomeCli}`, function (data, status, xhr) {
+                var nomes = data.map(function (item) {
+                    return item.nome;
                 });
-            }
-            carregaNomesCli();
 
-            $("#cliente").autocomplete({
-                source: nomes,
+                $("#cliente").autocomplete({
+                    source: nomes,
+                });
             });
 
-            $(".ui-helper-hidden-accessible").css("display", "none")
+            $(".ui-helper-hidden-accessible").css("display", "none");
         }
     })
 </script>
@@ -173,5 +164,29 @@
         }
     });
 </script>
+<script>
+    $(document).ready(function () {
+        $('#form-titulo').submit(function (event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+            const formData = $(this).serialize();
 
-{% endblock %}
+            $.ajax({
+                url: "{{url_for('tituloBlue.inserirTitulo')}}",
+                type: "POST",
+                data: formData,
+                success: function (response) {
+                    window.location = "{{url_for('tituloBlue.renderListaTitulos')}}";
+                },
+                error: function (error) {
+                    if (error.status == 400) {
+                        mostraAlert();
+                    } else {
+                        window.location = "/error_500";
+                        console.error(error);
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock script %}

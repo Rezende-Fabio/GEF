@@ -1,111 +1,39 @@
 {% extends "public/base.html" %}
 {% block conteudo %}
 {% include "public/header.html" %}
+{% include "public/modal/modalVisualizacao.html" %}
 
-    <div id="lista-baixas"></div>
-    <!-- Modal para vizualizar os dados da baixas que tem observações -->
-    {% if context %}
-        {% if context.aviso %}
-            <section class="modal-view">
-                <div id="card-view-observ">
-                    <h2>Dados da Baixa</h2>
-                    <hr>
-                    <div>
-                        <div class="container">
-                            <div class="row mb-2">
-                                <div class="col-3">
-                                    <label>Documento:</label>
-                                    <input class="form-control" type="text" style="text-transform: uppercase;" name="codigo" id="codigo" maxlength="6" size="10" tabindex="1" 
-                                        placeholder="Código" autocomplete="off" required disabled="" value="{{ context.baixa.m_numDoc }}">
-                                </div>
-                                <div class="col-2">
-                                    <label>Parcela:</label>
-                                    <input class="form-control" type="text" style="text-transform: uppercase;" name="razaoSocial" id="razaoSocial" maxlength="80" size="84" tabindex="3" 
-                                        placeholder="" autocomplete="off" required disabled="" value="{{ context.baixa.m_parcela }}">
-                                </div>
-                                <div class="col-4">
-                                    <label>Referência:</label>
-                                    <input class="cpfOuCnpj form-control" type="text" name="cpfcnpj" id="cpfcnpj" maxlength="18" size="25" tabindex="4" 
-                                        placeholder="CPF/CNPJ" autocomplete="off" disabled="" value="{{ context.baixa.m_docRef }}">
-                                </div>
-                                <div class="col-3">
-                                    <label>Data Baixa:</label>
-                                    <input class="form-control" type="text" style="text-transform: uppercase;" name="inscrest" id="inscrest" maxlength="20" size="23" tabindex="5" 
-                                        placeholder="Inscr. Estadual" autocomplete="off" disabled="" value="{{ context.baixa.m_dataBaixa | data }}">
-                                </div> 
-                            </div>   
-                            <div class="row mb-2">  
-                                <div class="col-3">
-                                    <label>Valor Baixa:</label>
-                                    <input class="form-control" type="text" style="text-transform: uppercase;" name="telefone" id="telefone" maxlength="20" size="22" tabindex="6" 
-                                        placeholder="Telefone" autocomplete="off" disabled="" value="{{ context.baixa.m_valor | real }}">
-                                </div>  
-                                <div class="col-3">
-                                    <label>Juros:</label>
-                                    <input class="form-control" type="text" style="text-transform: uppercase;" name="telefone" id="telefone" maxlength="20" size="22" tabindex="6" 
-                                        placeholder="Telefone" autocomplete="off" disabled="" value="{{ context.baixa.m_juros | real }}">
-                                </div>
-                                <div class="col-3">
-                                    <label>Desconto:</label>
-                                    <input class="form-control" type="text" style="text-transform: uppercase;" name="telefone" id="telefone" maxlength="20" size="22" tabindex="6" 
-                                        placeholder="Telefone" autocomplete="off" disabled="" value="{{ context.baixa.m_deconto | real }}">
-                                </div>
-                                <div class="col-3">
-                                    <label>TP. Baixa:</label>
-                                    <input class="form-control" type="text" style="text-transform: uppercase;" name="telefone" id="telefone" maxlength="20" size="22" tabindex="6" 
-                                        placeholder="Telefone" autocomplete="off" disabled="" value="{{ context.baixa.m_tipoBaixa | tpBixa }}">
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-3">
-                                    <label>Código:</label>
-                                    <input class="form-control" type="text" style="text-transform: uppercase;" name="telefone" id="telefone" maxlength="20" size="22" tabindex="6" 
-                                        placeholder="Telefone" autocomplete="off" disabled="" value="{{ context.baixa.m_idCliente}}">
-                                </div>
-                                <div class="col-9">
-                                    <label>Cliente:</label>
-                                    <input class="form-control" type="text" style="text-transform: uppercase;" name="telefone" id="telefone" maxlength="20" size="22" tabindex="6" 
-                                        placeholder="Telefone" autocomplete="off" disabled="" value="{{ context.baixa.cliente }}">
-                                </div>
-                            </div>
-                            <div class="row justify-content-md-center">
-                                <div class="col-7">
-                                    <label for="exampleFormControlTextarea1">Observação:</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" name="obs" rows="3" cols="50" maxlength="100" tabindex="4" disabled="">{{ context.baixa.m_observ }}</textarea>
-                                </div>
-                            </div>
-                            <br>  
-                        </div> 
-                    </div>
-                    <div id="btns">
-                        <a class="btn btn-outline-danger btn-sm" href="javascript:history.back()">Cancelar</a>
-                    </div>
-                </div>
-            </section>
-        {% endif %}
-    {% endif %}
+    <div id="lista-observacoes"></div>
+
 {% endblock %}
 {% block script %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/observacoes/dataObserv.js') }}"></script>
 <script>
-    new gridjs.Grid({
-        columns: columnsObserv,
-        data: () => {
-            return new Promise(resolve => {
-                setTimeout(() => resolve(dataObserv), 2000);
+    $(document).ready(function () {
+        $('#modalVisu').on('show.bs.modal', function (event) {
+            var modal = $(this);
+            var idOberv = modal.data('id');
+
+            $.ajax({
+                url: `/observacao/${idOberv}`,
+                type: 'GET',
+                success: function (data) {
+                    $('#corpoModalVisu').html("");
+                    $('#corpoModalVisu').html(data);
+                },
+                error: function (error) {
+                    window.location = "/error_500";
+                    console.error(error);
+                }
             });
-        },
-        search: {
-            ignoreHiddenColumns: false,
-        },
-        sort: true,
-        paginationAutoPageSize: true,
-        pagination: true,
-        style: {
-            td: {
-                'font-size': '13.5px'
-            }
-        },
-    }).render(document.getElementById("lista-baixas"));
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).on('click', '.abrirModal', function () {
+        var idOberv = $(this).data('id');
+        $('#modalVisu').data('id', idOberv);
+        $('#modalVisu').modal('show');
+    });
 </script>
 {% endblock %}

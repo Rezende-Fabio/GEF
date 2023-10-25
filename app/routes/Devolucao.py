@@ -135,7 +135,7 @@ def insertDevolucao():
             conexao = Gf3004 #Conexão com a tabela de títulos
             conexao2 = Gf3003 #Conexão com a tabela de segmentos
             #Query que trás o segmento do documento de referência
-            segmento = DB.session.query(conexao.t_segmento, conexao2.s_abrev).filter(conexao.t_docRef==int(request.form["docRef"]), conexao.t_idCliente==idCliente[0]).join(conexao2, conexao2.s_id==conexao.t_segmento).group_by(conexao.t_docRef).first()
+            segmento = DB.session.query(conexao.t_idSegmento, conexao2.s_abrev).filter(conexao.t_docRef==int(request.form["docRef"]), conexao.t_idCliente==idCliente[0]).join(conexao2, conexao2.s_id==conexao.t_idSegmento).group_by(conexao.t_docRef).first()
             
             devolucao = Gf3007(
                 d_idCliente=idCliente[0],

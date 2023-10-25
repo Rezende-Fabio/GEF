@@ -5,8 +5,7 @@
     <i class="fa-solid fa-circle-exclamation"></i>
     <h6 class="msg"></h6>
 </div>
-<form action="/editar-titulo/{{context.tituloDoc.t_numDoc}}"
-    method="POST">
+<form id="form-titulo">
     <div class="row mb-1">
         <div class="col-xxl">
             <div class="card p-4">
@@ -29,7 +28,7 @@
                             <label for="">Segmento</label>
                             <input type="text" class="form-control" style="text-transform: uppercase;" name="segmento"
                                 id="segmento" maxlength="40" size="40" tabindex="1" autocomplete="off" required
-                                value="{{context.segCliVend[0].s_abrev}}" readonly>
+                                value="{{context.tituloDoc.t_segmento}}" readonly>
                         </div>
                         <div class="col-4">
                             <label for="">Data do Lançamaneto</label>
@@ -50,14 +49,14 @@
                             <label for="">Cliente</label>
                             <input type="text" class="form-control" style="text-transform: uppercase;" name="cliente"
                                 id="cliente" maxlength="10" size="10" tabindex="5" autocomplete="off" required
-                                value="{{context.tituloDoc.t_idCliente}} - {{context.segCliVend[0].c_razaosocial}}"
+                                value="{{context.tituloDoc.t_idCliente}} - {{context.tituloDoc.t_cliente.c_razaosocial}}"
                                 readonly>
                         </div>
                         <div class="col-6">
                             <label for="">Vendedor</label>
                             <input type="text" class="form-control" style="text-transform: uppercase;" name="vendedor"
                                 id="vendedor" maxlength="10" size="10" tabindex="6" autocomplete="off" required
-                                value="{{context.tituloDoc.t_idVendedor}} - {{context.segCliVend[0].v_nome}}" readonly>
+                                value="{{context.tituloDoc.t_idVendedor}} - {{context.tituloDoc.t_vendedor.v_nome}}" readonly>
                         </div>
                     </div>
                     <br>
@@ -66,13 +65,13 @@
                             <label for="">Valor Total</label>
                             <input type="text" class="form-control" style="text-transform: uppercase;" name="valorTotal"
                                 id="valorTotal" maxlength="10" size="10" tabindex="7" autocomplete="off" required
-                                value="{{context.segCliVend[0].valorTotal | float}}" readonly>
+                                value="{{context.tituloValores.valorTotal | float}}" readonly>
                         </div>
                         <div class="col-2">
                             <label for="">Parcelas</label>
                             <input type="text" class="form-control" style="text-transform: uppercase;" name="parcelas"
                                 id="parcelas" maxlength="40" size="40" tabindex="1" autocomplete="off" required
-                                value="{{context.segCliVend[0].parcelas}}" readonly>
+                                value="{{context.tituloValores.parcelas}}" readonly>
                         </div>
                         <div class="col-2">
                             <label for="">Filial</label>
@@ -132,5 +131,28 @@
         </div>
     </div>
 </form>
+{% endblock conteudo %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('#form-titulo').submit(function (event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+            const formData = $(this).serialize();
 
-{% endblock %}
+            $.ajax({
+                url: "{{url_for('tituloBlue.editarTitulo', doc=context.tituloDoc.t_numDoc)}}",
+                type: "PUT",
+                data: formData,
+                success: function (response) {
+                    window.location = "{{url_for('tituloBlue.renderListaTitulos')}}";
+                },
+                error: function (error) {
+                    window.location = "/error_500";
+                    console.error(error);
+                    
+                }
+            });
+        });
+    });
+</script>
+{% endblock script %}

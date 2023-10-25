@@ -16,22 +16,26 @@ class SysUsers(UserMixin, DB.Model):
     s_novaSenha = DB.Column(DB.Boolean)
     s_complex = DB.Column(DB.String(36))
 
+
     def items(self):
         return {key: value for key, value in self.__dict__.items() if key != '_sa_instance_state' and value is not None}
+
 
     def gerarSenha(self, senha: str) -> None:
         salt = bcrypt.gensalt(8)
         hash = bcrypt.hashpw(senha.encode('utf-8'), salt)
         self.s_senha = hash.decode("utf-8")
         self.s_complex = salt.decode("utf-8")
-        
+
+
     def verificarSenha(self, senha: str) -> bool:
         hash = bcrypt.hashpw(senha.encode('utf-8'), bytes(self.s_complex, 'utf-8'))
         if hash.decode('utf-8') == self.s_senha:
             return True
         else:
             return False
-        
+
+
     def toJson(self) -> dict:
         json = {
             "id": self.id,
@@ -109,38 +113,44 @@ class Gf3004(DB.Model):
     t_saldo = DB.Column(DB.Float)
     t_status = DB.Column(DB.Boolean)
     t_docRef = DB.Column(DB.String(12))
-    t_segmento = DB.Column(DB.Integer)
+    t_idSegmento = DB.Column(DB.Integer)
     t_filialOri = DB.Column(DB.Integer)
     t_filial = DB.Column(DB.Integer)
     t_ativo = DB.Column(DB.Boolean)
     t_comissao = DB.Column(DB.Float)
-    
+
+    t_cliente = DB.relationship("Gf3001", primaryjoin="foreign(Gf3004.t_idCliente) == Gf3001.c_id", backref=DB.backref("t_cliente"))
+    t_vendedor = DB.relationship("Gf3002", primaryjoin="foreign(Gf3004.t_idVendedor) == Gf3002.v_id", backref=DB.backref("t_vendedor"))
+    t_segmento = DB.relationship("Gf3003", primaryjoin="foreign(Gf3004.t_idSegmento) == Gf3003.s_id", backref=DB.backref("t_segmento"))
+
     def calculaSaldo(self, valorBaixa):
         self.t_saldo = float("%.2f"%self.t_saldo) - float("%.2f"%valorBaixa)
         if self.t_saldo == 0:
             self.t_status = 0          
     
+
     def estornaSaldo(self, valorStorna):
         self.t_saldo = float("%.2f"%self.t_saldo) + float("%.2f"%valorStorna)
         if self.t_saldo != 0:
             self.t_status = 1
     
+
     def as_dict(self):
         return {"doc": f"{self.t_docRef}"}
     
-#Comissão
-class Gf3005(DB.Model):
-    c_id =  DB.Column(DB.Integer, primary_key=True)
-    c_idVendedor = DB.Column(DB.String(10))
-    c_baseCalc = DB.Column(DB.Float)
-    c_idBaixa = DB.Column(DB.Integer)
-    c_valor = DB.Column(DB.Float)
-    c_dataBaixa = DB.Column(DB.String(8))
-    c_dataPgto = DB.Column(DB.String(8))
-    c_docRef = DB.Column(DB.String(12))
-    c_numDoc = DB.Column(DB.Integer)
-    c_perc = DB.Column(DB.Float)
-    c_ativo = DB.Column(DB.Boolean)
+
+    def toJson(self) -> dict:
+        json = {
+            "id": self.t_id,
+            "doc": self.t_numDoc,
+            "numParc": self.t_numParcela,
+            "valor": self.t_valor,
+            "dtLanc": self.t_dataLanc,
+            "dtVenc": self.t_dataVenc
+        }
+
+        return json
+
 
 #Movimento
 class Gf3006(DB.Model):
@@ -158,8 +168,11 @@ class Gf3006(DB.Model):
     m_observ = DB.Column(DB.String(140))
     m_usuario = DB.Column(DB.String(10))
     m_idDev = DB.Column(DB.Integer)
-    m_segmento = DB.Column(DB.Integer)
+    m_idSegmento = DB.Column(DB.Integer)
     m_ativo = DB.Column(DB.Boolean)
+
+    m_cliente = DB.relationship("Gf3001", primaryjoin="foreign(Gf3006.m_idCliente) == Gf3001.c_id", backref=DB.backref("m_cliente"))
+    m_segmento = DB.relationship("Gf3003", primaryjoin="foreign(Gf3006.m_idSegmento) == Gf3003.s_id", backref=DB.backref("m_segmento"))
     
     def calculaComissao(self, valor):
         valorRetorno = float(self.m_valor + self.m_juros - self.m_deconto)
@@ -167,6 +180,25 @@ class Gf3006(DB.Model):
 
     def calculaBase(self):
         return float(self.m_valor + self.m_juros - self.m_deconto)
+
+
+#Comissão
+class Gf3005(DB.Model):
+    c_id =  DB.Column(DB.Integer, primary_key=True)
+    c_idVendedor = DB.Column(DB.String(10))
+    c_baseCalc = DB.Column(DB.Float)
+    c_idBaixa = DB.Column(DB.Integer)
+    c_valor = DB.Column(DB.Float)
+    c_dataBaixa = DB.Column(DB.String(8))
+    c_dataPgto = DB.Column(DB.String(8))
+    c_docRef = DB.Column(DB.String(12))
+    c_numDoc = DB.Column(DB.Integer)
+    c_perc = DB.Column(DB.Float)
+    c_ativo = DB.Column(DB.Boolean)
+
+    c_vendedor = DB.relationship("Gf3002", primaryjoin="foreign(Gf3005.c_idVendedor) == Gf3002.v_id", backref=DB.backref("m_vendedor"))
+    c_baixa = DB.relationship("Gf3006", primaryjoin="foreign(Gf3005.c_idBaixa) == Gf3006.m_id", backref=DB.backref("m_baixa"))
+
 
 #Devolução
 class Gf3007(DB.Model):
@@ -178,6 +210,8 @@ class Gf3007(DB.Model):
     d_ativo = DB.Column(DB.Boolean)
     d_saldo = DB.Column(DB.Float)
     d_status = DB.Column(DB.Boolean)
+
+    d_cliente = DB.relationship("Gf3001", primaryjoin="foreign(Gf3007.d_idCliente) == Gf3001.c_id", backref=DB.backref("d_cliente"))
     
     def calculaCredito(self, valor):
         if self.d_saldo >= valor:

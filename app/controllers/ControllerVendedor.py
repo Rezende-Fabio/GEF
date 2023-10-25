@@ -1,5 +1,5 @@
 from ..httpResponse.HttpResponse import HttpResponse
-from flask import session, abort, request, g
+from flask import session, abort, request, g, jsonify
 from flask_login import login_required
 from ..extensions.configHtml import *
 from ..models.Models import Gf3002
@@ -103,7 +103,7 @@ class ControllerVendedor(HttpResponse, Log):
                 #Query que consulta os nomes de acordo com o nome do vendedor
                 vendedores = Gf3002.query.filter(Gf3002.v_nome.like(f"%{pesquisa}%"), Gf3002.v_ativo==1) 
             listaVend = [vend.as_dict() for vend in vendedores]
-            return self.responseJson(body=listaVend, status=200)
+            return jsonify(listaVend)
         
         except:
             tipoExcecao, valorExcecao, tb = sys.exc_info()

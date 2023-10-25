@@ -1,11 +1,9 @@
 var dataTi = []
 
 $.ajax({
-    url: '/titulos',
-    type: 'POST',
+    url: '/titulo/titulos',
+    type: 'GET',
     async: false,
-    dataType: 'json',
-    contentType: 'application/json',
     success: function(resp){
         for(x in resp){
            dataresp = {
@@ -17,9 +15,9 @@ $.ajax({
                 cliente: resp[x].cli,
                 emissao: resp[x].lanc,  
                 valor: gridjs.html(`<span style='display:flex; text-align: right; justify-content: right;align-items: center; margin-right: 7px;'>` + resp[x].total + `</span>`), 
-                vizualizar: gridjs.html(`<div style="width: 100%;display: flex;align-items: center;text-align: center;justify-content: center;"><a data-id="${resp[x].doc}" class="abrirModal btn btn-primary btn-sm"><i class="fa-solid fa-eye" style="font-size: 17px;"></i></a></div>`),
-                atualizar: gridjs.html(`<div style="width: 100%;display: flex;align-items: center;text-align: center;justify-content: center;"><a href="/editar-titulo/${resp[x].doc}" style='text-align: center; justify-content: right;' class="btn btn-success btn-sm"><i class="fa-solid fa-pen-to-square" style="font-size: 17px;"></i></a></div>`),
-                excluir: gridjs.html(`<div style="width: 100%;display: flex;align-items: center;text-align: center;justify-content: center;"><a href="/lista-titulos/${resp[x].doc}" style='text-align: center; justify-content: right;' class="btn btn-danger btn-sm"><i class="fa-solid fa-trash" style="font-size: 17px;"></i></a></div>`)
+                vizualizar: gridjs.html(`<div style="width: 100%;display: flex;align-items: center;text-align: center;justify-content: center;"><a data-id="${resp[x].doc}" class="abrirModalVisu btn btn-primary btn-sm"><i class="fa-solid fa-eye" style="font-size: 17px;"></i></a></div>`),
+                atualizar: gridjs.html(`<div style="width: 100%;display: flex;align-items: center;text-align: center;justify-content: center;"><a href="/titulo/editar-titulo/${resp[x].doc}" class="btn btn-success btn-sm"><i class="fa-solid fa-pen-to-square" style="font-size: 17px;"></i></a></div>`),
+                excluir: gridjs.html(`<div style="width: 100%;display: flex;align-items: center;text-align: center;justify-content: center;"><button data-id="${resp[x].doc}" class="abrirModaleEx btn btn-danger btn-sm"><i class="fa-solid fa-trash" style="font-size: 17px;"></i></button></div>`)
            }
            dataTi.push(dataresp)
         }
@@ -90,4 +88,22 @@ var columnsTi = [
 ]
 
 
-
+new gridjs.Grid({
+    columns: columnsTi,
+    data: () => {
+        return new Promise(resolve => {
+            setTimeout(() => resolve(dataTi), 2000);
+        });
+    },
+    search: {
+        ignoreHiddenColumns: false,
+    },
+    sort: true,
+    paginationAutoPageSize: true,
+    pagination: true,
+    style: {
+        td: {
+            'font-size': '13.5px'
+        }
+    },
+}).render(document.getElementById("lista-titulos"));

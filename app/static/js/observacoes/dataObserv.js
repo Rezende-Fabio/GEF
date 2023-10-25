@@ -1,11 +1,9 @@
 var dataObserv = []
 
 $.ajax({
-    url: '/observacoes',
-    type: 'POST',
+    url: '/observacao/observacoes',
+    type: 'GET',
     async: false,
-    dataType: 'json',
-    contentType: 'application/json',
     success: function(resp){
         for(x in resp){
            dataresp = {
@@ -15,7 +13,7 @@ $.ajax({
             cliente: resp[x].cli,
             emissao: resp[x].lanc,
             valor: gridjs.html(`<span style='display:flex; text-align: right; justify-content: right;align-items: center; margin-right: 15px;'>` + resp[x].valor + `</span>`),
-            vizualizar: gridjs.html(`<div style="width: 100%;display: flex;align-items: center;text-align: center;justify-content: center;"><a href="/lista-observacoes/view/${resp[x].doc}/${resp[x].par}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-eye" style="font-size: 17px;"></i></a></div>`)
+            vizualizar: gridjs.html(`<div style="width: 100%;display: flex;align-items: center;text-align: center;justify-content: center;"><a class="abrirModal btn btn-primary" data-id="${resp[x].doc}/${resp[x].par}"><i class="fa-solid fa-eye" style="font-size: 17px;"></i></a></div>`)
            }
            dataObserv.push(dataresp)
         }
@@ -64,3 +62,24 @@ var columnsObserv = [
         sort: false,
     }
 ]
+
+
+new gridjs.Grid({
+    columns: columnsObserv,
+    data: () => {
+        return new Promise(resolve => {
+            setTimeout(() => resolve(dataObserv), 2000);
+        });
+    },
+    search: {
+        ignoreHiddenColumns: false,
+    },
+    sort: true,
+    paginationAutoPageSize: true,
+    pagination: true,
+    style: {
+        td: {
+            'font-size': '13.5px'
+        }
+    },
+}).render(document.getElementById("lista-observacoes"));

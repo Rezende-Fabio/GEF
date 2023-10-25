@@ -1,0 +1,61 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel3">Dados da baixa</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="row mb-2">
+        <div class="col-2">
+            <label>Documento:</label>
+            <input class="form-control" type="text" value="{{ context.baixa.m_numDoc }}" readonly>
+        </div>
+        <div class="col-2">
+            <label>Parcela:</label>
+            <input class="form-control" type="text" value="{{ context.baixa.m_parcela }}" readonly>
+        </div>
+        <div class="col-3">
+            <label>Referência:</label>
+            <input class="cpfOuCnpj form-control" type="text" value="{{ context.baixa.m_docRef }}" readonly>
+        </div> 
+        <div class="col-3">
+            <label>Data Baixa:</label>
+            <input class="form-control" type="text" value="{{ context.baixa.m_dataBaixa | data }}" readonly>
+        </div>
+    </div>   
+    <div class="row mb-2">    
+        <div class="col-4">
+            <label>Valor Baixa:</label>
+            <input class="form-control" type="text" value="{{ context.baixa.m_valor | real }}" readonly>
+        </div>
+        <div class="col-3">
+            <label>Juros:</label>
+            <input class="form-control" type="text" value="{{ context.baixa.m_juros | real }}" readonly>
+        </div> 
+        <div class="col-3">
+            <label>Desconto:</label>
+            <input class="form-control" type="text" value="{{ context.baixa.m_deconto | real }}" readonly>
+        </div>
+        <div class="col-2">
+            <label>TP. Baixa:</label> 
+            <input class="form-control" type="text" value="{{ context.baixa.m_tipoBaixa | tpBixa }}" readonly>
+        </div>
+    </div>
+    <div class="row mb-2">    
+        <div class="col-3">
+            <label>Código:</label>
+            <input class="form-control" type="text" value="{{ context.baixa.m_idCliente}}" readonly>
+        </div>
+        <div class="col">
+            <label>Cliente:</label>
+            <input class="form-control" type="text" value="{{ context.baixa.cliente }}" readonly>
+        </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col">
+            <label for="exampleFormControlTextarea1">Observação:</label>
+            <textarea class="form-control" rows="3" cols="50" maxlength="100" tabindex="4" readonly>{{ context.baixa.m_observ }}</textarea>
+        </div>
+    </div>
+</div>
+<div class="modal-footer justify-content-center">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+</div>

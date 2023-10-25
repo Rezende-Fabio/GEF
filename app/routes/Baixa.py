@@ -76,7 +76,7 @@ def cadBaixa(doc, parcela):
         #Query que trás o título de acordo com o número do documento e parcela passado
         titulo = conexao.query.filter_by(t_numDoc=doc, t_numParcela=parcela).first()
         #Query que trás o segmento, cliente e o vendedor do título
-        segCliVend = DB.session.query(conexao.t_idCliente, conexao.t_idVendedor, func.count(conexao.t_numParcela).label('parcelas'), conexao.t_valor, conexao2.s_abrev, conexao2.s_id, conexao3.c_razaosocial, conexao4.v_nome).filter(conexao.t_ativo == 1, conexao.t_numDoc == doc).join(conexao2, conexao2.s_id == conexao.t_segmento).join(conexao3, conexao3.c_id == conexao.t_idCliente).join(conexao4, conexao4.v_id == conexao.t_idVendedor).group_by(conexao.t_idCliente, conexao.t_idVendedor, conexao2.s_abrev)
+        segCliVend = DB.session.query(conexao.t_idCliente, conexao.t_idVendedor, func.count(conexao.t_numParcela).label('parcelas'), conexao.t_valor, conexao2.s_abrev, conexao2.s_id, conexao3.c_razaosocial, conexao4.v_nome).filter(conexao.t_ativo == 1, conexao.t_numDoc == doc).join(conexao2, conexao2.s_id == conexao.t_idSegmento).join(conexao3, conexao3.c_id == conexao.t_idCliente).join(conexao4, conexao4.v_id == conexao.t_idVendedor).group_by(conexao.t_idCliente, conexao.t_idVendedor, conexao2.s_abrev)
         #Query que trás o número de parcelas do título
         parcelas = DB.session.query(conexao.t_dataVenc, conexao.t_valor, conexao.t_numParcela).filter(conexao.t_numDoc == doc).order_by(conexao.t_numParcela)
         #Query que trás o crédito do cliente caso ele tenha
@@ -187,7 +187,7 @@ def insertBaixa():
                 m_observ=observ,
                 m_usuario=session["usuario"]["usuario"],
                 m_idDev=idDev,
-                m_segmento=request.form["segmento"],
+                m_idSegmento=request.form["segmento"],
                 m_ativo=1
             )
 
@@ -222,7 +222,7 @@ def insertBaixa():
                 DB.session.commit()
 
             flash(f"Baixa efetuada com sucesso!", "success") #Mensagem para ser exibida no Front
-            Logger.log("Baixa de Título", session["usuario"], session["filial"], f"Documento: {request.form['numDoc']} Parcela: {request.form['parcela']}") #Gera log informando que foi feita baixa no título 
+            #Logger.log("Baixa de Título", session["usuario"], session["filial"], f"Documento: {request.form['numDoc']} Parcela: {request.form['parcela']}") #Gera log informando que foi feita baixa no título 
             return redirect("/lista-baixas")
         
     except Exception as erro:
@@ -254,7 +254,7 @@ def baixas():
             conexao3 = Gf3001
             conexao4 = Gf3002
             #Query que trás todos os títulos que estão em berto 
-            baixas = DB.session.query(conexao.t_docRef, conexao.t_numDoc, conexao.t_numParcela, conexao.t_idCliente, conexao.t_idVendedor, conexao.t_dataLanc, conexao.t_dataVenc, conexao.t_status, conexao.t_saldo, conexao2.s_abrev, conexao3.c_razaosocial.label("cliente"), conexao4.v_nome.label("vendedor")).filter(conexao.t_ativo == 1, conexao.t_status==1).join(conexao2, conexao2.s_id == conexao.t_segmento).join(conexao3, conexao.t_idCliente==conexao3.c_id).join(conexao4, conexao.t_idVendedor==conexao4.v_id).order_by(conexao.t_dataVenc)
+            baixas = DB.session.query(conexao.t_docRef, conexao.t_numDoc, conexao.t_numParcela, conexao.t_idCliente, conexao.t_idVendedor, conexao.t_dataLanc, conexao.t_dataVenc, conexao.t_status, conexao.t_saldo, conexao2.s_abrev, conexao3.c_razaosocial.label("cliente"), conexao4.v_nome.label("vendedor")).filter(conexao.t_ativo == 1, conexao.t_status==1).join(conexao2, conexao2.s_id == conexao.t_idSegmento).join(conexao3, conexao.t_idCliente==conexao3.c_id).join(conexao4, conexao.t_idVendedor==conexao4.v_id).order_by(conexao.t_dataVenc)
             lista = []
             for x in baixas:
                 if x.t_dataVenc < dataAtual:

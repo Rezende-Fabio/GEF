@@ -34,8 +34,9 @@
 
 {% endblock conteudo %}
 {% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/cliente/dataCli.js') }}"></script>
 <script>
-    function progress() {
+    function fProgressBar() {
         const progressBar = document.getElementById('progressBar');
 
         const source = new EventSource('/cliente/atualiza-baseCli');
@@ -61,10 +62,11 @@
         window.location='/cliente/atualiza-baseCli-redirect';
     }
 </script>
+
 <script type="text/javascript">
     $(document).ready(function(){
         $("#btn-sim").click(function(){
-            progress();
+            fProgressBar();
             $("#loader").css("display", "flex");
             $("#card-alert").css("display", "none");
             $("#btns-atualiza-base").css("display", "none");
@@ -72,6 +74,7 @@
         });
     });
 </script>
+
 <script>
     $(document).ready(function() {
         $('#modalVisu').on('show.bs.modal', function (event) {
@@ -89,21 +92,7 @@
         });
     });
 </script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/cliente/dataCli.js') }}"></script>
-<script>
-    new gridjs.Grid({
-        columns: columnsCli,
-        data: () => {
-            return new Promise(resolve => {
-                setTimeout(() => resolve(dataCli), 2000);
-            });
-        },
-        search: true,
-        sort: true,
-        paginationAutoPageSize: true,
-        pagination: true,
-    }).render(document.getElementById("lista-clientes"));
-</script>
+
 <script type="text/javascript">
     $(document).on('click', '.abrirModal', function() {
         var idDoElementoClicado = $(this).data('id');

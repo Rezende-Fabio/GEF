@@ -208,24 +208,23 @@
                         {% for baixa in context.ultimasBaixas %}
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    {% if baixa.m_segmento == 1  %}
+                                    {% if baixa.m_idSegmento == 1  %}
                                         <img src="{{ url_for('static', filename='img/linha.png') }}" alt="Credit Card" class="rounded list-dash-fio"/>
-                                    {% elif baixa.m_segmento == 2 %}
+                                    {% elif baixa.m_idSegmento == 2 %}
                                         <img src="{{ url_for('static', filename='img/fardo.png') }}" alt="Credit Card" class="rounded list-dash-res"/>
-                                    {% elif baixa.m_segmento == 3 %}
+                                    {% elif baixa.m_idSegmento == 3 %}
                                         <img src="{{ url_for('static', filename='img/linha.png') }}" alt="Credit Card" class="rounded list-dash-fio"/>
-                                    {% elif baixa.m_segmento == 4 %}
+                                    {% elif baixa.m_idSegmento == 4 %}
                                         <img src="{{ url_for('static', filename='img/tecido.png') }}" alt="Credit Card" class="rounded list-dash-tec"/> 
-                                    {% elif baixa.m_segmento == 5 %}
+                                    {% elif baixa.m_idSegmento == 5 %}
                                         <img src="{{ url_for('static', filename='img/malha.png') }}" alt="Credit Card" class="rounded list-dash-mal"/> 
                                     {% else %}
                                         <img src="{{ url_for('static', filename='img/fardo.png') }}" alt="Credit Card" class="rounded list-dash-res"/>
                                     {% endif %}
-                                    
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
-                                        <small class="text-muted d-block mb-1">Nome do caba</small>
+                                        <small class="text-muted d-block mb-1">{{ baixa.m_cliente.c_razaosocial }}</small>
                                         <h7 class="mb-0">{{ baixa.m_numDoc }} / {{ baixa.m_parcela }} - {{ baixa.m_docRef }}</h7>
                                     </div>
                                     <div class="user-progress d-flex align-items-center gap-1">

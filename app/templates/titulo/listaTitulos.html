@@ -1,6 +1,7 @@
 {% extends "public/base.html" %}
 {% block conteudo %}
 {% include "public/modal/modalVisualizacao.html" %}
+{% include "public/modal/modalExclusao.html" %}
     {% include "public/header.html" %}
     <!-- Exibe mensagem que foi enviado pelo Back -->
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -27,60 +28,23 @@
     {% endwith %}
 
     <div class="conteiner-fluid d-flex justify-content-end">
-        <a class="btn btn-success" href="{{ url_for('tituloBlue.cadTitulo') }}">Cadastrar Título</a>
+        <a class="btn btn-success" href="{{ url_for('tituloBlue.renderCadastrarTitulo') }}">Cadastrar Título</a>
     </div>
     <div id="lista-titulos"></div>
 
-    <!-- Modal de confrimação de exclusão do título -->
-    {% if context %}
-        {% if context.aviso == 1 %}
-            <section class="modal-delete">
-                <div id="card-delete">
-                    <h2>Aviso!</h2>
-                    <hr>
-                    <p>Deseja mesmo excluir o título {{ context.titulo.t_numDoc }}?</p>
-                    <div id="btns">
-                        <a class="btn btn-success btn-sm" href="/deletar-titulo/{{ context.titulo.t_numDoc }}">Confirmar</a>
-                        <a class="btn btn-danger btn-sm" href="javascript:history.back()">Cancelar</a>
-                    </div>
-                </div>
-            </section>
-        {% endif %}
-    {% endif %}
-{% endblock %}
+{% endblock conteudo %}
 {% block script %} 
 <script type="text/javascript" src="{{ url_for('static', filename='js/titulo/dataTi.js') }}"></script>
-<script>
-    new gridjs.Grid({
-        columns: columnsTi,
-        data: () => {
-            return new Promise(resolve => {
-                setTimeout(() => resolve(dataTi), 2000);
-            });
-        },
-        search: {
-            ignoreHiddenColumns: false,
-        },
-        sort: true,
-        paginationAutoPageSize: true,
-        pagination: true,
-        style: {
-            td: {
-                'font-size': '13.5px'
-            }
-        },
-    }).render(document.getElementById("lista-titulos"));
-</script>
 
 <script>
     $(document).ready(function() {
 
         $('#modalVisu').on('show.bs.modal', function (event) {
             var modal = $(this);
-            var idDoElementoClicado = modal.data('id');
+            var documento = modal.data('id');
             
             $.ajax({
-                url: `/lista-titulos/view/${idDoElementoClicado}`,
+                url: `/titulo/view/${documento}`,
                 type: 'GET',
                 success: function(data) {
                     $('#corpoModalVisu').html("");
@@ -92,10 +56,61 @@
 </script>
 
 <script type="text/javascript">
-    $(document).on('click', '.abrirModal', function() {
-        var idDoElementoClicado = $(this).data('id');
-        $('#modalVisu').data('id', idDoElementoClicado);
+    $(document).on('click', '.abrirModalVisu', function() {
+        var documento = $(this).data('id');
+        $('#modalVisu').data('id', documento);
         $('#modalVisu').modal('show');
     });
 </script>
-{% endblock %}
+
+<script>
+    $(document).ready(function() {
+
+        $('#modalExclusao').on('show.bs.modal', function (event) {
+            var modal = $(this);
+            var documento = modal.data('id');
+            
+            $.ajax({
+                url: `/titulo/${documento}`,
+                type: 'GET',
+                success: function(data) {
+                    $('#msgModal').html("");
+                    $('#msgModal').html(`Desejesa realmente excluir o título ${data.doc}`);
+                },
+                error: function(erro){
+                    console.log(erro);
+                }
+            });
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).on('click', '.btn-excluir', function() {
+        var idSelecionado = $('#modalExclusao').data('id');
+        $.ajax({
+            url: `/titulo/excluir-titulo/${idSelecionado}`,
+            type: 'DELETE',
+            success: function(data) {
+                location.reload();
+            },
+            error: function(error){
+                if (error.status == 409){
+                    location.reload();
+                }else{
+                    window.location = "/error_500";
+                    console.error(error);
+                }
+            }
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).on('click', '.abrirModaleEx', function() {
+        var documento = $(this).data('id');
+        $('#modalExclusao').data('id', documento);
+        $('#modalExclusao').modal('show');
+    });
+</script>
+{% endblock script %}

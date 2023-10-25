@@ -154,7 +154,7 @@ def estornos():
             dataAtual = dataAtual - relativedelta(years=leAnoEstorno())
             dataAtual = dataAtual.strftime("%Y")
             #Query que trás todos os títulos que estão baixados
-            estornos = DB.session.query(conexao.t_docRef, conexao.t_numDoc, conexao.t_numParcela, conexao.t_idCliente, conexao.t_idVendedor, conexao.t_dataLanc, conexao.t_dataVenc, conexao.t_status, conexao.t_saldo, conexao2.s_abrev, conexao3.c_razaosocial.label("cliente"), conexao4.v_nome.label("vendedor")).filter(conexao.t_ativo == 1, conexao.t_saldo != conexao.t_valor, conexao.t_dataLanc >= dataAtual).join(conexao2, conexao2.s_id == conexao.t_segmento).join(conexao3, conexao.t_idCliente==conexao3.c_id).join(conexao4, conexao.t_idVendedor==conexao4.v_id).order_by(conexao.t_dataVenc)
+            estornos = DB.session.query(conexao.t_docRef, conexao.t_numDoc, conexao.t_numParcela, conexao.t_idCliente, conexao.t_idVendedor, conexao.t_dataLanc, conexao.t_dataVenc, conexao.t_status, conexao.t_saldo, conexao2.s_abrev, conexao3.c_razaosocial.label("cliente"), conexao4.v_nome.label("vendedor")).filter(conexao.t_ativo == 1, conexao.t_saldo != conexao.t_valor, conexao.t_dataLanc >= dataAtual).join(conexao2, conexao2.s_id == conexao.t_idSegmento).join(conexao3, conexao.t_idCliente==conexao3.c_id).join(conexao4, conexao.t_idVendedor==conexao4.v_id).order_by(conexao.t_dataVenc)
             
             lista = []
             for x in estornos:

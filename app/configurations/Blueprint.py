@@ -30,13 +30,13 @@ def rotas(app):
     from ..routes.Impresao import impressaoBlue
     app.register_blueprint(impressaoBlue)
 
-    from ..routes.Observacoes import observacaoBlue
+    from ..routes.ObservacoesRoute import observacaoBlue
     app.register_blueprint(observacaoBlue)
 
-    from ..routes.Relatorio import relatorioBlue
+    from ..routes.RelatorioRoute import relatorioBlue
     app.register_blueprint(relatorioBlue)
 
-    from ..routes.Titulo import tituloBlue
+    from ..routes.TituloRoute import tituloBlue
     app.register_blueprint(tituloBlue)
 
     from ..routes.UsuarioRoute import usuarioBlue

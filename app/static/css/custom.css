@@ -31,6 +31,9 @@ Termino index
 */
 
 
+
+
+
 /*
 Inicio base
 */
@@ -83,6 +86,7 @@ Inicio base
     left: 0;
     height: 5px;
     width: 100%;
+    border-radius: 0px 5px 5px 0px;
     background-color: currentColor;
     animation: progress 8s linear forwards;
 }
@@ -124,8 +128,8 @@ a.ui-button:active,
     padding: 2px 2px 2px 5px;
 }
 
-.icon-size {
-    font-size: 3rem;
+.icon-size-warning {
+    font-size: 4.5rem;
     color: #cfc63f;
 }
 
@@ -186,9 +190,30 @@ textarea {
     border-radius: 5px;
 }
 
+.progress-bar{
+    width: 100% !important;
+    background-color: #ffffff !important;
+    border-radius: 15px !important;
+}
+
+.progress-bar::-webkit-progress-bar {
+    background-color: #9999FF;
+}
+
+.progress-bar::-webkit-progress-value {
+    background-color: #9999FF;
+}
+
+.progress-bar::-moz-progress-bar {
+    background-color: #9999FF;
+}
+
 /*
 Termino base
 */
+
+
+
 
 
 /*
@@ -206,6 +231,41 @@ Inicio header
 /*
 Termino header
 */
+
+
+
+
+
+/*
+Inicio dashboard
+*/
+
+.list-dash-fio{
+    background-color: #b1e092;
+    padding: 2px;
+}
+
+.list-dash-res{
+    background-color: #8eb4e09a;
+    padding: 2px;
+}
+
+.list-dash-tec{
+    background-color: #e27e7eab;
+    padding: 2px;
+}
+
+.list-dash-mal{
+    background-color: #da99ff80;
+    padding: 2px;
+}   
+
+/*
+Termino dashboard
+*/
+
+
+
 
 
 /*
@@ -227,6 +287,9 @@ Termino Cadastro de Usuário
 */
 
 
+
+
+
 /*
 Inicio Incluir Baixa
 */
@@ -242,6 +305,9 @@ Inicio Incluir Baixa
 /*
 Termino Incluir Baixa
 */
+
+
+
 
 
 /*

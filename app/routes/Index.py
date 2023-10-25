@@ -7,7 +7,7 @@ import random
 from calendar import monthrange
 from werkzeug.security import generate_password_hash
 from datetime import datetime
-from ..extensions.logs import Logger
+from ..extensions.Log import Log
 import sys
 from ..extensions.veriaveis import *
 from ..configurations.DataBase import DB
@@ -49,7 +49,10 @@ def index():
     else:
         session["base"] = "PRODUCAO"
     
-    return render_template("public/index.html")
+    if request.remote_addr not in ips:
+        return render_template("public/alert.html")
+    else:
+        return render_template("public/index.html")
     
 
 #Rota para esqueci a senha 
@@ -130,5 +133,6 @@ def cadastraNovaSenha(id):
             return redirect("/base")
         
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index") 
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500") 

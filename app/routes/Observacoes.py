@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, jsonify, Blueprint, g
 from ..models.Models import *
-from ..extensions.logs import Logger
+from ..extensions.Log import Log
 from ..extensions.configHtml import *
 from ..configurations.DataBase import DB
 from flask_login import login_required

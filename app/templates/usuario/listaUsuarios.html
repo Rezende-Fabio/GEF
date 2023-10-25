@@ -1,110 +1,86 @@
 {% extends "public/base.html" %}
 {% block conteudo %}
 {% include "public/modal/modalExclusao.html" %}
-    {% include "public/header.html" %}
-    <!-- Exibe mensagem que foi enviado pelo Back -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <script>
-                    window.setTimeout(function() {
-                        $(".alert").fadeTo(500, 0).slideUp(500, function(){
-                            $(this).remove(); 
-                        });
-                    }, 8000);
-                </script>
-                <div class="alert alert-{{ category }} d-flex align-items-center" role="alert">
-                    {% if category == "success" %}
-                        <i class="fa-solid fa-circle-check"></i>
-                    {% else %}
-                        <i class="fa-solid fa-circle-exclamation"></i>
-                    {% endif %}
-                    <h6>{{ message }}</h6>
-                    <div class="progress active"></div>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
-    <div class="conteiner-fluid d-flex justify-content-end">
-        <a name="cadUser" id="cadUser" class="btn btn-success" href="{{ url_for('usuarioBlue.cadUsuario') }}">Cadastrar Usuário</a>
-    </div>
-    <div id="lista-usuarios"></div>
-
-    <!-- Modal de confrimação de exclusão do usuário -->
-    {% if context %}
-        {% if context.aviso == 1 %}
-            <section class="modal-delete">
-                <div id="card-delete">
-                    <h2>Aviso!</h2>
-                    <hr>
-                    <p>Deseja mesmo excluir o usuário {{ context.usuario.s_nome }}?</p>
-                    <div id="btns">
-                        <a class="btn btn-success btn-sm" href="/deletar-usuario/{{ context.usuario.s_codigo }}">Confirmar</a>
-                        <a class="btn btn-danger btn-sm" href="javascript:history.back()">Cancelar</a>
-                    </div>
-                </div>
-            </section>
-        {% endif %}
+{% include "public/header.html" %}
+<!-- Exibe mensagem que foi enviado pelo Back -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <script>
+                window.setTimeout(function() {
+                    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                        $(this).remove(); 
+                    });
+                }, 8000);
+            </script>
+            <div class="alert alert-{{ category }} d-flex align-items-center" role="alert">
+                {% if category == "success" %}
+                    <i class="fa-solid fa-circle-check"></i>
+                {% else %}
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                {% endif %}
+                <h6>{{ message }}</h6>
+                <div class="progress active"></div>
+            </div>
+        {% endfor %}
     {% endif %}
-{% endblock %}
+{% endwith %}
+
+<div class="conteiner-fluid d-flex justify-content-end">
+    <a name="cadUser" id="cadUser" class="btn btn-success" href="{{ url_for('usuarioBlue.renderCadastroUsuario') }}">Cadastrar Usuário</a>
+</div>
+
+<div id="lista-usuarios"></div>
+
+{% endblock conteudo %}
 {% block script %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/usuario/dataUser.js') }}"></script>
-    <script>
-        new gridjs.Grid({
-            columns: columnsUser,
-            data: () => {
-                return new Promise(resolve => {
-                    setTimeout(() => resolve(dataUser), 2000);
-                });
-            },
-            search: true,
-            sort: true,
-            paginationAutoPageSize: true,
-            pagination: true,
-        }).render(document.getElementById("lista-usuarios"));
-    </script>
-    <script>
-        $(document).ready(function() {
-    
-            $('#modalExclusao').on('show.bs.modal', function (event) {
-                var modal = $(this);
-                var idDoElementoClicado = modal.data('id');
-                
-                $.ajax({
-                    url: `/usuario/usuario/${idDoElementoClicado}`,
-                    type: 'GET',
-                    success: function(data) {
-                        $('#msgModal').html("");
-                        $('#msgModal').html(data.msg);
-                    },
-                    error: function(erro){
-                        console.log(erro);
-                    }
-                });
-            });
-        });
-    </script>
-    <script type="text/javascript">
-        $(document).on('click', '.abrirModal', function() {
-            var idDoElementoClicado = $(this).data('id');
-            $('#modalExclusao').data('id', idDoElementoClicado);
-            $('#modalExclusao').modal('show');
-        });
-    </script>
-    <script type="text/javascript">
-        $(document).on('click', '.btn-excluir', function() {
-            var idSelecionado = $('#modalExclusao').data('id');
+<script type="text/javascript" src="{{ url_for('static', filename='js/usuario/dataUser.js') }}"></script>
+<script>
+    $(document).ready(function() {
+
+        $('#modalExclusao').on('show.bs.modal', function (event) {
+            var modal = $(this);
+            var idDoElementoClicado = modal.data('id');
+            
             $.ajax({
-                url: `/usuario/deletar-usuario/${idSelecionado}`,
-                type: 'DELETE',
+                url: `/usuario/${idDoElementoClicado}`,
+                type: 'GET',
                 success: function(data) {
-                    location.reload();
+                    $('#msgModal').html("");
+                    $('#msgModal').html(`Desejesa realmente excluir o(a) usuário(a) ${data.usuario}`);
                 },
                 error: function(erro){
-                    console.error(erro);
+                    console.log(erro);
                 }
             });
         });
-    </script>
-{% endblock %}
+    });
+</script>
+<script type="text/javascript">
+    $(document).on('click', '.abrirModal', function() {
+        var idDoElementoClicado = $(this).data('id');
+        $('#modalExclusao').data('id', idDoElementoClicado);
+        $('#modalExclusao').modal('show');
+    });
+</script>
+<script type="text/javascript">
+    $(document).on('click', '.btn-excluir', function() {
+        var idSelecionado = $('#modalExclusao').data('id');
+        $.ajax({
+            url: `/usuario/excluir-usuario/${idSelecionado}`,
+            type: 'DELETE',
+            success: function(data) {
+                location.reload();
+            },
+            error: function(error){
+                if (error.status == 400){
+                    location.reload();
+                }else{
+                    window.location = "/error_500";
+                    console.error(error);
+                }
+            }
+        });
+    });
+</script>
+{% endblock script %}

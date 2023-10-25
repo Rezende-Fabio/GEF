@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, flash, session, jsonify, B
 from ..models.Models import *
 from ..extensions.integracao import *
 from datetime import datetime
-from ..extensions.logs import Logger
+from ..extensions.Log import Log
 from ..extensions.configHtml import *
 import sys
 from ..configurations.DataBase import DB
@@ -45,8 +45,9 @@ def listageDevolucoes():
         return render_template("devolucao/listaDevolucao.html", context=context)
         
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index") 
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500") 
 
 
 #Rota para tela de cadastro de devolução
@@ -72,8 +73,9 @@ def cadDevolucao():
         return render_template("devolucao/cadDevolucao.html", context=context)
         
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index") 
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500") 
 
 #Rota para preencher a lista de devoluções
 @devolucaoBlue.route("/devolucoes", methods=["GET", "POST"])
@@ -152,8 +154,9 @@ def insertDevolucao():
             return redirect("/cad-devolucao")
         
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index") 
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500") 
 
 #Rota para modal de confirmação da exclusão do devolução
 @devolucaoBlue.route("/exluir-devolucao-modal/<idDev>", methods=["GET", "POST"])
@@ -192,8 +195,9 @@ def excluirDevolucaoModal(idDev):
             return render_template("devolucao/cadDevolucao.html",context=context)
         
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index") 
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500") 
     
 #Rota para exclusão da devolução
 @devolucaoBlue.route("/exluir-devolucao/<idDev>", methods=["GET", "POST"])
@@ -224,8 +228,9 @@ def excluirDevolucao(idDev):
         return redirect("/cad-devolucao")
         
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index") 
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500") 
     
 #Rota para verificar se o cliente tem devolução para a baixar o título    
 @devolucaoBlue.route("/lista-devolucao-cliente/<idCli>", methods=["GET"])

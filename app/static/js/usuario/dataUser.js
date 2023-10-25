@@ -2,10 +2,8 @@ var dataUser = []
 
 $.ajax({
     url: '/usuario/usuarios',
-    type: 'POST',
+    type: 'GET',
     async: false,
-    dataType: 'json',
-    contentType: 'application/json',
     success: function(resp){
         for(x in resp){
            dataresp = {
@@ -47,3 +45,18 @@ var columnsUser = [
         name: gridjs.html("<span style='display:flex; text-align: center; justify-content: center;align-items: center;'>Excluir</span>")
     }
 ]
+
+
+
+new gridjs.Grid({
+    columns: columnsUser,
+    data: () => {
+        return new Promise(resolve => {
+            setTimeout(() => resolve(dataUser), 2000);
+        });
+    },
+    search: true,
+    sort: true,
+    paginationAutoPageSize: true,
+    pagination: true,
+}).render(document.getElementById("lista-usuarios"));

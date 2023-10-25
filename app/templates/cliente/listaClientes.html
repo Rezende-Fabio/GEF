@@ -2,63 +2,76 @@
 {% block conteudo %}
 {% include "public/modal/modalVisualizacao.html" %}
 {% include "public/modal/modalAtualizaBase.html" %}
-    {% include "public/header.html" %}
-    <!-- Exibe mensagem que foi enviado pelo Back -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <script>
-                    window.setTimeout(function() {
-                        $(".alert").fadeTo(500, 0).slideUp(500, function(){
-                            $(this).remove(); 
-                        });
-                    }, 8000);
-                </script>
-                <div class="alert alert-{{ category }} d-flex align-items-center" role="alert">
-                    {% if category == "success" %}
-                        <i class="fa-solid fa-circle-check"></i>
-                    {% else %}
-                        <i class="fa-solid fa-circle-exclamation"></i>
-                    {% endif %}
-                    <h6>{{ message }}</h6>
-                    <div class="progress active"></div>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    
-    <div class="conteiner-fluid d-flex justify-content-end">
-        <a style="width: 25%;" class="btn btn-success" href="" data-bs-toggle="modal" data-bs-target="#backDropModalAtulizaBase">Atualizar base</a>
-    </div>
-    <div id="lista-clientes"></div>
+{% include "public/header.html" %}
+<!-- Exibe mensagem que foi enviado pelo Back -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <script>
+                window.setTimeout(function() {
+                    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                        $(this).remove(); 
+                    });
+                }, 8000);
+            </script>
+            <div class="alert alert-{{ category }} d-flex align-items-center" role="alert">
+                {% if category == "success" %}
+                    <i class="fa-solid fa-circle-check"></i>
+                {% else %}
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                {% endif %}
+                <h6>{{ message }}</h6>
+                <div class="progress active"></div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 
-{% endblock %}
+<div class="conteiner-fluid d-flex justify-content-end">
+    <a style="width: 25%;" class="btn btn-success" href="" data-bs-toggle="modal" data-bs-target="#backDropModalAtulizaBase">Atualizar base</a>
+</div>
+<div id="lista-clientes"></div>
+
+{% endblock conteudo %}
 {% block script %}
+<script>
+    function progress() {
+        const progressBar = document.getElementById('progressBar');
+
+        const source = new EventSource('/cliente/atualiza-baseCli');
+
+        source.onmessage = function(event) {
+            let progress = parseInt(event.data);
+            progressBar.value = progress;
+            if (progress == {{ g.maxCli - 1 }}) {
+                source.close();
+                stopp();
+            }else {
+                progressBar.value = progress;
+            }
+        }
+
+        source.onerror = function(event) {
+            alert("Algo deu errado, contate o setor de T.I!");
+            location.reload(true);
+        }
+    }
+
+    function stopp(){
+        window.location='/cliente/atualiza-baseCli-redirect';
+    }
+</script>
 <script type="text/javascript">
     $(document).ready(function(){
         $("#btn-sim").click(function(){
-            $.ajax({
-                url: '/atualiza-baseCli',
-                type: 'POST',
-                beforeSend: function(){
-                    $("#loader").css("display", "flex");
-                    $("#card-alert").css("display", "none");
-                    $("#btns-atualiza-base").css("display", "none");
-                    $(".btn-close").css("display", "none");
-                },
-                success: function(data){    
-                },
-                complete: function(data){
-                    window.location='/lista-clientes'
-                },
-                error: function(data){
-                    alert("Algo deu errado, contate o setor de T.I!");
-                }
-            });
+            progress();
+            $("#loader").css("display", "flex");
+            $("#card-alert").css("display", "none");
+            $("#btns-atualiza-base").css("display", "none");
+            $(".btn-close").css("display", "none");
         });
     });
 </script>
-
 <script>
     $(document).ready(function() {
         $('#modalVisu').on('show.bs.modal', function (event) {
@@ -76,7 +89,6 @@
         });
     });
 </script>
-
 <script type="text/javascript" src="{{ url_for('static', filename='js/cliente/dataCli.js') }}"></script>
 <script>
     new gridjs.Grid({
@@ -92,7 +104,6 @@
         pagination: true,
     }).render(document.getElementById("lista-clientes"));
 </script>
-
 <script type="text/javascript">
     $(document).on('click', '.abrirModal', function() {
         var idDoElementoClicado = $(this).data('id');
@@ -100,4 +111,4 @@
         $('#modalVisu').modal('show');
     });
 </script>
-{% endblock %}
+{% endblock script %}

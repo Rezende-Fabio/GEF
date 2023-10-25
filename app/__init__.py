@@ -5,7 +5,7 @@ from .configurations import FunctionShell
 from .configurations import Auth
 from flask import Flask
 
-def create_app():
+def create_app() -> Flask:
     app = Flask(__name__)
 
     Configuration.init_app(app)

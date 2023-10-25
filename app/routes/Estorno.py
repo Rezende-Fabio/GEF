@@ -3,7 +3,7 @@ from sqlalchemy import func
 from ..models.Models import *
 from ..extensions.integracao import *
 from datetime import datetime
-from ..extensions.logs import Logger
+from ..extensions.Log import Log
 from ..extensions.configHtml import *
 import sys
 from ..extensions.veriaveis import *

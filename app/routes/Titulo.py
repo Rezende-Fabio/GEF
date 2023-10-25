@@ -6,7 +6,7 @@ from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 from calendar import monthrange
 from ..extensions.configHtml import *
-from ..extensions.logs import Logger
+from ..extensions.Log import Log
 from sqlalchemy import or_
 import sys
 from ..extensions.veriaveis import *
@@ -50,8 +50,9 @@ def listaTitulos():
         return render_template("titulo/listaTitulos.html", context=context)
     
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index")
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500")
     
 #Rota para modal de confirmação para excluir titulo e para vizualização do título
 @tituloBlue.route("/lista-titulos/view/<doc>")
@@ -110,8 +111,9 @@ def popupTitulo(doc):
                 return render_template("titulo/listaTitulos.html", context=context)
 
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index")
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500")
 
 #Rota para Tela de cadastro de titulos
 @tituloBlue.route("/cad-titulo")
@@ -145,8 +147,9 @@ def cadTitulo():
         return render_template("titulo/cadTitulo.html", context=context)
     
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index")
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500")
 
 #Rota para inserir titulos
 @tituloBlue.route("/insert-titulo", methods=["GET", "POST"])
@@ -209,8 +212,9 @@ def insertTitulo():
             return redirect("/lista-titulos")
         
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index")
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500")
 
 #Rota para editar titulo
 @tituloBlue.route("/editar-titulo/<doc>", methods=["GET", "POST"])
@@ -268,8 +272,9 @@ def editarTitulo(doc):
                 return render_template("titulo/editTitulo.html", context=context)
         
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index")    
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500")    
 
 #Rota para a exclusão lógica do titulo
 @tituloBlue.route("/deletar-titulo/<doc>")
@@ -299,8 +304,9 @@ def deleteTitulo(doc):
         return redirect("/lista-titulos")      
         
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index")  
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500")  
     
 #Rota para autocomplete na tela de cadatro de Devolução
 @tituloBlue.route("/doc-ref/<idCli>")
@@ -391,7 +397,7 @@ def titulos():
             
             #Query que trás todos os títulos exeto os excluidos
             titulos = DB.session.query(conexao.t_dataLanc, conexao.t_idCliente, conexao.t_idVendedor,conexao.t_numDoc, func.count(conexao.t_numParcela).label('parcelas'), func.sum(conexao.t_valor).label('total'), conexao2.c_razaosocial.label('cliente'), conexao2.c_cpfcnpj.label('cpfcnpjCli'), conexao3.v_cpfcnpj.label("cpfcnpjVend") ,conexao.t_docRef, conexao4.s_abrev) \
-            .filter(conexao.t_ativo == 1, conexao.t_filial == session["filial"], conexao.t_dataLanc >= dataAtual) \
+            .filter(conexao.t_ativo == True, conexao.t_filial == session["filial"], conexao.t_dataLanc >= dataAtual) \
             .join(conexao4, conexao4.s_id == conexao.t_segmento) \
             .join(conexao2, conexao.t_idCliente==conexao2.c_id) \
             .join(conexao3, conexao.t_idVendedor==conexao3.v_id)\

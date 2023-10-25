@@ -1,10 +1,8 @@
 var dataCli = []
 
 $.ajax({
-    url: '/clientes',
-    type: 'POST',
-    dataType: 'json',
-    contentType: 'application/json',
+    url: '/cliente/clientes',
+    type: 'GET',
     success: function(resp){
         for(x in resp){
            dataresp = {

@@ -3,10 +3,10 @@ def rotas(app):
     from ..routes.Index import indexBlue
     app.register_blueprint(indexBlue)
 
-    from ..routes.Dashboard import dashboardBlue
+    from ..routes.DashboardRoute import dashboardBlue
     app.register_blueprint(dashboardBlue)
 
-    from ..routes.Autenticacao import autenticacaoBlue
+    from ..routes.AutenticacaoRoute import autenticacaoBlue
     app.register_blueprint(autenticacaoBlue)
 
     from ..routes.Erros import errosBlue
@@ -15,7 +15,7 @@ def rotas(app):
     from ..routes.Baixa import baixaBlue
     app.register_blueprint(baixaBlue)
 
-    from ..routes.Cliente import clienteBlue
+    from ..routes.ClienteRoute import clienteBlue
     app.register_blueprint(clienteBlue)
 
     from ..routes.Devolucao import devolucaoBlue
@@ -39,8 +39,8 @@ def rotas(app):
     from ..routes.Titulo import tituloBlue
     app.register_blueprint(tituloBlue)
 
-    from ..routes.Usuario import usuarioBlue
+    from ..routes.UsuarioRoute import usuarioBlue
     app.register_blueprint(usuarioBlue)
 
-    from ..routes.Vendedor import vendedorBlue
+    from ..routes.VendedorRoute import vendedorBlue
     app.register_blueprint(vendedorBlue)

@@ -1,9 +1,8 @@
 from flask import render_template, request, redirect, flash, session, jsonify, Blueprint, g
 from sqlalchemy import func
 from ..models.Models import *
-from ..extensions.integracao import *
 from datetime import datetime
-from ..extensions.logs import Logger
+from ..extensions.Log import Log
 from ..extensions.configHtml import *
 import sys
 from ..configurations.DataBase import DB
@@ -46,8 +45,9 @@ def listaBaixas():
         return render_template("baixa/listaBaixas.html", context=context)
     
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index")  
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500")  
 
 #Rota para tela de baixa do título
 @baixaBlue.route("/cad-baixa/<doc>/<parcela>", methods=["GET", "POST"])
@@ -85,8 +85,9 @@ def cadBaixa(doc, parcela):
         return render_template("baixa/cadBaixa.html", context=context)     
         
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index")
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500")
 
 #Rota para inserir baixa do titulo        
 @baixaBlue.route("/insert-baixa", methods=["GET", "POST"])
@@ -225,8 +226,9 @@ def insertBaixa():
             return redirect("/lista-baixas")
         
     except Exception as erro:
-        Logger.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
-        return redirect("/index")
+        log = Log()
+        log.logErro(sys.exc_info()[0], request.url, erro) #Gera um log de erro passando a URL e o erro
+        return redirect("/error_500")
 
 
 #Rota para preencher a lista de baixas

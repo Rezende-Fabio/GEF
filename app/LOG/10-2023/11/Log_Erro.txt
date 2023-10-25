@@ -1,2 +1,0 @@
-[11/10/2023 20:16:59] - Erro: public/menu.html <class 'jinja2.exceptions.TemplateNotFound'> - URL: http://127.0.0.1:5000/filial
-

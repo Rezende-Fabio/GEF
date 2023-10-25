@@ -8,16 +8,17 @@
             <div class="modal-body">
                 <div id="card-alert">
                     <div class="d-flex justify-content-center align-items-center flex-column">
-                        <p>Está ação ira atualizar toda a base do GEF de a cordo com os dados do Protheus.</p>
-                        <p>Deseja continuar?</p>
+                        <p class="msg-modal-alert">Está ação ira atualizar toda a base do GEF de a cordo com os dados do Protheus.</p>
+                        <p class="msg-modal-alert">Deseja continuar?</p>
                     </div>
                 </div>
-                <div class="justify-content-center align-items-center flex-column" style="display: none;" id="loader">
+                <div class="justify-content-center align-items-center flex-column" style="display: none; width: 100%;" id="loader">
                     <h2>Aguarde!</h2>
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     <p>Atualizando ...</p>
+                    <progress class="progress-bar progress-bar-striped progress-bar-animated bg-primary" id="progressBar" value="0" max="{% if context.active == 'vendedor' %}{{ g.maxVend - 1 }}{% else %}{{ g.maxCli - 1 }}{% endif %}"></progress>
                 </div>
             </div>
             <div class="modal-footer justify-content-between" id="btns-atualiza-base">

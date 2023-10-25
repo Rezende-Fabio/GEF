@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>ERRO 404</title>
+    <title>ERRO 401</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-default.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core.css') }}">
@@ -18,19 +18,19 @@
             text-align: center;
         }
 
-        .erro{
+        .erro {
             min-height: calc(100vh - (5.625rem * 2));
             position: absolute;
         }
 
-        .erro-404{
+        .erro-401 {
             font-size: 6rem;
             font-weight: bold;
             animation: pulse 1s infinite alternate;
             transition: ease 1s;
         }
 
-        .titulo-erro{
+        .titulo-erro {
             min-height: calc(100vh - (1.625rem * 2));
             position: absolute;
             font-size: 2rem;
@@ -59,13 +59,12 @@
     <div class="container-xxl container-p-y">
         <div class="misc-wrapper">
             <div class="titulo-erro">
-                ERRO
+                Erro
             </div>
             <div class="erro">
-                <span class="erro-404">404</span>
+                <span class="erro-401">401</span>
             </div>
-            <h2 class="mb-2 mx-2">Página não encontrada :(</h2>
-            <h6 class="mb-4 mx-2">Oops! 😖 A URL passada não foi encontrada.</h6>
+            <h2 class="mb-5 mx-2">Por favor, efetue o login para acessar esta página.</h2>
             {% if session.usuario %}
                 <a href="{{url_for('dashboardBlue.dashboard')}}" class="btn btn-primary">Volte para o Menu</a>
             {% else %}

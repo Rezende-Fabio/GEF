@@ -2,62 +2,109 @@
 {% block conteudo %}
 {% include "public/header.html" %}
 {% include "public/modal/modalExclusao.html" %}
-    <div class="alert alert-danger d-flex align-items-center d-none" role="alert">
-        <i class="fa-solid fa-circle-exclamation"></i>
-        <h6>As senhas não são iguais!</h6>
-    </div>
-    <div class="row">
-        <div class="col-xxl">
-          <div class="card">
-                <form id="rcorners2" class="container-fluid" onsubmit="return validarSenha('senha', 'confSenha')" {% if context.usuario %} action="{{ url_for('usuarioBlue.editUsuario', id=context.usuario.id ) }}" {% else %} action="{{ url_for('usuarioBlue.insertUsuario') }}" {% endif %} method="POST">
-                    <div class="row mb-2">
-                        <div class="col-md-6 col-lg-6">
-                            <label for="">Nome Completo</label>
-                            <input type="text" class="form-control" name="nome" id="nome" maxlength="40" size="40" tabindex="1" autocomplete="off" required value="{% if context.usuario %}{{ context.usuario.s_nome }}{% endif %}">
-                        </div> 
-                        <div class="col-md-6 col-lg-6">
-                            <label for="">E-mail</label>
-                            <input type="email" class="form-control" name="email" id="email" maxlength="50" size="50" tabindex="2" autocomplete="off" required value="{% if context.usuario %}{{ context.usuario.s_email }}{% endif %}">
-                        </div>
-                    </div>       
-                    <div class="row mb-2">
-                        <div class="col-md-3 col-lg-3">
-                            <label for="">Usuário</label>
-                            <input type="text" class="form-control" name="usuario" id="usuario" maxlength="12" size="10" tabindex="3" autocomplete="off" required value="{% if context.usuario %}{{ context.usuario.s_usuario }}{% endif %}">
-                        </div>
-                        <div class="col-md-4 col-lg-4">
-                            <label for="">Senha</label>
-                            <input type="password" class="form-control" name="senha" id="senha" maxlength="10" size="10" tabindex="4" autocomplete="off" required value="{% if context.usuario %}{{ context.usuario.s_senha}}{% endif %}">
-                        </div>    
-                        <div class="col-md-4 col-lg-4">
-                            <label for="">Conf. Senha</label>
-                            <input type="password" class="form-control" name="confSenha" id="confSenha" maxlength="10" size="10" tabindex="5" autocomplete="off" required value="{% if context.usuario %}{{ context.usuario.s_senha}}{% endif %}">
-                        </div> 
-                        <div class="col-md-1 col-lg-1 ver-senha">
-                            <button type="button" class="btn btn-primary" onclick="mostrarSenha(this)" tabindex="8">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-                        </div>                   
+<div class="alert alert-danger d-flex align-items-center d-none" role="alert">
+</div>
+<div class="row">
+    <div class="col-xxl">
+        <div class="card">
+            <form id="form-usuario" class="container-fluid" onsubmit="return validarSenha('senha', 'confSenha')">
+                <div class="row mb-2">
+                    <div class="col-md-6 col-lg-6">
+                        <label for="">Nome Completo</label>
+                        <input type="text" class="form-control" name="nome" id="nome" maxlength="40" size="40"
+                            tabindex="1" autocomplete="off" required
+                            value="{% if context.usuario %}{{ context.usuario.s_nome }}{% endif %}">
                     </div>
-                    <div class="row mb-5">
-                        <div class="col-md-6 col-lg-2">
-                            <label for="">Admin?</label>
-                            <select class="form-select" name="useradmin" id="useradmin" aria-label="Default select example">
-                                <option value=""></option>
-                                <option value="1" {% if context.usuario %} {% if context.usuario.s_admin %} selected {% endif %} {% endif %}>Sim</option>
-                                <option value="0" {% if context.usuario %} {% if not context.usuario.s_admin %} selected {% endif %} {% endif %}>Nao</option>
-                            </select>
-                        </div> 
+                    <div class="col-md-6 col-lg-6">
+                        <label for="">E-mail</label>
+                        <input type="email" class="form-control" name="email" id="email" maxlength="50" size="50"
+                            tabindex="2" autocomplete="off" required
+                            value="{% if context.usuario %}{{ context.usuario.s_email }}{% endif %}">
                     </div>
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ url_for('usuarioBlue.listaUsuarios') }}" class="btn btn-danger" type="button" name="btnCancelar" id="btnCancelar" tabindex="9">Cancelar</a>
-                        <input type="submit" class="btn btn-success" id="btnGravar" value="{{ context.botao }}">
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3 col-lg-3">
+                        <label for="">Usuário</label>
+                        <input type="text" class="form-control" name="usuario" id="usuario" maxlength="12" size="10"
+                            tabindex="3" autocomplete="off" required
+                            value="{% if context.usuario %}{{ context.usuario.s_usuario }}{% endif %}">
                     </div>
-                </form>
-          </div>
+                    <div class="col-md-4 col-lg-4">
+                        <label for="">Senha</label>
+                        <input type="password" class="form-control" name="senha" id="senha" maxlength="10" size="10"
+                            tabindex="4" autocomplete="off" required
+                            value="{% if context.usuario %}{{ context.usuario.s_senha}}{% endif %}">
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        <label for="">Conf. Senha</label>
+                        <input type="password" class="form-control" name="confSenha" id="confSenha" maxlength="10"
+                            size="10" tabindex="5" autocomplete="off" required
+                            value="{% if context.usuario %}{{ context.usuario.s_senha}}{% endif %}">
+                    </div>
+                    <div class="col-md-1 col-lg-1 ver-senha">
+                        <button type="button" class="btn btn-primary" onclick="mostrarSenha(this)" tabindex="8">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-md-6 col-lg-2">
+                        <label for="">Admin?</label>
+                        <select class="form-select" name="useradmin" id="useradmin" aria-label="Default select example" required>
+                            <option value=""></option>
+                            <option value="1" {% if context.usuario %} {% if context.usuario.s_admin %} selected {%
+                                endif %} {% endif %}>Sim</option>
+                            <option value="0" {% if context.usuario %} {% if not context.usuario.s_admin %} selected {%
+                                endif %} {% endif %}>Nao</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('usuarioBlue.renderListaUsuarios') }}" class="btn btn-danger" type="button"
+                        name="btnCancelar" id="btnCancelar" tabindex="9">Cancelar</a>
+                    <input type="submit" class="btn btn-success" id="btnGravar" value="{{ context.botao }}">
+                </div>
+            </form>
         </div>
-    </div>   
-{% endblock %}
+    </div>
+</div>
+{% endblock conteudo %}
 {% block script %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/usuario/funcoes.js') }}"></script>
-{% endblock %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/usuario/funcoes.js') }}"></script>
+{% if context.editar %}
+<script>
+    var action = "{{url_for('usuarioBlue.editarUsuario', idUser=context.usuario.id )}}";
+    var type = "PUT";
+</script>
+{% else %}
+<script>
+    var action = "{{url_for('usuarioBlue.inserirUsuario')}}";
+    var type = "POST";
+</script>
+{% endif %}
+<script>
+    $(document).ready(function () {
+        $('#form-usuario').submit(function (event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+            const formData = $(this).serialize();
+
+            $.ajax({
+                url: action,
+                type: type,
+                data: formData,
+                success: function (response) {
+                    window.location = "{{url_for('usuarioBlue.renderListaUsuarios')}}";
+                },
+                error: function (error) {
+                    if (error.status == 400) {
+                        mostraAlert();
+                    } else {
+                        window.location = "/error_500";
+                        console.error(error);
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock script %}

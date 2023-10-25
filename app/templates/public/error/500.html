@@ -1,20 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>ERRO 500</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styleError.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-default.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core.css') }}">
+
+    <style>
+        .misc-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - (1.625rem * 2));
+            text-align: center;
+        }
+
+        .erro{
+            min-height: calc(100vh - (5.625rem * 2));
+            position: absolute;
+        }
+
+        .erro-500{
+            font-size: 6rem;
+            font-weight: bold;
+            animation: pulse 1s infinite alternate;
+            transition: ease 1s;
+        }
+
+        .titulo-erro{
+            min-height: calc(100vh - (1.625rem * 2));
+            position: absolute;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .btn{
+            z-index: 99999 !important;
+        }
+
+        @keyframes pulse {
+            from {
+                opacity: 0.8;
+                font-size: 5.8rem;
+            }
+
+            50% {
+                opacity: 0.8;
+                font-size: 5.8rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <div id="error">Erro</div>
-    <div class="error-num">500
-        <div class="error-num__clip">500</div>
+    <div class="container-xxl container-p-y">
+        <div class="misc-wrapper">
+            <div class="titulo-erro">
+                ERRO
+            </div>
+            <div class="erro">
+                <span class="erro-500">500</span>
+            </div>
+            <h2 class="mb-2 mx-2">Erro no servidor :(</h2>
+            <h6 class="mb-4 mx-2">Oops! 😖 Ocorreu um erro ao processar os dados.</h6>
+            {% if session.usuario %}
+                <a href="{{url_for('dashboardBlue.dashboard')}}" class="btn btn-primary">Volte para o Menu</a>
+            {% else %}
+                <a href="{{url_for('indexBlue.index')}}" class="btn btn-primary">Volte para o Index</a>
+            {% endif %}
+        </div>
     </div>
-    <p id="desc">Erro no Servidor. Contate o setor de T.I</p>
-    {% if session.usuario %}
-        <p class="link">Volte para o <a href="{{url_for('mainBlue.dashboard')}}">Menu</a></p>     
-    {% else %}
-        <p class="link">Volte para o <a href="{{url_for('mainBlue.index')}}">Index</a></p>
-    {% endif %}
 </body>
+
 </html>

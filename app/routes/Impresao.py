@@ -11,7 +11,7 @@ from ..models.Models import *
 from ..extensions.integracao import *
 from datetime import datetime
 from ..extensions.EnviarEmail import *
-from ..extensions.logs import Logger
+from ..extensions.Log import Log
 import sys
 from ..configurations.DataBase import DB
 from flask_login import login_required

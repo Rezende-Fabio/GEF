@@ -1,4 +1,16 @@
-function validarSenha(campo1, campo2){
+function mostraAlert() {
+    var div = document.querySelector(".alert");
+    div.classList.remove("d-none");
+    div.innerHTML = "";
+    div.innerHTML += '<i class="fa-solid fa-circle-exclamation"></i> <h6>As senhas não são iguais!</h6>'
+    div.innerHTML += '<div class="progress active"></div>';
+    setTimeout(() => {
+        div.classList.add("d-none");
+    }, 8000);
+}
+
+
+function validarSenha(campo1, campo2) {
     /*
     # Função que valida se as senha que foram informadas estão iguais.
     
@@ -13,30 +25,25 @@ function validarSenha(campo1, campo2){
 
     var senha1 = document.getElementById(campo1).value;
     var senha2 = document.getElementById(campo2).value;
-    var div = document.querySelector(".alert");
 
-    if (senha1 != "" && senha2 != "" && senha1 === senha2){
+    if (senha1 != "" && senha2 != "" && senha1 === senha2) {
         return true;
-    }else{
-        div.classList.remove("d-none");
-        document.getElementById(campo1).focus(); //Exibe mensagem de erro
-        setTimeout(() =>{
-            div.classList.add("d-none");
-        }, "3000");
+    } else {
+        mostraAlert();
         return false;
     }
 }
 
 
-function mostrarSenha(button){
+function mostrarSenha(button) {
     var inputSenha = document.getElementById("senha");
     var inputConfirm = document.getElementById("confSenha");
 
-    if (inputSenha.type == "password"){
+    if (inputSenha.type == "password") {
         inputSenha.type = "text";
         inputConfirm.type = "text";
         button.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
-    }else{
+    } else {
         inputSenha.type = "password";
         inputConfirm.type = "password";
         button.innerHTML = '<i class="fa-solid fa-eye"></i>';

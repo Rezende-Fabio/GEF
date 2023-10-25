@@ -1,58 +1,60 @@
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, login_required
+from ..httpResponse.HttpResponse import HttpResponse
+from flask import session, request, abort, g
 from ..models.Models import SysUsers
-from flask import session
-from ..response.Response import Response
+from ..extensions.Log import Log
+import traceback
+import sys
 
 
-class ControllerLogin(Response):
+class ControllerLogin(HttpResponse, Log):
     """
     Classe Controller para as funções relacionadas ao login do sistema
     @author - Fabio
+    @tables - SysUsers
     @version - 1.0
     @since - 29/09/2023
     """
 
-    def efetuarLogin(self, form: dict) -> int:
-        """
-        Realiza o processo de login do usuário.
+    def efetuarLogin(self) -> HttpResponse:
+        try:
+            form = request.form
+            usersResp = SysUsers.query.filter(SysUsers.s_usuario==form["usuario"].upper()).first()
 
-        :param user: Um dicionário com o usuário e senha.
+            if usersResp:
+                if usersResp.s_ativo:
+                    if usersResp.verificarSenha(form["senha"].upper()):
+                        login_user(usersResp)
+                        session["usuario"] = usersResp.toJson()
+                        session["filial"] = int(form["filial"])
+                        session.permanent = True
 
-        :return: Um código indicando o resultado do processo de login.
-            1 - Login bem-sucedido.
-            2 - Senha/Usuário estão incorretos.
-            3 - Usuário deletado.
-            4 - Usuário não encontrado.
-        """
-
-        usersResp = SysUsers.query.filter(SysUsers.s_usuario==form["usuario"].upper()).first()
-
-        if usersResp:
-            if usersResp.s_ativo:
-                if usersResp.verificarSenha(form["senha"].upper()):
-                    login_user(usersResp)
-                    session["usuario"] = usersResp.toJson()
-                    session["filial"] = int(form["filial"])
-                    session.permanent = True
-
-                    return self.redirect(url="dashboardBlue.dashboard")
+                        return self.responseRedirect(url="dashboardBlue.dashboard")
+                    else:
+                        return self.responseRedirect(url="indexBlue.index", mensagem="Usuário/Senha incorreto!", categoria="danger")
                 else:
-                    return self.redirect(url="indexBlue.index", mensagem="Usuário/Senha incorreto!")
+                    return self.responseRedirect(url="indexBlue.index", mensagem="Usuário deletado", categoria="danger")
             else:
-                return self.redirect(url="indexBlue.index", mensagem="Usuário deletado")
-        else:
-            return self.redirect(url="indexBlue.index", mensagem="Usuário não existe")
+                return self.responseRedirect(url="indexBlue.index", mensagem="Usuário não existe", categoria="danger")
+            
+        except:
+            tipoExcecao, valorExcecao, tb = sys.exc_info()
+            tracebackInfo = traceback.extract_tb(tb)
+            self.geraLogErro(tipoExcecao, valorExcecao, tracebackInfo, request.url)
+            abort(500)
 
 
-
-    def efetuarLogout(self) -> None:
-        """
-        Realiza o processo de logout do usuário.
-        """
-
-        logout_user()
-        session.clear()
-
-        return self.redirect(url="mainBlue.index")
-
+    @login_required
+    def efetuarLogout(self) -> HttpResponse:
+        try:
+            logout_user()
+            session.clear()
+            g.clear()
+            return self.responseRedirect(url="indexBlue.index")
+        
+        except:
+            tipoExcecao, valorExcecao, tb = sys.exc_info()
+            tracebackInfo = traceback.extract_tb(tb)
+            self.geraLogErro(tipoExcecao, valorExcecao, tracebackInfo, request.url)
+            abort(500)
         

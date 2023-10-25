@@ -2,103 +2,101 @@
 {% block conteudo %}
 {% include "public/modal/modalVisualizacao.html" %}
 {% include "public/modal/modalAtualizaBase.html" %}
-    {% include "public/header.html" %}
-    <!-- Exibe mensagem que foi enviado pelo Back -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <script>
-                    window.setTimeout(function() {
-                        $(".alert").fadeTo(500, 0).slideUp(500, function(){
-                            $(this).remove(); 
-                        });
-                    }, 8000);
-                </script>
-                <div class="alert alert-{{ category }} d-flex align-items-center" role="alert">
-                    {% if category == "success" %}
-                        <i class="fa-solid fa-circle-check"></i>
-                    {% else %}
-                        <i class="fa-solid fa-circle-exclamation"></i>
-                    {% endif %}
-                    <h6>{{ message }}</h6>
-                    <div class="progress active"></div>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    
-    <div class="conteiner-fluid d-flex justify-content-end">
-        <a style="width: 25%;" class="btn btn-success" href="" data-bs-toggle="modal" data-bs-target="#backDropModalAtulizaBase">Atualizar base</a>
-    </div>
-    <div id="lista-vendedores"></div>
-{% endblock %}
-{% block script %}
-<script type="text/javascript">
-    $(document).ready(function(){
-        $("#btn-sim").click(function(){
-            $.ajax({
-                url: '/atualiza-baseVend',
-                type: 'POST',
-                beforeSend: function(){
-                    $("#loader").css("display", "flex");
-                    $("#card-alert").css("display", "none");
-                    $("#btns-atualiza-base").css("display", "none");
-                    $(".btn-close").css("display", "none");
-                },
-                success: function(resposta){ 
-                },
-                complete: function(data){
-                    window.location='/lista-vendedores'
-                },
-                error: function(data){
-                    alert("Algo deu errado, contate o setor de T.I!");
-                }
-            });
-        });
+{% include "public/header.html" %}
+<!-- Exibe mensagem que foi enviado pelo Back -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <script>
+                window.setTimeout(function () {
+                    $(".alert").fadeTo(500, 0).slideUp(500, function () {
+                        $(this).remove();
+                    });
+                }, 8000);
+            </script>
+            <div class="alert alert-{{ category }} d-flex align-items-center" role="alert">
+                {% if category == "success" %}
+                    <i class="fa-solid fa-circle-check"></i>
+                {% else %}
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                {% endif %}
+                <h6>{{ message }}</h6>
+                <div class="progress active"></div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 
+<div class="conteiner-fluid d-flex justify-content-end">
+    <a style="width: 25%;" class="btn btn-success" href="" data-bs-toggle="modal"
+        data-bs-target="#backDropModalAtulizaBase">Atualizar base</a>
+</div>
+
+<div id="lista-vendedores"></div>
+{% endblock conteudo %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/vendedor/dataVend.js') }}"></script>
+<script>
+    function progress() {
+        const progressBar = document.getElementById('progressBar');
+
+        const source = new EventSource('/vendedor/atualiza-baseVend');
+
+        source.onmessage = function(event) {
+            let progress = parseInt(event.data);
+            progressBar.value = progress;
+            if (progress === {{ g.maxVend - 1 }}) {
+                source.close();
+                stopp();
+            }else {
+                progressBar.value = progress;
+            }
+        }
+    }
+
+    function stopp(){
+        window.location='/vendedor/atualiza-baseVend-redirect';
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btn-sim").click(function () {
+            progress();
+            $("#loader").css("display", "flex");
+            $("#card-alert").css("display", "none");
+            $("#btns-atualiza-base").css("display", "none");
+            $(".btn-close").css("display", "none");
+        });
     });
 </script>
 
 <script>
-    $(document).ready(function() {
-
+    $(document).ready(function () {
         $('#modalVisu').on('show.bs.modal', function (event) {
             var modal = $(this);
             var idDoElementoClicado = modal.data('id');
-            
+
             $.ajax({
                 url: `/vendedor/${idDoElementoClicado}`,
                 type: 'GET',
-                success: function(data) {
+                success: function (data) {
                     $('#corpoModalVisu').html("");
                     $('#corpoModalVisu').html(data);
+                },
+                error: function (error) {
+                    window.location = "/error_500";
+                    console.error(error);
                 }
             });
         });
     });
 </script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/vendedor/dataVend.js') }}"></script>
-<script>
-    new gridjs.Grid({
-        columns: columnsVend,
-        data: () => {
-            return new Promise(resolve => {
-                setTimeout(() => resolve(dataVend), 2000);
-            });
-        },
-        search: true,
-        sort: true,
-        paginationAutoPageSize: true,
-        pagination: true,
-    }).render(document.getElementById("lista-vendedores"));
-</script>
-
 <script type="text/javascript">
-    $(document).on('click', '.abrirModal', function() {
+    $(document).on('click', '.abrirModal', function () {
         var idDoElementoClicado = $(this).data('id');
         $('#modalVisu').data('id', idDoElementoClicado);
         $('#modalVisu').modal('show');
     });
 </script>
-{% endblock %} 
+{% endblock script %}

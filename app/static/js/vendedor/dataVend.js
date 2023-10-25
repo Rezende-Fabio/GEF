@@ -1,10 +1,8 @@
 var dataVend = []
 
 $.ajax({
-    url: '/vendedores',
-    type: 'POST',
-    dataType: 'json',
-    contentType: 'application/json',
+    url: '/vendedor/vendedores',
+    type: 'GET',
     success: function(resp){
         for(x in resp){
            dataresp = {
@@ -46,3 +44,17 @@ var columnsVend = [
         name: gridjs.html("<span style='display:flex; text-align: center; justify-content: center;align-items: center;'>Vizualizar</span>")
     }
 ]
+
+
+new gridjs.Grid({
+    columns: columnsVend,
+    data: () => {
+        return new Promise(resolve => {
+            setTimeout(() => resolve(dataVend), 2000);
+        });
+    },
+    search: true,
+    sort: true,
+    paginationAutoPageSize: true,
+    pagination: true,
+}).render(document.getElementById("lista-vendedores"));

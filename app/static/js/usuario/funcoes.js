@@ -1,8 +1,8 @@
-function mostraAlert() {
+function mostraAlert(msg) {
     var div = document.querySelector(".alert");
     div.classList.remove("d-none");
     div.innerHTML = "";
-    div.innerHTML += '<i class="fa-solid fa-circle-exclamation"></i> <h6>As senhas não são iguais!</h6>'
+    div.innerHTML += `<i class="fa-solid fa-circle-exclamation"></i> <h6>${msg}</h6>`
     div.innerHTML += '<div class="progress active"></div>';
     setTimeout(() => {
         div.classList.add("d-none");

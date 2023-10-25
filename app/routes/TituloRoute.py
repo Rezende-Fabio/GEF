@@ -2,20 +2,6 @@ from ..controllers.ControllerConsultas import consultaAtraso
 from ..controllers.ControllerTitulo import ControllerTitulo
 from flask import Blueprint, g
 
-from sqlalchemy import func, update
-from ..models.Models import *
-from ..extensions.integracao import *
-from datetime import datetime, date, timedelta
-from dateutil.relativedelta import relativedelta
-from calendar import monthrange
-from ..extensions.configHtml import *
-from ..extensions.Log import Log
-from sqlalchemy import or_
-import sys
-from ..extensions.veriaveis import *
-from ..configurations.DataBase import DB
-from flask_login import login_required
-
 
 ###################################
 # Rotas relacionadas aos titulos

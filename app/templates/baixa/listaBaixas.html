@@ -27,28 +27,7 @@
     
     <div id="lista-baixas"></div>
 
-{% endblock %}
+{% endblock conteudo %}
 {% block script %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/baixa/dataBaixa.js') }}"></script>
-<script>
-    new gridjs.Grid({
-        columns: columnsBaix,
-        data: () => {
-            return new Promise(resolve => {
-                setTimeout(() => resolve(dataBiax), 2000);
-            });
-        },
-        search: {
-            ignoreHiddenColumns: false,
-        },
-        sort: true,
-        paginationAutoPageSize: true,
-        pagination: true,
-        style: {
-            td: {
-                'font-size': '13.5px'
-            }
-        },
-    }).render(document.getElementById("lista-baixas"));
-</script>
-{% endblock %} 
+{% endblock script %} 

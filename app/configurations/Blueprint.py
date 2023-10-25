@@ -12,7 +12,7 @@ def rotas(app):
     from ..routes.Erros import errosBlue
     app.register_blueprint(errosBlue)
 
-    from ..routes.Baixa import baixaBlue
+    from ..routes.BaixaRoute import baixaBlue
     app.register_blueprint(baixaBlue)
 
     from ..routes.ClienteRoute import clienteBlue

@@ -2,16 +2,14 @@
 {% block conteudo %}
 {% include "public/modal/modalCreditoBaixa.html" %}
 {% include "public/header.html" %}
-<div class="alert alert-danger d-flex align-items-center d-none" role="alert">
-    <i class="fa-solid fa-circle-exclamation"></i>
-    <h6 class="msg"></h6>
+<div class="alert alert-danger d-flex align-items-center d-none" id="alerBaixa" role="alert">
 </div>
-<form onsubmit="return validaValorBaixa()" action="/insert-baixa" method="POST">
+<form  id="form-baixa">
     <div class="row mb-1">
         <div class="col-xxl">
             <div class="card p-4">
                 <h5 class="titulo-card">Dados do Título</h5>
-                <div class="row">
+                <div class="row mb-2">
                     <div class="col-2">
                         <label for="">N. do Documento</label>
                         <input type="text" class="form-control" style="text-transform: uppercase;" name="numDoc" id="numDoc" maxlength="40" size="40" 
@@ -30,7 +28,7 @@
                     <div class="col-2">
                         <label for="">Documento Ref.</label>
                         <input type="text" class="form-control" style="text-transform: uppercase;" name="docRef" id="docRef" maxlength="40" size="40" 
-                        tabindex="" autocomplete="off" required value="{{context.segCliVend[0].s_abrev}}{{context.tituloDoc.t_docRef}}" readonly>
+                        tabindex="" autocomplete="off" required value="{{context.tituloDoc.t_segmento.s_abrev}}{{context.tituloDoc.t_docRef}}" readonly>
                     </div>
                     <div class="col-3">
                         <label for="">Data do Lançamaneto</label>
@@ -39,20 +37,20 @@
                     </div>
                 </div>
                 <br>        
-                <div class="row">
+                <div class="row mb-2">
                     <div class="col-6">
                         <label for="">Cliente</label>
                         <input type="text" class="form-control" style="text-transform: uppercase;" name="cliente" id="cliente" maxlength="10" size="10" 
-                        tabindex="" autocomplete="off" required value="{{context.tituloDoc.t_idCliente}} - {{context.segCliVend[0].c_razaosocial}}" readonly>
+                        tabindex="" autocomplete="off" required value="{{context.tituloDoc.t_idCliente}} - {{context.tituloDoc.t_cliente.c_razaosocial}}" readonly>
                     </div>
                     <div class="col-6">
                         <label for="">Vendedor</label>
                         <input type="text" class="form-control" style="text-transform: uppercase;" name="vendedor" id="vendedor" maxlength="10" size="10" 
-                        tabindex="" autocomplete="off" required value="{{context.tituloDoc.t_idVendedor}} - {{context.segCliVend[0].v_nome}}" readonly>
+                        tabindex="" autocomplete="off" required value="{{context.tituloDoc.t_idVendedor}} - {{context.tituloDoc.t_vendedor.v_nome}}" readonly>
                     </div>                     
                 </div>
                 <br>
-                <div class="row">
+                <div class="row mb-2">
                     <div class="col-2">
                         <label for="">Filial</label>
                         <input type="text" class="form-control" style="text-transform: uppercase;" name="filial" id="filial" maxlength="10" size="10" 
@@ -74,7 +72,7 @@
                         tabindex="" step="0.01" autocomplete="off" required value="" readonly>
                     </div>
                     <div class="col-2">
-                        <input type="text" class="form-control" style="text-transform: uppercase; display: none;" name="segmento" id="segmento" value="{{context.segCliVend[0].s_id}}">
+                        <input type="text" class="form-control" style="text-transform: uppercase; display: none;" name="segmento" id="segmento" value="{{context.tituloDoc.t_segmento.s_id}}">
                         <!-- Adiociona um input zerado quando o cliente não tem crédito -->
                         {% if context.credito == 0 %}
                             <input type="text" class="form-control" style="display: none" name="valorCredito" id="valorCredito" autocomplete="off" value="">
@@ -84,7 +82,7 @@
             </div>
         </div>
     </div>
-    <div class="row mb-1">
+    <div class="row mb-2">
         <div class="col-xxl">
             <div class="card p-4">
                 <h5 class="titulo-card">Dados da Baixa</h5>
@@ -114,16 +112,16 @@
                             <input type="number" class="form-control" style="text-transform: uppercase;" name="valorBaixa" id="valorBaixa" maxlength="10" size="10" 
                             tabindex="2" step="0.01" autocomplete="off" required value="{{context.tituloDoc.t_saldo | float}}" oninput="calculaSaldo()" onkeydown="adicionaBorda()" onkeyup="retiraBorda()">
                         </div>
-                        <div class="row justify-content-md-center">
+                        <div class="row justify-content-md-center mt-2">
                             <div class="col-2">
                                 <label for="">Juros</label>
-                                <input type="number" class="form-control" style="text-transform: uppercase;" name="juros" id="juros" maxlength="40" size="40" 
-                                tabindex="3" step="0.01" autocomplete="off" value="">
+                                <input type="number" class="form-control" style="text-transform: uppercase;" name="juros" id="juros" maxlength="10" size="40" 
+                                tabindex="3" step="0.01" autocomplete="off" value="0" required>
                             </div>
                             <div class="col-2">
                                 <label for="">Desconto</label>
-                                <input type="number" class="form-control" style="text-transform: uppercase;" name="desconto" id="desconto" maxlength="40" size="40" 
-                                tabindex="4" step="0.01" autocomplete="off" value="">
+                                <input type="number" class="form-control" style="text-transform: uppercase;" name="desconto" id="desconto" maxlength="10" size="40" 
+                                tabindex="4" step="0.01" autocomplete="off" value="0" required>
                             </div>
                         </div>
                         <div class="row justify-content-md-center">
@@ -145,6 +143,55 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/baixa/funcoes.js') }}"></script>
+
+<script>
+    function mostraAlert(msg) {
+        var div = document.querySelector("#alerBaixa");
+        div.classList.remove("d-none");
+        div.innerHTML = "";
+        div.innerHTML += `<i class="fa-solid fa-circle-exclamation"></i> <h6>${msg}</h6>`
+        div.innerHTML += '<div class="progress active"></div>';
+        window.scroll({
+            top: 0,
+            behavior: "smooth",
+        });
+        setTimeout(() => {
+            div.classList.add("d-none");
+        }, 8000);
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#form-baixa').submit(function (event) {
+            $("#btnGravar").prop('disabled', true);
+            event.preventDefault(); // Impede o envio padrão do formulário
+            const formData = $(this).serialize();
+
+            var action = "{{url_for('baixaBlue.inserirBaixa')}}";
+            var type = "POST";
+
+            $.ajax({
+                url: action,
+                type: type,
+                data: formData,
+                success: function (response) {
+                    window.location = "{{url_for('baixaBlue.renderListaBaixas')}}";
+                },
+                error: function (error) {
+                    $("#btnGravar").prop('disabled', false);
+                    if (error.status == 400) {
+                        mostraAlert(error.responseText);
+                    } else {
+                        window.location = "/error_500";
+                        console.error(error);
+                    }
+                }
+            });
+        });
+    });
+</script>
+
 <script type="text/javascript">
     $(document).ready(function(){
         $("#saldoAtual").val(($("#valorBaixa").val() - $("#valorSaldo").val()).toFixed(2));
@@ -199,7 +246,6 @@
         exibeModal();
     });
 </script>
-
 
 <script>
     $("#confirm-dev").click(function(){

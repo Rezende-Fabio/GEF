@@ -1,11 +1,9 @@
 var dataBiax = []
 
 $.ajax({
-    url: '/baixas',
-    type: 'POST',
+    url: '/baixa/baixas',
+    type: 'GET',
     async: false,
-    dataType: 'json',
-    contentType: 'application/json',
     success: function(resp){
         for(x in resp){
            dataresp = {
@@ -17,7 +15,7 @@ $.ajax({
                 emissao: resp[x].lanc,
                 vencimento: gridjs.html(resp[x].venc),
                 valor: gridjs.html(`<span style='display:flex; text-align: right; justify-content: right;align-items: center; margin-right: 15px;'>${resp[x].saldo}</span>`), 
-                baixar: gridjs.html(`<div style="width: 100%;display: flex;align-items: center;text-align: center;justify-content: center;"><a href="/cad-baixa/${resp[x].doc}/${resp[x].par}" style='text-align: center; justify-content: center; diplay: flex;' class="btn btn-outline-success btn-sm"><i class="fa-solid fa-circle-down"></i> Baixar</a></div>`)
+                baixar: gridjs.html(`<div style="width: 100%;display: flex;align-items: center;text-align: center;justify-content: center;"><a href="/baixa/cadastrar-baixa/${resp[x].doc}/${resp[x].par}" style='text-align: center; justify-content: center; diplay: flex;' class="btn btn-outline-success btn-sm"><i class="fa-solid fa-circle-down"></i> Baixar</a></div>`)
             }
            dataBiax.push(dataresp)
         }
@@ -77,3 +75,24 @@ var columnsBaix = [
         sort: false,
     }
 ]
+
+
+new gridjs.Grid({
+    columns: columnsBaix,
+    data: () => {
+        return new Promise(resolve => {
+            setTimeout(() => resolve(dataBiax), 2000);
+        });
+    },
+    search: {
+        ignoreHiddenColumns: false,
+    },
+    sort: true,
+    paginationAutoPageSize: true,
+    pagination: true,
+    style: {
+        td: {
+            'font-size': '13.5px'
+        }
+    },
+}).render(document.getElementById("lista-baixas"));

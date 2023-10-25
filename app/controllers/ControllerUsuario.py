@@ -1,3 +1,4 @@
+from ..decortators.FormUsuario import validaFormUsuario
 from ..httpResponse.HttpResponse import HttpResponse
 from flask import session, abort, request
 from ..configurations.DataBase import DB
@@ -93,13 +94,10 @@ class ControllerUsuario(HttpResponse, Log):
 
 
     @login_required
+    @validaFormUsuario
     def inserirUsuario(self) -> HttpResponse:
         try:
             form = request.form
-            #Verifica se as senhas que foram digitadas são iguais
-            if form["senha"].upper().strip() != form["confSenha"].upper().strip():
-                return self.responseJson(status=400)
-
             if form["useradmin"] == "1": userAdmin = True
             else: userAdmin = False
 
@@ -120,13 +118,10 @@ class ControllerUsuario(HttpResponse, Log):
 
 
     @login_required
+    @validaFormUsuario
     def editarUsuario(self, idUser: int) -> HttpResponse:
         try:
             form = request.form
-            #Verifica se as senhas que foram digitadas são iguais
-            if form["senha"].upper().strip() != form["confSenha"].upper().strip():
-                return self.responseJson(status=400)
-
             if form["useradmin"] == "1": userAdmin = True
             else: userAdmin = False
 

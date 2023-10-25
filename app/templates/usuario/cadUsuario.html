@@ -85,6 +85,7 @@
 <script>
     $(document).ready(function () {
         $('#form-usuario').submit(function (event) {
+            $("#btnGravar").prop('disabled', true);
             event.preventDefault(); // Impede o envio padrão do formulário
             const formData = $(this).serialize();
 
@@ -96,8 +97,9 @@
                     window.location = "{{url_for('usuarioBlue.renderListaUsuarios')}}";
                 },
                 error: function (error) {
+                    $("#btnGravar").prop('disabled', false);
                     if (error.status == 400) {
-                        mostraAlert();
+                        mostraAlert(error.responseText);
                     } else {
                         window.location = "/error_500";
                         console.error(error);

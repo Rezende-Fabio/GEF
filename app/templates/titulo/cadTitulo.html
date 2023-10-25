@@ -167,6 +167,7 @@
 <script>
     $(document).ready(function () {
         $('#form-titulo').submit(function (event) {
+            $("#btnGravar").prop('disabled', true);
             event.preventDefault(); // Impede o envio padrão do formulário
             const formData = $(this).serialize();
 
@@ -178,6 +179,7 @@
                     window.location = "{{url_for('tituloBlue.renderListaTitulos')}}";
                 },
                 error: function (error) {
+                    $("#btnGravar").prop('disabled', false);
                     if (error.status == 400) {
                         mostraAlert();
                     } else {

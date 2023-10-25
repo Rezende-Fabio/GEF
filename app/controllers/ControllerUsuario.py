@@ -1,4 +1,4 @@
-from ..decortators.FormUsuario import validaFormUsuario
+from ..decorators.FormUsuario import validaFormUsuario
 from ..httpResponse.HttpResponse import HttpResponse
 from flask import session, abort, request
 from ..configurations.DataBase import DB

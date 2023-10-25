@@ -1,6 +1,6 @@
 from ..models.Models import Gf3004, Gf3005, Gf3006, Gf3007
 from ..httpResponse.HttpResponse import HttpResponse
-from ..decortators.FormBaixa import validaFormBaixa
+from ..decorators.FormBaixa import validaFormBaixa
 from ..controllers.ControllerFiltros import *
 from flask import request, abort, session
 from ..configurations.DataBase import DB
